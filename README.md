@@ -54,6 +54,22 @@ python demokit/record.py --host lerobot_pi05 --arm eager \
 python demokit/compose/sim_compose.py --runs runs/pi05_race --out pi05_race.webm
 ```
 
+## Installing the agent skill
+
+```bash
+demokit skills add                      # ~/.claude/skills and ~/.agents/skills
+demokit skills add --project .          # into this repository instead
+demokit skills add --agents-md ~/.codex/AGENTS.md   # also leave a pointer
+demokit skills where                    # print the targets without writing
+```
+
+Agents disagree about where a skill lives. Claude Code reads
+`~/.claude/skills/<name>/SKILL.md`; several others read
+`~/.agents/skills/<name>/`; Codex reads `AGENTS.md`. `add` writes the skills
+directories, and `--agents-md` appends a pointer to an `AGENTS.md` for the
+agents that only read that. It is idempotent — a second run says the pointer is
+already there rather than duplicating it.
+
 ## Examples
 
 `examples/runs/` carries one real film per painter kind — the actual recorded

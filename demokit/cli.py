@@ -80,6 +80,70 @@ def check(path: pathlib.Path) -> list[str]:
     return bad
 
 
+SKILL_SRC = pathlib.Path(__file__).resolve().parent.parent / ".ai" / "skills"
+
+POINTER = """
+## Recording a demo film
+
+When asked to show what an optimization did — side-by-side arms of one model on
+one wall clock — read `{path}` first. It covers the run-directory contract, the
+three recording hooks, and how to choose arms so the comparison holds.
+"""
+
+
+def _skills(a) -> int:
+    """Install the skill where each agent looks for one."""
+    if not SKILL_SRC.exists():
+        print(f"no skills at {SKILL_SRC}", file=sys.stderr)
+        return 1
+    names = sorted(p.name for p in SKILL_SRC.iterdir() if (p / "SKILL.md").exists())
+
+    if a.action == "list":
+        for n in names:
+            first = (SKILL_SRC / n / "SKILL.md").read_text().splitlines()
+            desc = next((l[len("description:"):].strip() for l in first[:8]
+                         if l.startswith("description:")), "")
+            print(f"{n}  {desc[:88]}")
+        return 0
+
+    roots = []
+    if a.project:
+        base = pathlib.Path(a.project)
+        roots = [base / ".claude" / "skills", base / ".agents" / "skills"]
+    else:
+        home = pathlib.Path.home()
+        if a.claude or not (a.claude or a.agents):
+            roots.append(home / ".claude" / "skills")
+        if a.agents or not (a.claude or a.agents):
+            roots.append(home / ".agents" / "skills")
+
+    if a.action == "where":
+        for r in roots:
+            print(r)
+        return 0
+
+    import shutil
+    for root in roots:
+        for n in names:
+            dst = root / n
+            dst.mkdir(parents=True, exist_ok=True)
+            shutil.copy(SKILL_SRC / n / "SKILL.md", dst / "SKILL.md")
+            print(f"installed {n} -> {dst}")
+
+    if a.agents_md:
+        md = pathlib.Path(a.agents_md)
+        target = roots[0] / names[0] / "SKILL.md"
+        text = POINTER.format(path=target)
+        existing = md.read_text() if md.exists() else ""
+        if "Recording a demo film" in existing:
+            print(f"{md}: pointer already present")
+        else:
+            md.parent.mkdir(parents=True, exist_ok=True)
+            md.write_text(existing.rstrip() + "\n" + text)
+            print(f"pointed {md} at {target}")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="demokit")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -87,6 +151,16 @@ def main(argv=None) -> int:
     c = sub.add_parser("check", help="validate one or more run directories")
     c.add_parser = None
     c.add_argument("runs", nargs="+")
+
+    k = sub.add_parser("skills", help="install the agent skill")
+    k.add_argument("action", choices=["add", "list", "where"])
+    k.add_argument("--claude", action="store_true", help="~/.claude/skills")
+    k.add_argument("--agents", action="store_true", help="~/.agents/skills")
+    k.add_argument("--project", metavar="DIR",
+                   help="install into DIR/.claude/skills and DIR/.agents/skills")
+    k.add_argument("--agents-md", metavar="PATH",
+                   help="also append a pointer to this AGENTS.md, for agents "
+                        "that read that rather than a skills directory")
 
     d = sub.add_parser("draw", help="compose runs into a film")
     d.add_argument("runs", nargs="?", help="a directory of arms")
@@ -100,6 +174,9 @@ def main(argv=None) -> int:
     d.add_argument("--speed", type=float, default=1.0)
 
     a = ap.parse_args(argv)
+
+    if a.cmd == "skills":
+        return _skills(a)
 
     if a.cmd == "check":
         bad = [b for r in a.runs for b in check(pathlib.Path(r))]
