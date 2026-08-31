@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "demokit"
+version = "0.1.0"
+description = "Record when an inference host did each thing, then draw it as a film"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy", "pillow", "imageio-ffmpeg"]
+
+[project.optional-dependencies]
+# the recorders need whatever host they are recording; nothing is pinned here
+# because a recorder runs inside an environment that already has it
+robot = ["torch"]
+
+[project.scripts]
+demokit = "demokit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["demokit*"]

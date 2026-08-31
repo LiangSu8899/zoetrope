@@ -1,0 +1,106 @@
+---
+name: record-a-demo
+description: Record an inference host as a side-by-side film — two or more arms of the same model on one wall clock, with live rate readouts. Use when someone wants to show what an optimization did, not just state it.
+---
+
+# Recording a demo film
+
+You record **when** each thing happened; a compositor replays those timestamps
+and draws every frame. Nothing is screen-captured. That split is what lets the
+drawing change later without running the model again.
+
+Install: `pip install -e /path/to/demo-kit` (or put it on `PYTHONPATH`).
+
+## The shape of the job
+
+One arm per process. Never two — they would share allocator state and clocks.
+
+```
+run each arm  →  runs/<film>/<arm>/events.json   (+ frames.npy if it has pixels)
+                 demokit check runs/<film>/*
+                 demokit draw  runs/<film> --out film.webm
+```
+
+## Recording an arm
+
+```python
+from demokit import hook
+
+rec = hook.Recorder(
+    "video",                       # stream | video | stream_batch | loop
+    label="+ FlashRT structures",  # the pane header
+    sub="auto_swaps, nvfp4_balance",
+    color="ours")                  # stock | compiled | ours | native
+
+with hook.on_denoiser(rec, pipe):  # stamps every denoiser call, restores on exit
+    out = pipe(prompt=..., num_inference_steps=20)
+
+rec.frames(np.asarray(out.frames[0])).write("runs/wan22/attach")
+```
+
+Three hooks, by what the host is:
+
+| host | hook |
+|---|---|
+| a diffusers pipeline | `hook.on_denoiser(rec, pipe)` |
+| any module you want one stamp per call from | `hook.on_calls(rec, module)` |
+| a `transformers` generate | `with hook.on_tokens(rec, tokenizer): model.generate(..., streamer=rec.streamer)` |
+
+Anything else: call `rec.stamp(...)` yourself at the moment the thing arrives.
+That is all a hook does.
+
+`ttft_ms`, `decode_tok_s`, `ms_per_step` and friends are derived from the
+timestamps on write — do not pass them unless you measured them a different way
+and mean it.
+
+## Choosing arms
+
+A film is only worth drawing if the arms are honestly comparable:
+
+- **The baseline is the production form.** The host as its authors ship it,
+  *and* the host after `torch.compile` + graph capture. The second is the one a
+  deployment actually feels; report both.
+- **Same fixture in every arm.** Same prompt, same seed, same shapes, same
+  task, same initial state.
+- **Report TTFT and decode separately.** Never one blended end-to-end number.
+- **The headline is a median.** min-of-N belongs in a footnote as a lower
+  bound, never on the page.
+- **Score parity against the original baseline**, never against an intermediate
+  arm.
+- **Real inputs.** Random tensors hide calibration bugs.
+- **A refusal is a result.** A seam that does not pay gets recorded with its
+  reason, not dropped.
+
+## Drawing
+
+```bash
+demokit check runs/wan22/eager runs/wan22/attach     # says what would fail, and why
+demokit draw  runs/wan22 --arms eager,attach --out wan22.webm \
+    --title "Wan2.2 TI2V-5B" \
+    --subtitle "480x480 · 33 frames · 20 steps · one prompt, one seed · RTX 5090" \
+    --note "what a reader should notice"
+```
+
+Several chapters in one file (e.g. four concurrency levels) go through a spec:
+
+```json
+{"pane": 430, "fps": 30, "chapters": [
+  {"runs": "runs/conc/c1", "arms": "base,attach", "tail": 1.6,
+   "title": "...", "subtitle": "...", "note": "...", "footer": "..."}
+]}
+```
+```bash
+demokit draw --spec spec.json --out concurrency.webm
+```
+
+## If something looks wrong
+
+- `demokit check` first. It names the missing `meta` key or the unsorted
+  timestamps rather than letting the compositor fail obscurely.
+- A pane stuck at `--` means no event arrived yet; that is correct during
+  prefill.
+- Redrawing never needs the model. If a readout or a layout is wrong, fix the
+  compositor and draw the same runs again.
+
+See `docs/PROTOCOL.md` for the full run-directory contract and the host-adapter
+protocols.

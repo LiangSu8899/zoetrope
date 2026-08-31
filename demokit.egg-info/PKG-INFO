@@ -1,3 +1,15 @@
+Metadata-Version: 2.4
+Name: demokit
+Version: 0.1.0
+Summary: Record when an inference host did each thing, then draw it as a film
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pillow
+Requires-Dist: imageio-ffmpeg
+Provides-Extra: robot
+Requires-Dist: torch; extra == "robot"
+
 # demo-kit
 
 Tools for recording what an optimization actually did, as a film.
