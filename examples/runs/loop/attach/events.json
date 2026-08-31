@@ -1,0 +1,324 @@
+{
+ "meta": {
+  "arm": "attach",
+  "host": "Isaac-GR00T N1.7 (official)",
+  "task": "put the black bowl in the bottom drawer of the cabinet and close it",
+  "suite": "libero_10",
+  "task_id": 3,
+  "trial": 0,
+  "replan": 1,
+  "device": "NVIDIA GeForce RTX 5090",
+  "swaps": 313,
+  "refused": 185,
+  "ledger_clean": true,
+  "captured": true,
+  "steps": 60,
+  "success": null,
+  "calls": 302,
+  "median_infer_ms": 17.774,
+  "mean_infer_ms": 17.804,
+  "_example_note": "the first 60 control steps of a real rollout, scaled to 96px, so this example fits in the repository. Frames and events are truncated together and every frame is kept: a loop pane indexes frames by control step. `success` is cleared because a truncated rollout has no outcome."
+ },
+ "events": [
+  {
+   "step": 0,
+   "infer_ms": 19.420180935412645,
+   "fresh": true
+  },
+  {
+   "step": 1,
+   "infer_ms": 17.7882791031152,
+   "fresh": true
+  },
+  {
+   "step": 2,
+   "infer_ms": 17.763291019946337,
+   "fresh": true
+  },
+  {
+   "step": 3,
+   "infer_ms": 17.765864031389356,
+   "fresh": true
+  },
+  {
+   "step": 4,
+   "infer_ms": 17.773132072761655,
+   "fresh": true
+  },
+  {
+   "step": 5,
+   "infer_ms": 17.765888012945652,
+   "fresh": true
+  },
+  {
+   "step": 6,
+   "infer_ms": 17.759142909199,
+   "fresh": true
+  },
+  {
+   "step": 7,
+   "infer_ms": 17.764959950000048,
+   "fresh": true
+  },
+  {
+   "step": 8,
+   "infer_ms": 17.77332602068782,
+   "fresh": true
+  },
+  {
+   "step": 9,
+   "infer_ms": 17.769783036783338,
+   "fresh": true
+  },
+  {
+   "step": 10,
+   "infer_ms": 17.770109931007028,
+   "fresh": true
+  },
+  {
+   "step": 11,
+   "infer_ms": 17.766176955774426,
+   "fresh": true
+  },
+  {
+   "step": 12,
+   "infer_ms": 17.777849920094013,
+   "fresh": true
+  },
+  {
+   "step": 13,
+   "infer_ms": 17.757368041202426,
+   "fresh": true
+  },
+  {
+   "step": 14,
+   "infer_ms": 17.795111052691936,
+   "fresh": true
+  },
+  {
+   "step": 15,
+   "infer_ms": 17.814890015870333,
+   "fresh": true
+  },
+  {
+   "step": 16,
+   "infer_ms": 17.828339943662286,
+   "fresh": true
+  },
+  {
+   "step": 17,
+   "infer_ms": 17.775598913431168,
+   "fresh": true
+  },
+  {
+   "step": 18,
+   "infer_ms": 17.79570197686553,
+   "fresh": true
+  },
+  {
+   "step": 19,
+   "infer_ms": 17.790196929126978,
+   "fresh": true
+  },
+  {
+   "step": 20,
+   "infer_ms": 17.76926196180284,
+   "fresh": true
+  },
+  {
+   "step": 21,
+   "infer_ms": 17.7767900750041,
+   "fresh": true
+  },
+  {
+   "step": 22,
+   "infer_ms": 17.774851992726326,
+   "fresh": true
+  },
+  {
+   "step": 23,
+   "infer_ms": 17.802795860916376,
+   "fresh": true
+  },
+  {
+   "step": 24,
+   "infer_ms": 17.774929059669375,
+   "fresh": true
+  },
+  {
+   "step": 25,
+   "infer_ms": 17.7788189612329,
+   "fresh": true
+  },
+  {
+   "step": 26,
+   "infer_ms": 17.770976992323995,
+   "fresh": true
+  },
+  {
+   "step": 27,
+   "infer_ms": 17.770634032785892,
+   "fresh": true
+  },
+  {
+   "step": 28,
+   "infer_ms": 17.77837797999382,
+   "fresh": true
+  },
+  {
+   "step": 29,
+   "infer_ms": 17.77510205283761,
+   "fresh": true
+  },
+  {
+   "step": 30,
+   "infer_ms": 17.77845504693687,
+   "fresh": true
+  },
+  {
+   "step": 31,
+   "infer_ms": 17.76895998045802,
+   "fresh": true
+  },
+  {
+   "step": 32,
+   "infer_ms": 17.810783814638853,
+   "fresh": true
+  },
+  {
+   "step": 33,
+   "infer_ms": 17.773756990209222,
+   "fresh": true
+  },
+  {
+   "step": 34,
+   "infer_ms": 17.780038993805647,
+   "fresh": true
+  },
+  {
+   "step": 35,
+   "infer_ms": 17.77869393117726,
+   "fresh": true
+  },
+  {
+   "step": 36,
+   "infer_ms": 17.76459184475243,
+   "fresh": true
+  },
+  {
+   "step": 37,
+   "infer_ms": 17.773550003767014,
+   "fresh": true
+  },
+  {
+   "step": 38,
+   "infer_ms": 17.76447193697095,
+   "fresh": true
+  },
+  {
+   "step": 39,
+   "infer_ms": 17.77445897459984,
+   "fresh": true
+  },
+  {
+   "step": 40,
+   "infer_ms": 17.77812303043902,
+   "fresh": true
+  },
+  {
+   "step": 41,
+   "infer_ms": 17.76651688851416,
+   "fresh": true
+  },
+  {
+   "step": 42,
+   "infer_ms": 17.78459595516324,
+   "fresh": true
+  },
+  {
+   "step": 43,
+   "infer_ms": 17.764616990461946,
+   "fresh": true
+  },
+  {
+   "step": 44,
+   "infer_ms": 17.7650791592896,
+   "fresh": true
+  },
+  {
+   "step": 45,
+   "infer_ms": 17.786677926778793,
+   "fresh": true
+  },
+  {
+   "step": 46,
+   "infer_ms": 17.75887981057167,
+   "fresh": true
+  },
+  {
+   "step": 47,
+   "infer_ms": 17.775183077901602,
+   "fresh": true
+  },
+  {
+   "step": 48,
+   "infer_ms": 17.775248968973756,
+   "fresh": true
+  },
+  {
+   "step": 49,
+   "infer_ms": 17.769271042197943,
+   "fresh": true
+  },
+  {
+   "step": 50,
+   "infer_ms": 17.766735050827265,
+   "fresh": true
+  },
+  {
+   "step": 51,
+   "infer_ms": 17.76160905137658,
+   "fresh": true
+  },
+  {
+   "step": 52,
+   "infer_ms": 17.77416211552918,
+   "fresh": true
+  },
+  {
+   "step": 53,
+   "infer_ms": 17.780140042304993,
+   "fresh": true
+  },
+  {
+   "step": 54,
+   "infer_ms": 17.7880572155118,
+   "fresh": true
+  },
+  {
+   "step": 55,
+   "infer_ms": 17.784789903089404,
+   "fresh": true
+  },
+  {
+   "step": 56,
+   "infer_ms": 17.76996487751603,
+   "fresh": true
+  },
+  {
+   "step": 57,
+   "infer_ms": 17.762752948328853,
+   "fresh": true
+  },
+  {
+   "step": 58,
+   "infer_ms": 17.77793001383543,
+   "fresh": true
+  },
+  {
+   "step": 59,
+   "infer_ms": 17.772733932361007,
+   "fresh": true
+  }
+ ]
+}

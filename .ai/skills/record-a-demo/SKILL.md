@@ -11,6 +11,32 @@ drawing change later without running the model again.
 
 Install: `pip install -e /path/to/demo-kit` (or put it on `PYTHONPATH`).
 
+## Before you run anything: is the data already there?
+
+Running a model is expensive; drawing is not. **Recording and drawing are
+separate, so a run someone else recorded draws just as well as one you made.**
+A whole concurrency film in this repository was drawn from 960 KB of
+`events.json` pulled off a Jetson, without the model ever running on the
+machine that drew it.
+
+So, in order:
+
+1. **Look for existing runs.** If `events.json` exists for the arms you want,
+   go straight to `demokit draw`. Nothing needs a GPU.
+2. **Missing one arm?** Record only that arm. The others stand.
+3. **Only then** record from scratch.
+
+`examples/runs/` holds one real, complete film per painter kind. Use them to
+see the schema, to check your environment draws at all, and as a template:
+
+```bash
+demokit check examples/runs/*/*                          # 9/9 ready to draw
+demokit draw  examples/runs/video --out /tmp/check.webm  # should just work
+```
+
+`examples/specs/` holds the multi-chapter specs behind the published films —
+the shortest way to see how chapters, arms, notes and footers fit together.
+
 ## The shape of the job
 
 One arm per process. Never two — they would share allocator state and clocks.

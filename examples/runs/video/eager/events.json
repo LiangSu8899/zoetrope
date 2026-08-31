@@ -1,0 +1,127 @@
+{
+ "meta": {
+  "kind": "video",
+  "label": "Wan2.2, as shipped",
+  "sub": "eager PyTorch",
+  "color": "stock",
+  "steps": 20,
+  "frames": 33,
+  "size": 480,
+  "seed": 7,
+  "prompt": "A curious raccoon carefully opens a wooden box in a sunlit forest clearing, cinematic lighting, shallow depth of field",
+  "denoise_s": 6.4825,
+  "ms_per_step": 324.1,
+  "ms_per_call": 162.1,
+  "decode_s": 6.4825,
+  "vae_decode_s": 1.9606,
+  "done_s": 6.4825,
+  "clip_fps": 1.6,
+  "final_latent_vs_eager": 1.0,
+  "stepwise_worst": 0.999961,
+  "stepwise_median": 0.999971,
+  "paired_call_ms": 162.2,
+  "_example_note": "frames subsampled 1/10 and scaled to 240px so this example fits in the repository; the timestamps are untouched"
+ },
+ "events": [
+  {
+   "kind": "step",
+   "i": 0,
+   "t": 0.3255
+  },
+  {
+   "kind": "step",
+   "i": 1,
+   "t": 0.6492
+  },
+  {
+   "kind": "step",
+   "i": 2,
+   "t": 0.9734
+  },
+  {
+   "kind": "step",
+   "i": 3,
+   "t": 1.2973
+  },
+  {
+   "kind": "step",
+   "i": 4,
+   "t": 1.6212
+  },
+  {
+   "kind": "step",
+   "i": 5,
+   "t": 1.9451
+  },
+  {
+   "kind": "step",
+   "i": 6,
+   "t": 2.2693
+  },
+  {
+   "kind": "step",
+   "i": 7,
+   "t": 2.5931
+  },
+  {
+   "kind": "step",
+   "i": 8,
+   "t": 2.9172
+  },
+  {
+   "kind": "step",
+   "i": 9,
+   "t": 3.2411
+  },
+  {
+   "kind": "step",
+   "i": 10,
+   "t": 3.5651
+  },
+  {
+   "kind": "step",
+   "i": 11,
+   "t": 3.8891
+  },
+  {
+   "kind": "step",
+   "i": 12,
+   "t": 4.2134
+  },
+  {
+   "kind": "step",
+   "i": 13,
+   "t": 4.5373
+  },
+  {
+   "kind": "step",
+   "i": 14,
+   "t": 4.8614
+  },
+  {
+   "kind": "step",
+   "i": 15,
+   "t": 5.1853
+  },
+  {
+   "kind": "step",
+   "i": 16,
+   "t": 5.5094
+  },
+  {
+   "kind": "step",
+   "i": 17,
+   "t": 5.8334
+  },
+  {
+   "kind": "step",
+   "i": 18,
+   "t": 6.1577
+  },
+  {
+   "kind": "step",
+   "i": 19,
+   "t": 6.4817
+  }
+ ]
+}

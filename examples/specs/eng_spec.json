@@ -1,0 +1,24 @@
+{
+ "pane": 460,
+ "fps": 30,
+ "chapters": [
+  {
+   "runs": "runs/vllm_8b/c1",
+   "arms": "base,attach",
+   "tail": 2.2,
+   "title": "Qwen3-8B on vLLM \u2014 the engine, and the engine with seats in it",
+   "subtitle": "greedy \u00b7 run to the model's own stop \u00b7 single stream \u00b7 RTX 5090",
+   "note": "vLLM 0.22 in its own default production form \u2014 scheduler, memory planner, compiled piecewise-cudagraph decode path \u00b7 144 seats bound by a hook after load_model, before the engine's first trace",
+   "footer": "decode 99.1 -> 145.3 tok/s, 1.47x, and TTFT 12.7 -> 8.4 ms in the same run. 144 seats bound, 0 refused, 13.9 GB of BF16 weights freed as each seat took over.\nThe two arms are separate processes and that is not a choice: an engine bakes its module tree into a compiled, graph-captured decode path at load time, so attaching after that fails by construction. Every other film here races its arms in one process; this one says why it may not.\nThe published figure for this row is 1.61x. Measured today, on this stack and this prompt, it is 1.47x."
+  },
+  {
+   "runs": "runs/sglang_8b",
+   "arms": "base,attach",
+   "tail": 2.5,
+   "title": "The same 144 seats, on SGLang instead",
+   "subtitle": "greedy \u00b7 SGLang 0.5.13 \u00b7 raw CUDA graph capture rather than a compiler",
+   "note": "the seats are identical; the injection is not. SGLang's scheduler is a spawn subprocess, so the hook rides in through sitecustomize on PYTHONPATH and every child interpreter installs it itself",
+   "footer": "decode 101.2 -> 203.0 tok/s, 2.01x, and TTFT 22.9 -> 13.8 ms. The same seats in front of a completely different graph mechanism: vLLM compiles with dynamo and captures piecewise, SGLang captures raw CUDA graphs, and the seats survive both.\nWhat these two chapters cannot claim is parity, and until this recording there was no gate to claim it with \u2014 the engine numbers were logged as mechanism receipts. There is one now. Teacher-forced same-token for the vLLM arm is 0.9286, against a floor of 0.9921 the engine reaches against its own tokens: a free run comes off the decode path and the gate scores it through a prefill, so even the unmodified engine disagrees with itself at one position in a hundred.\nThe seat is uncalibrated dynamic 4-bit, and it is the only form that survives here. The gentler 8-bit seat qualifies for a decode band of M in [1,4], and an engine traces one module for prefill and decode alike, so it refuses M=2048 outright. An FFN-only arm at 72 seats scores 0.9375 and runs 1.35x. All of it is in receipts/engines.json."
+  }
+ ]
+}

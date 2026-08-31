@@ -1,0 +1,16 @@
+{
+ "pane": 400,
+ "fps": 30,
+ "chapters": [
+  {"runs": "runs/qwen36_35b_code", "arms": "host,loop,mtp", "tail": 2.2,
+   "title": "Qwen3.6-35B-A3B — writing a CUDA kernel, three ways",
+   "subtitle": "greedy · 152 tokens · a 35B mixture-of-experts on one 32 GB card · RTX 5090",
+   "note": "the transformers host, unedited · TTFT and decode are reported separately, never blended into one tokens/second",
+   "footer": "decode 51.6 -> 203.5 -> 284.9 tok/s, finishing at 2.96 s, 0.77 s and 0.57 s. 3.94x and 5.52x over the host.\nThe third pane runs the checkpoint's own MTP draft head at K=3 and gets 3.43 of every round's tokens accepted. It pays for that in TTFT — 43.5 ms against 29.8, because a round has to draft and verify before it can emit anything — so it is a throughput arm and not a latency one. This is the ceiling for that head, and the next chapter is what happens off it.\nJudged step by step on the host's own sequence: teacher-forced same-token 0.9934 here. Code is where this arm is most faithful, and that is not a coincidence: an arm that quantises the expert bank to 4 bits disagrees where the model itself was undecided."},
+  {"runs": "runs/qwen36_35b", "arms": "host,loop", "tail": 2.5,
+   "title": "Qwen3.6-35B-A3B — and the same model on prose, where the draft stops paying",
+   "subtitle": "greedy · 224 tokens · same model, same card, and no speculative pane",
+   "note": "the two answers are both correct and they are not the same words · a 4-bit arm is judged on its teacher-forced rate, and here that rate is worth reading",
+   "footer": "decode 52.8 -> 200.0 tok/s, 3.79x, finishing at 4.25 s against 1.14 s.\nNo speculative pane, because on this prompt it loses: acceptance falls from 3.43 to 2.70 and every K from 2 to 6 comes out slower than the plain loop. Acceptance length tracks how predictable the text is, so a draft head that wins on code does not automatically win on an explanation, and 256.5 tok/s belongs to a prompt rather than to a model.\nThe same reading applies to parity. This arm scores teacher-forced 0.9934 on code and 0.9327 here — under the 0.95 the protocol asks for. Worth stating plainly, because the receipts this host was published from scored 1.0000 and were measured while the model emitted its formulaic 'Here's a thinking process' scaffolding. Compiling the step is not the cause: uncompiled it scores 0.9283 and runs 1.50x slower. The 4-bit expert bank is."}
+ ]
+}

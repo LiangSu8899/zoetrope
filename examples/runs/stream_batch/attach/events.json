@@ -1,0 +1,8834 @@
+{
+ "meta": {
+  "kind": "stream_batch",
+  "label": "+ FlashRT structures",
+  "sub": "structure seats bound at load, inside the engine's own graph",
+  "color": "accent",
+  "concurrency": 8,
+  "arm": "attach",
+  "model": "/home/heima-thor/suliang/models/Qwen3.6-35B-A3B",
+  "max_tokens": 128,
+  "ttft_ms_median": 216.2,
+  "ttft_ms_p90": 216.2,
+  "decode_tok_s_per_stream": 33.0,
+  "aggregate_tok_s": 245.5,
+  "n_tokens_total": 999,
+  "done_s": 4.0698,
+  "wall_s": 4.0698,
+  "adapter_patched": [
+   "vllm.v1.worker.gpu.model_runner",
+   "vllm.v1.worker.gpu_model_runner"
+  ],
+  "adapter": "flash_rt.structures.adapters.vllm_engine",
+  "adapter_report": {
+   "language_model.model.layers.0.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.0.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.0.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.0.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.0.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.1.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.1.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.1.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.1.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.1.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.10.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.10.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.10.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.10.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.10.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.11.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.11.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.11.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.11.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.11.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.12.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.12.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.12.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.12.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.12.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.13.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.13.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.13.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.13.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.13.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.14.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.14.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.14.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.14.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.14.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.15.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.15.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.15.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.15.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.15.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.16.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.16.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.16.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.16.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.16.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.17.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.17.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.17.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.17.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.17.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.18.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.18.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.18.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.18.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.18.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.19.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.19.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.19.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.19.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.19.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.2.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.2.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.2.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.2.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.2.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.20.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.20.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.20.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.20.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.20.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.21.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.21.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.21.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.21.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.21.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.22.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.22.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.22.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.22.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.22.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.23.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.23.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.23.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.23.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.23.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.24.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.24.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.24.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.24.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.24.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.25.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.25.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.25.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.25.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.25.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.26.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.26.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.26.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.26.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.26.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.27.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.27.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.27.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.27.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.27.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.28.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.28.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.28.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.28.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.28.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.29.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.29.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.29.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.29.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.29.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.3.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.3.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.3.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.3.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.3.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.30.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.30.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.30.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.30.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.30.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.31.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.31.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.31.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.31.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.31.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.32.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.32.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.32.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.32.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.32.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.33.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.33.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.33.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.33.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.33.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.34.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.34.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.34.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.34.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.34.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.35.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.35.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.35.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.35.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.35.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.36.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.36.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.36.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.36.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.36.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.37.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.37.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.37.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.37.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.37.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.38.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.38.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.38.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.38.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.38.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.39.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.39.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.39.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.39.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.39.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.4.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.4.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.4.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.4.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.4.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.5.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.5.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.5.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.5.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.5.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.6.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.6.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.6.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.6.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.6.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.7.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.7.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.7.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.7.self_attn.o_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.7.self_attn.qkv_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.8.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.8.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.8.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.8.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.8.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.9.linear_attn.in_proj_qkvz::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.9.linear_attn.out_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 4096,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.9.mlp.experts::seam": {
+    "kind": "MoeExpertsW4A16",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.9.mlp.shared_expert.down_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 512,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   },
+   "language_model.model.layers.9.mlp.shared_expert.gate_up_proj::seam": {
+    "kind": "LinearProjNvfp4Dynamic",
+    "calls": 1,
+    "fallbacks": 0,
+    "detached": false,
+    "last_reason": null,
+    "form": {
+     "dtype": "bfloat16/float16/float32",
+     "k": 2048,
+     "rows": null,
+     "row_capacity": null,
+     "device": "cuda:0"
+    }
+   }
+  },
+  "adapter_summary": {
+   "seams": 200,
+   "guarded_calls": 200,
+   "fallbacks": 0,
+   "seams_fell_back": [],
+   "seams_self_detached": [],
+   "seams_never_called": [],
+   "clean": true
+  },
+  "engine_kwargs": {
+   "kv_cache_memory_bytes": 8589934592
+  }
+ },
+ "events": [
+  {
+   "s": 0,
+   "i": 0,
+   "t": 0.21612,
+   "text": "A"
+  },
+  {
+   "s": 1,
+   "i": 0,
+   "t": 0.21616,
+   "text": "```"
+  },
+  {
+   "s": 2,
+   "i": 0,
+   "t": 0.21618,
+   "text": "Lat"
+  },
+  {
+   "s": 3,
+   "i": 0,
+   "t": 0.21619,
+   "text": "#"
+  },
+  {
+   "s": 4,
+   "i": 0,
+   "t": 0.2162,
+   "text": "A"
+  },
+  {
+   "s": 5,
+   "i": 0,
+   "t": 0.21621,
+   "text": "```"
+  },
+  {
+   "s": 6,
+   "i": 0,
+   "t": 0.21621,
+   "text": "To"
+  },
+  {
+   "s": 7,
+   "i": 0,
+   "t": 0.21622,
+   "text": "Ne"
+  },
+  {
+   "s": 0,
+   "i": 1,
+   "t": 0.21875,
+   "text": " GPU"
+  },
+  {
+   "s": 1,
+   "i": 1,
+   "t": 0.21878,
+   "text": "c"
+  },
+  {
+   "s": 2,
+   "i": 1,
+   "t": 0.2188,
+   "text": "ency"
+  },
+  {
+   "s": 3,
+   "i": 1,
+   "t": 0.21881,
+   "text": " What"
+  },
+  {
+   "s": 4,
+   "i": 1,
+   "t": 0.21882,
+   "text": " page"
+  },
+  {
+   "s": 5,
+   "i": 1,
+   "t": 0.21882,
+   "text": "python"
+  },
+  {
+   "s": 6,
+   "i": 1,
+   "t": 0.21883,
+   "text": " understand"
+  },
+  {
+   "s": 7,
+   "i": 1,
+   "t": 0.21884,
+   "text": "ural"
+  },
+  {
+   "s": 0,
+   "i": 2,
+   "t": 0.27781,
+   "text": " out"
+  },
+  {
+   "s": 1,
+   "i": 2,
+   "t": 0.27784,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 2,
+   "t": 0.27786,
+   "text": " and"
+  },
+  {
+   "s": 3,
+   "i": 2,
+   "t": 0.27787,
+   "text": " Happ"
+  },
+  {
+   "s": 4,
+   "i": 2,
+   "t": 0.27787,
+   "text": " cache"
+  },
+  {
+   "s": 5,
+   "i": 2,
+   "t": 0.27788,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 2,
+   "t": 0.27789,
+   "text": " **"
+  },
+  {
+   "s": 7,
+   "i": 2,
+   "t": 0.2779,
+   "text": " networks"
+  },
+  {
+   "s": 0,
+   "i": 3,
+   "t": 0.28031,
+   "text": "per"
+  },
+  {
+   "s": 1,
+   "i": 3,
+   "t": 0.28034,
+   "text": "#include"
+  },
+  {
+   "s": 2,
+   "i": 3,
+   "t": 0.28035,
+   "text": " throughput"
+  },
+  {
+   "s": 3,
+   "i": 3,
+   "t": 0.28036,
+   "text": "ens"
+  },
+  {
+   "s": 4,
+   "i": 3,
+   "t": 0.28037,
+   "text": " is"
+  },
+  {
+   "s": 5,
+   "i": 3,
+   "t": 0.28038,
+   "text": "def"
+  },
+  {
+   "s": 6,
+   "i": 3,
+   "t": 0.28038,
+   "text": "memory"
+  },
+  {
+   "s": 7,
+   "i": 3,
+   "t": 0.28039,
+   "text": " employ"
+  },
+  {
+   "s": 0,
+   "i": 4,
+   "t": 0.33969,
+   "text": "forms"
+  },
+  {
+   "s": 1,
+   "i": 4,
+   "t": 0.33972,
+   "text": " <"
+  },
+  {
+   "s": 2,
+   "i": 4,
+   "t": 0.33974,
+   "text": " are"
+  },
+  {
+   "s": 3,
+   "i": 4,
+   "t": 0.33975,
+   "text": " When"
+  },
+  {
+   "s": 4,
+   "i": 4,
+   "t": 0.33976,
+   "text": " a"
+  },
+  {
+   "s": 5,
+   "i": 4,
+   "t": 0.33976,
+   "text": " merge"
+  },
+  {
+   "s": 6,
+   "i": 4,
+   "t": 0.33977,
+   "text": " bandwidth"
+  },
+  {
+   "s": 7,
+   "i": 4,
+   "t": 0.33978,
+   "text": " non"
+  },
+  {
+   "s": 0,
+   "i": 5,
+   "t": 0.34214,
+   "text": " a"
+  },
+  {
+   "s": 1,
+   "i": 5,
+   "t": 0.34217,
+   "text": "string"
+  },
+  {
+   "s": 2,
+   "i": 5,
+   "t": 0.34219,
+   "text": " distinct"
+  },
+  {
+   "s": 3,
+   "i": 5,
+   "t": 0.3422,
+   "text": " a"
+  },
+  {
+   "s": 4,
+   "i": 5,
+   "t": 0.3422,
+   "text": " memory"
+  },
+  {
+   "s": 5,
+   "i": 5,
+   "t": 0.34221,
+   "text": "_sorted"
+  },
+  {
+   "s": 6,
+   "i": 5,
+   "t": 0.34222,
+   "text": "**"
+  },
+  {
+   "s": 7,
+   "i": 5,
+   "t": 0.34223,
+   "text": "-linear"
+  },
+  {
+   "s": 0,
+   "i": 6,
+   "t": 0.40163,
+   "text": " CPU"
+  },
+  {
+   "s": 1,
+   "i": 6,
+   "t": 0.40166,
+   "text": ".h"
+  },
+  {
+   "s": 2,
+   "i": 6,
+   "t": 0.40167,
+   "text": " but"
+  },
+  {
+   "s": 3,
+   "i": 6,
+   "t": 0.40168,
+   "text": " CUDA"
+  },
+  {
+   "s": 4,
+   "i": 6,
+   "t": 0.40169,
+   "text": " management"
+  },
+  {
+   "s": 5,
+   "i": 6,
+   "t": 0.40169,
+   "text": "_lists"
+  },
+  {
+   "s": 6,
+   "i": 6,
+   "t": 0.40171,
+   "text": " in"
+  },
+  {
+   "s": 7,
+   "i": 6,
+   "t": 0.40172,
+   "text": " activation"
+  },
+  {
+   "s": 0,
+   "i": 7,
+   "t": 0.40416,
+   "text": " in"
+  },
+  {
+   "s": 1,
+   "i": 7,
+   "t": 0.4042,
+   "text": ">"
+  },
+  {
+   "s": 2,
+   "i": 7,
+   "t": 0.40421,
+   "text": " complementary"
+  },
+  {
+   "s": 3,
+   "i": 7,
+   "t": 0.40422,
+   "text": " Kernel"
+  },
+  {
+   "s": 4,
+   "i": 7,
+   "t": 0.40423,
+   "text": " technique"
+  },
+  {
+   "s": 5,
+   "i": 7,
+   "t": 0.40424,
+   "text": "(list"
+  },
+  {
+   "s": 6,
+   "i": 7,
+   "t": 0.40425,
+   "text": " the"
+  },
+  {
+   "s": 7,
+   "i": 7,
+   "t": 0.40426,
+   "text": " functions"
+  },
+  {
+   "s": 0,
+   "i": 8,
+   "t": 0.46357,
+   "text": " matrix"
+  },
+  {
+   "s": 1,
+   "i": 8,
+   "t": 0.46361,
+   "text": "\n\n"
+  },
+  {
+   "s": 2,
+   "i": 8,
+   "t": 0.46362,
+   "text": " metrics"
+  },
+  {
+   "s": 3,
+   "i": 8,
+   "t": 0.46363,
+   "text": " Is"
+  },
+  {
+   "s": 4,
+   "i": 8,
+   "t": 0.46364,
+   "text": " used"
+  },
+  {
+   "s": 5,
+   "i": 8,
+   "t": 0.46365,
+   "text": "1"
+  },
+  {
+   "s": 6,
+   "i": 8,
+   "t": 0.46366,
+   "text": " context"
+  },
+  {
+   "s": 7,
+   "i": 8,
+   "t": 0.46367,
+   "text": " because"
+  },
+  {
+   "s": 0,
+   "i": 9,
+   "t": 0.46607,
+   "text": " multiplication"
+  },
+  {
+   "s": 1,
+   "i": 9,
+   "t": 0.4661,
+   "text": "void"
+  },
+  {
+   "s": 2,
+   "i": 9,
+   "t": 0.46612,
+   "text": " used"
+  },
+  {
+   "s": 3,
+   "i": 9,
+   "t": 0.46612,
+   "text": " La"
+  },
+  {
+   "s": 4,
+   "i": 9,
+   "t": 0.46613,
+   "text": " by"
+  },
+  {
+   "s": 5,
+   "i": 9,
+   "t": 0.46614,
+   "text": ":"
+  },
+  {
+   "s": 6,
+   "i": 9,
+   "t": 0.46615,
+   "text": " of"
+  },
+  {
+   "s": 7,
+   "i": 9,
+   "t": 0.46616,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 10,
+   "t": 0.52555,
+   "text": " primarily"
+  },
+  {
+   "s": 1,
+   "i": 10,
+   "t": 0.52558,
+   "text": " reverse"
+  },
+  {
+   "s": 2,
+   "i": 10,
+   "t": 0.52559,
+   "text": " to"
+  },
+  {
+   "s": 3,
+   "i": 10,
+   "t": 0.5256,
+   "text": "unched"
+  },
+  {
+   "s": 4,
+   "i": 10,
+   "t": 0.52561,
+   "text": " operating"
+  },
+  {
+   "s": 5,
+   "i": 10,
+   "t": 0.52562,
+   "text": " list"
+  },
+  {
+   "s": 6,
+   "i": 10,
+   "t": 0.52563,
+   "text": " Large"
+  },
+  {
+   "s": 7,
+   "i": 10,
+   "t": 0.52564,
+   "text": " without"
+  },
+  {
+   "s": 0,
+   "i": 11,
+   "t": 0.52796,
+   "text": " due"
+  },
+  {
+   "s": 1,
+   "i": 11,
+   "t": 0.52799,
+   "text": "_string"
+  },
+  {
+   "s": 2,
+   "i": 11,
+   "t": 0.52801,
+   "text": " evaluate"
+  },
+  {
+   "s": 3,
+   "i": 11,
+   "t": 0.52801,
+   "text": "\n\n"
+  },
+  {
+   "s": 4,
+   "i": 11,
+   "t": 0.52802,
+   "text": " systems"
+  },
+  {
+   "s": 5,
+   "i": 11,
+   "t": 0.52804,
+   "text": ","
+  },
+  {
+   "s": 6,
+   "i": 11,
+   "t": 0.52804,
+   "text": " Language"
+  },
+  {
+   "s": 7,
+   "i": 11,
+   "t": 0.52805,
+   "text": " them"
+  },
+  {
+   "s": 0,
+   "i": 12,
+   "t": 0.58798,
+   "text": " to"
+  },
+  {
+   "s": 1,
+   "i": 12,
+   "t": 0.58801,
+   "text": "(char"
+  },
+  {
+   "s": 2,
+   "i": 12,
+   "t": 0.58802,
+   "text": " system"
+  },
+  {
+   "s": 3,
+   "i": 12,
+   "t": 0.58803,
+   "text": "##"
+  },
+  {
+   "s": 4,
+   "i": 12,
+   "t": 0.58803,
+   "text": " to"
+  },
+  {
+   "s": 5,
+   "i": 12,
+   "t": 0.58804,
+   "text": " list"
+  },
+  {
+   "s": 6,
+   "i": 12,
+   "t": 0.58805,
+   "text": " Models"
+  },
+  {
+   "s": 7,
+   "i": 12,
+   "t": 0.58806,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 13,
+   "t": 0.59035,
+   "text": " its"
+  },
+  {
+   "s": 1,
+   "i": 13,
+   "t": 0.59039,
+   "text": " *"
+  },
+  {
+   "s": 2,
+   "i": 13,
+   "t": 0.5904,
+   "text": " performance"
+  },
+  {
+   "s": 3,
+   "i": 13,
+   "t": 0.59041,
+   "text": " High"
+  },
+  {
+   "s": 4,
+   "i": 13,
+   "t": 0.59041,
+   "text": " improve"
+  },
+  {
+   "s": 5,
+   "i": 13,
+   "t": 0.59046,
+   "text": "2"
+  },
+  {
+   "s": 6,
+   "i": 13,
+   "t": 0.59047,
+   "text": " ("
+  },
+  {
+   "s": 7,
+   "i": 13,
+   "t": 0.59047,
+   "text": " a"
+  },
+  {
+   "s": 0,
+   "i": 14,
+   "t": 0.65007,
+   "text": " architecture"
+  },
+  {
+   "s": 1,
+   "i": 14,
+   "t": 0.6501,
+   "text": "str"
+  },
+  {
+   "s": 2,
+   "i": 14,
+   "t": 0.65011,
+   "text": ","
+  },
+  {
+   "s": 3,
+   "i": 14,
+   "t": 0.65012,
+   "text": "-Level"
+  },
+  {
+   "s": 4,
+   "i": 14,
+   "t": 0.65013,
+   "text": " disk"
+  },
+  {
+   "s": 5,
+   "i": 14,
+   "t": 0.65014,
+   "text": ":"
+  },
+  {
+   "s": 6,
+   "i": 14,
+   "t": 0.65015,
+   "text": "LL"
+  },
+  {
+   "s": 7,
+   "i": 14,
+   "t": 0.65016,
+   "text": " multi"
+  },
+  {
+   "s": 0,
+   "i": 15,
+   "t": 0.65246,
+   "text": " optimized"
+  },
+  {
+   "s": 1,
+   "i": 15,
+   "t": 0.65249,
+   "text": ")"
+  },
+  {
+   "s": 2,
+   "i": 15,
+   "t": 0.65251,
+   "text": " where"
+  },
+  {
+   "s": 3,
+   "i": 15,
+   "t": 0.65251,
+   "text": " Overview"
+  },
+  {
+   "s": 4,
+   "i": 15,
+   "t": 0.65252,
+   "text": " I"
+  },
+  {
+   "s": 5,
+   "i": 15,
+   "t": 0.65253,
+   "text": " list"
+  },
+  {
+   "s": 6,
+   "i": 15,
+   "t": 0.65254,
+   "text": "Ms"
+  },
+  {
+   "s": 7,
+   "i": 15,
+   "t": 0.65255,
+   "text": "-layer"
+  },
+  {
+   "s": 0,
+   "i": 16,
+   "t": 0.71165,
+   "text": " for"
+  },
+  {
+   "s": 1,
+   "i": 16,
+   "t": 0.71169,
+   "text": " {"
+  },
+  {
+   "s": 2,
+   "i": 16,
+   "t": 0.7117,
+   "text": " latency"
+  },
+  {
+   "s": 3,
+   "i": 16,
+   "t": 0.71171,
+   "text": "\n\n"
+  },
+  {
+   "s": 4,
+   "i": 16,
+   "t": 0.71172,
+   "text": "/O"
+  },
+  {
+   "s": 5,
+   "i": 16,
+   "t": 0.71173,
+   "text": ")"
+  },
+  {
+   "s": 6,
+   "i": 16,
+   "t": 0.71173,
+   "text": "),"
+  },
+  {
+   "s": 7,
+   "i": 16,
+   "t": 0.71174,
+   "text": "ed"
+  },
+  {
+   "s": 0,
+   "i": 17,
+   "t": 0.71402,
+   "text": " parallel"
+  },
+  {
+   "s": 1,
+   "i": 17,
+   "t": 0.71406,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 17,
+   "t": 0.71407,
+   "text": " refers"
+  },
+  {
+   "s": 3,
+   "i": 17,
+   "t": 0.71408,
+   "text": "Launching"
+  },
+  {
+   "s": 4,
+   "i": 17,
+   "t": 0.71409,
+   "text": " performance"
+  },
+  {
+   "s": 5,
+   "i": 17,
+   "t": 0.7141,
+   "text": " ->"
+  },
+  {
+   "s": 6,
+   "i": 17,
+   "t": 0.71411,
+   "text": " it"
+  },
+  {
+   "s": 7,
+   "i": 17,
+   "t": 0.71411,
+   "text": " network"
+  },
+  {
+   "s": 0,
+   "i": 18,
+   "t": 0.7724,
+   "text": " processing"
+  },
+  {
+   "s": 1,
+   "i": 18,
+   "t": 0.77243,
+   "text": "   "
+  },
+  {
+   "s": 2,
+   "i": 18,
+   "t": 0.77244,
+   "text": " to"
+  },
+  {
+   "s": 3,
+   "i": 18,
+   "t": 0.77245,
+   "text": " a"
+  },
+  {
+   "s": 4,
+   "i": 18,
+   "t": 0.77246,
+   "text": " by"
+  },
+  {
+   "s": 5,
+   "i": 18,
+   "t": 0.77247,
+   "text": " list"
+  },
+  {
+   "s": 6,
+   "i": 18,
+   "t": 0.77248,
+   "text": " is"
+  },
+  {
+   "s": 7,
+   "i": 18,
+   "t": 0.77249,
+   "text": " would"
+  },
+  {
+   "s": 0,
+   "i": 19,
+   "t": 0.77481,
+   "text": " rather"
+  },
+  {
+   "s": 1,
+   "i": 19,
+   "t": 0.77484,
+   "text": " if"
+  },
+  {
+   "s": 2,
+   "i": 19,
+   "t": 0.77485,
+   "text": " the"
+  },
+  {
+   "s": 3,
+   "i": 19,
+   "t": 0.77486,
+   "text": " CUDA"
+  },
+  {
+   "s": 4,
+   "i": 19,
+   "t": 0.77487,
+   "text": " storing"
+  },
+  {
+   "s": 5,
+   "i": 19,
+   "t": 0.77488,
+   "text": ":"
+  },
+  {
+   "s": 6,
+   "i": 19,
+   "t": 0.77488,
+   "text": " helpful"
+  },
+  {
+   "s": 7,
+   "i": 19,
+   "t": 0.77489,
+   "text": " math"
+  },
+  {
+   "s": 0,
+   "i": 20,
+   "t": 0.83335,
+   "text": " than"
+  },
+  {
+   "s": 1,
+   "i": 20,
+   "t": 0.83338,
+   "text": " ("
+  },
+  {
+   "s": 2,
+   "i": 20,
+   "t": 0.8334,
+   "text": " time"
+  },
+  {
+   "s": 3,
+   "i": 20,
+   "t": 0.83341,
+   "text": " kernel"
+  },
+  {
+   "s": 4,
+   "i": 20,
+   "t": 0.83342,
+   "text": " frequently"
+  },
+  {
+   "s": 5,
+   "i": 20,
+   "t": 0.83342,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 20,
+   "t": 0.83343,
+   "text": " to"
+  },
+  {
+   "s": 7,
+   "i": 20,
+   "t": 0.83344,
+   "text": "em"
+  },
+  {
+   "s": 0,
+   "i": 21,
+   "t": 0.83571,
+   "text": " sequential"
+  },
+  {
+   "s": 1,
+   "i": 21,
+   "t": 0.83574,
+   "text": "str"
+  },
+  {
+   "s": 2,
+   "i": 21,
+   "t": 0.83575,
+   "text": " it"
+  },
+  {
+   "s": 3,
+   "i": 21,
+   "t": 0.83576,
+   "text": " involves"
+  },
+  {
+   "s": 4,
+   "i": 21,
+   "t": 0.83577,
+   "text": " accessed"
+  },
+  {
+   "s": 5,
+   "i": 21,
+   "t": 0.83578,
+   "text": "   "
+  },
+  {
+   "s": 6,
+   "i": 21,
+   "t": 0.83579,
+   "text": " first"
+  },
+  {
+   "s": 7,
+   "i": 21,
+   "t": 0.8358,
+   "text": "atically"
+  },
+  {
+   "s": 0,
+   "i": 22,
+   "t": 0.89429,
+   "text": " task"
+  },
+  {
+   "s": 1,
+   "i": 22,
+   "t": 0.89432,
+   "text": " =="
+  },
+  {
+   "s": 2,
+   "i": 22,
+   "t": 0.89433,
+   "text": " takes"
+  },
+  {
+   "s": 3,
+   "i": 22,
+   "t": 0.89434,
+   "text": " a"
+  },
+  {
+   "s": 4,
+   "i": 22,
+   "t": 0.89435,
+   "text": " data"
+  },
+  {
+   "s": 5,
+   "i": 22,
+   "t": 0.89436,
+   "text": " \"\"\""
+  },
+  {
+   "s": 6,
+   "i": 22,
+   "t": 0.89437,
+   "text": " distinguish"
+  },
+  {
+   "s": 7,
+   "i": 22,
+   "t": 0.89437,
+   "text": " collapse"
+  },
+  {
+   "s": 0,
+   "i": 23,
+   "t": 0.89665,
+   "text": " execution"
+  },
+  {
+   "s": 1,
+   "i": 23,
+   "t": 0.89668,
+   "text": " NULL"
+  },
+  {
+   "s": 2,
+   "i": 23,
+   "t": 0.89669,
+   "text": " for"
+  },
+  {
+   "s": 3,
+   "i": 23,
+   "t": 0.8967,
+   "text": " coordinated"
+  },
+  {
+   "s": 4,
+   "i": 23,
+   "t": 0.89671,
+   "text": " from"
+  },
+  {
+   "s": 5,
+   "i": 23,
+   "t": 0.89672,
+   "text": "Merge"
+  },
+  {
+   "s": 6,
+   "i": 23,
+   "t": 0.89673,
+   "text": " between"
+  },
+  {
+   "s": 7,
+   "i": 23,
+   "t": 0.89673,
+   "text": " into"
+  },
+  {
+   "s": 0,
+   "i": 24,
+   "t": 0.95476,
+   "text": "."
+  },
+  {
+   "s": 1,
+   "i": 24,
+   "t": 0.95479,
+   "text": ")"
+  },
+  {
+   "s": 2,
+   "i": 24,
+   "t": 0.95481,
+   "text": " a"
+  },
+  {
+   "s": 3,
+   "i": 24,
+   "t": 0.95481,
+   "text": " sequence"
+  },
+  {
+   "s": 4,
+   "i": 24,
+   "t": 0.95482,
+   "text": " storage"
+  },
+  {
+   "s": 5,
+   "i": 24,
+   "t": 0.95483,
+   "text": " two"
+  },
+  {
+   "s": 6,
+   "i": 24,
+   "t": 0.95484,
+   "text": " two"
+  },
+  {
+   "s": 7,
+   "i": 24,
+   "t": 0.95485,
+   "text": " a"
+  },
+  {
+   "s": 0,
+   "i": 25,
+   "t": 0.95716,
+   "text": " While"
+  },
+  {
+   "s": 1,
+   "i": 25,
+   "t": 0.9572,
+   "text": " return"
+  },
+  {
+   "s": 2,
+   "i": 25,
+   "t": 0.95721,
+   "text": " single"
+  },
+  {
+   "s": 3,
+   "i": 25,
+   "t": 0.95722,
+   "text": " of"
+  },
+  {
+   "s": 4,
+   "i": 25,
+   "t": 0.95723,
+   "text": " devices"
+  },
+  {
+   "s": 5,
+   "i": 25,
+   "t": 0.95723,
+   "text": " sorted"
+  },
+  {
+   "s": 6,
+   "i": 25,
+   "t": 0.95724,
+   "text": " key"
+  },
+  {
+   "s": 7,
+   "i": 25,
+   "t": 0.95725,
+   "text": " single"
+  },
+  {
+   "s": 0,
+   "i": 26,
+   "t": 1.01512,
+   "text": " CPUs"
+  },
+  {
+   "s": 1,
+   "i": 26,
+   "t": 1.01515,
+   "text": ";"
+  },
+  {
+   "s": 2,
+   "i": 26,
+   "t": 1.01516,
+   "text": " unit"
+  },
+  {
+   "s": 3,
+   "i": 26,
+   "t": 1.01517,
+   "text": " events"
+  },
+  {
+   "s": 4,
+   "i": 26,
+   "t": 1.01518,
+   "text": " in"
+  },
+  {
+   "s": 5,
+   "i": 26,
+   "t": 1.01519,
+   "text": " lists"
+  },
+  {
+   "s": 6,
+   "i": 26,
+   "t": 1.01519,
+   "text": " hardware"
+  },
+  {
+   "s": 7,
+   "i": 26,
+   "t": 1.0152,
+   "text": " linear"
+  },
+  {
+   "s": 0,
+   "i": 27,
+   "t": 1.01746,
+   "text": " are"
+  },
+  {
+   "s": 1,
+   "i": 27,
+   "t": 1.01749,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 27,
+   "t": 1.0175,
+   "text": " of"
+  },
+  {
+   "s": 3,
+   "i": 27,
+   "t": 1.01751,
+   "text": " across"
+  },
+  {
+   "s": 4,
+   "i": 27,
+   "t": 1.01752,
+   "text": " the"
+  },
+  {
+   "s": 5,
+   "i": 27,
+   "t": 1.01753,
+   "text": " into"
+  },
+  {
+   "s": 6,
+   "i": 27,
+   "t": 1.01754,
+   "text": " metrics"
+  },
+  {
+   "s": 7,
+   "i": 27,
+   "t": 1.01755,
+   "text": " transformation"
+  },
+  {
+   "s": 0,
+   "i": 28,
+   "t": 1.07553,
+   "text": " designed"
+  },
+  {
+   "s": 1,
+   "i": 28,
+   "t": 1.07556,
+   "text": "    \n"
+  },
+  {
+   "s": 2,
+   "i": 28,
+   "t": 1.07557,
+   "text": " data"
+  },
+  {
+   "s": 3,
+   "i": 28,
+   "t": 1.07558,
+   "text": " the"
+  },
+  {
+   "s": 4,
+   "i": 28,
+   "t": 1.07559,
+   "text": " main"
+  },
+  {
+   "s": 5,
+   "i": 28,
+   "t": 1.0756,
+   "text": " a"
+  },
+  {
+   "s": 6,
+   "i": 28,
+   "t": 1.07561,
+   "text": ":"
+  },
+  {
+   "s": 7,
+   "i": 28,
+   "t": 1.07562,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 29,
+   "t": 1.07808,
+   "text": " with"
+  },
+  {
+   "s": 1,
+   "i": 29,
+   "t": 1.07811,
+   "text": "   "
+  },
+  {
+   "s": 2,
+   "i": 29,
+   "t": 1.07812,
+   "text": " or"
+  },
+  {
+   "s": 3,
+   "i": 29,
+   "t": 1.07813,
+   "text": " **"
+  },
+  {
+   "s": 4,
+   "i": 29,
+   "t": 1.07814,
+   "text": " system"
+  },
+  {
+   "s": 5,
+   "i": 29,
+   "t": 1.07815,
+   "text": " single"
+  },
+  {
+   "s": 6,
+   "i": 29,
+   "t": 1.07816,
+   "text": " **"
+  },
+  {
+   "s": 7,
+   "i": 29,
+   "t": 1.07816,
+   "text": " regardless"
+  },
+  {
+   "s": 0,
+   "i": 30,
+   "t": 1.13568,
+   "text": " a"
+  },
+  {
+   "s": 1,
+   "i": 30,
+   "t": 1.13571,
+   "text": " int"
+  },
+  {
+   "s": 2,
+   "i": 30,
+   "t": 1.13572,
+   "text": " a"
+  },
+  {
+   "s": 3,
+   "i": 30,
+   "t": 1.13573,
+   "text": "host"
+  },
+  {
+   "s": 4,
+   "i": 30,
+   "t": 1.13574,
+   "text": " memory"
+  },
+  {
+   "s": 5,
+   "i": 30,
+   "t": 1.13575,
+   "text": " sorted"
+  },
+  {
+   "s": 6,
+   "i": 30,
+   "t": 1.13576,
+   "text": "Compute"
+  },
+  {
+   "s": 7,
+   "i": 30,
+   "t": 1.13577,
+   "text": " of"
+  },
+  {
+   "s": 0,
+   "i": 31,
+   "t": 1.13803,
+   "text": " few"
+  },
+  {
+   "s": 1,
+   "i": 31,
+   "t": 1.13805,
+   "text": " len"
+  },
+  {
+   "s": 2,
+   "i": 31,
+   "t": 1.13807,
+   "text": " task"
+  },
+  {
+   "s": 3,
+   "i": 31,
+   "t": 1.13807,
+   "text": " ("
+  },
+  {
+   "s": 4,
+   "i": 31,
+   "t": 1.13808,
+   "text": " ("
+  },
+  {
+   "s": 5,
+   "i": 31,
+   "t": 1.13809,
+   "text": " list"
+  },
+  {
+   "s": 6,
+   "i": 31,
+   "t": 1.1381,
+   "text": " ("
+  },
+  {
+   "s": 7,
+   "i": 31,
+   "t": 1.13811,
+   "text": " its"
+  },
+  {
+   "s": 0,
+   "i": 32,
+   "t": 1.1959,
+   "text": " powerful"
+  },
+  {
+   "s": 1,
+   "i": 32,
+   "t": 1.19593,
+   "text": " ="
+  },
+  {
+   "s": 2,
+   "i": 32,
+   "t": 1.19594,
+   "text": " to"
+  },
+  {
+   "s": 3,
+   "i": 32,
+   "t": 1.19595,
+   "text": "CPU"
+  },
+  {
+   "s": 4,
+   "i": 32,
+   "t": 1.19596,
+   "text": "RAM"
+  },
+  {
+   "s": 5,
+   "i": 32,
+   "t": 1.19597,
+   "text": ".\"\"\""
+  },
+  {
+   "s": 6,
+   "i": 32,
+   "t": 1.19598,
+   "text": "F"
+  },
+  {
+   "s": 7,
+   "i": 32,
+   "t": 1.19598,
+   "text": " depth"
+  },
+  {
+   "s": 0,
+   "i": 33,
+   "t": 1.19827,
+   "text": " cores"
+  },
+  {
+   "s": 1,
+   "i": 33,
+   "t": 1.1983,
+   "text": " strlen"
+  },
+  {
+   "s": 2,
+   "i": 33,
+   "t": 1.19832,
+   "text": " travel"
+  },
+  {
+   "s": 3,
+   "i": 33,
+   "t": 1.19833,
+   "text": ")**"
+  },
+  {
+   "s": 4,
+   "i": 33,
+   "t": 1.19833,
+   "text": ")."
+  },
+  {
+   "s": 5,
+   "i": 33,
+   "t": 1.19834,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 33,
+   "t": 1.19835,
+   "text": "LO"
+  },
+  {
+   "s": 7,
+   "i": 33,
+   "t": 1.19836,
+   "text": "."
+  },
+  {
+   "s": 0,
+   "i": 34,
+   "t": 1.25652,
+   "text": " capable"
+  },
+  {
+   "s": 1,
+   "i": 34,
+   "t": 1.25655,
+   "text": "(str"
+  },
+  {
+   "s": 2,
+   "i": 34,
+   "t": 1.25656,
+   "text": " from"
+  },
+  {
+   "s": 3,
+   "i": 34,
+   "t": 1.25657,
+   "text": " and"
+  },
+  {
+   "s": 4,
+   "i": 34,
+   "t": 1.25658,
+   "text": " When"
+  },
+  {
+   "s": 5,
+   "i": 34,
+   "t": 1.25659,
+   "text": "   "
+  },
+  {
+   "s": 6,
+   "i": 34,
+   "t": 1.25659,
+   "text": "PS"
+  },
+  {
+   "s": 7,
+   "i": 34,
+   "t": 1.2566,
+   "text": " If"
+  },
+  {
+   "s": 0,
+   "i": 35,
+   "t": 1.25888,
+   "text": " of"
+  },
+  {
+   "s": 1,
+   "i": 35,
+   "t": 1.25891,
+   "text": ");"
+  },
+  {
+   "s": 2,
+   "i": 35,
+   "t": 1.25892,
+   "text": " start"
+  },
+  {
+   "s": 3,
+   "i": 35,
+   "t": 1.25893,
+   "text": " **"
+  },
+  {
+   "s": 4,
+   "i": 35,
+   "t": 1.25894,
+   "text": " the"
+  },
+  {
+   "s": 5,
+   "i": 35,
+   "t": 1.25895,
+   "text": " merged"
+  },
+  {
+   "s": 6,
+   "i": 35,
+   "t": 1.25895,
+   "text": ")**"
+  },
+  {
+   "s": 7,
+   "i": 35,
+   "t": 1.25896,
+   "text": " every"
+  },
+  {
+   "s": 0,
+   "i": 36,
+   "t": 1.3173,
+   "text": " handling"
+  },
+  {
+   "s": 1,
+   "i": 36,
+   "t": 1.31734,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 36,
+   "t": 1.31735,
+   "text": " to"
+  },
+  {
+   "s": 3,
+   "i": 36,
+   "t": 1.31736,
+   "text": "device"
+  },
+  {
+   "s": 4,
+   "i": 36,
+   "t": 1.31737,
+   "text": " system"
+  },
+  {
+   "s": 5,
+   "i": 36,
+   "t": 1.31738,
+   "text": " ="
+  },
+  {
+   "s": 6,
+   "i": 36,
+   "t": 1.31738,
+   "text": " and"
+  },
+  {
+   "s": 7,
+   "i": 36,
+   "t": 1.31739,
+   "text": " layer"
+  },
+  {
+   "s": 0,
+   "i": 37,
+   "t": 1.31969,
+   "text": " complex"
+  },
+  {
+   "s": 1,
+   "i": 37,
+   "t": 1.31972,
+   "text": "   "
+  },
+  {
+   "s": 2,
+   "i": 37,
+   "t": 1.31973,
+   "text": " finish"
+  },
+  {
+   "s": 3,
+   "i": 37,
+   "t": 1.31974,
+   "text": " ("
+  },
+  {
+   "s": 4,
+   "i": 37,
+   "t": 1.31975,
+   "text": " reads"
+  },
+  {
+   "s": 5,
+   "i": 37,
+   "t": 1.31976,
+   "text": " []"
+  },
+  {
+   "s": 6,
+   "i": 37,
+   "t": 1.31977,
+   "text": " **"
+  },
+  {
+   "s": 7,
+   "i": 37,
+   "t": 1.31978,
+   "text": " were"
+  },
+  {
+   "s": 0,
+   "i": 38,
+   "t": 1.37814,
+   "text": ","
+  },
+  {
+   "s": 1,
+   "i": 38,
+   "t": 1.37818,
+   "text": " if"
+  },
+  {
+   "s": 2,
+   "i": 38,
+   "t": 1.37819,
+   "text": ","
+  },
+  {
+   "s": 3,
+   "i": 38,
+   "t": 1.3782,
+   "text": "GPU"
+  },
+  {
+   "s": 4,
+   "i": 38,
+   "t": 1.3782,
+   "text": " data"
+  },
+  {
+   "s": 5,
+   "i": 38,
+   "t": 1.37822,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 38,
+   "t": 1.37823,
+   "text": "Memory"
+  },
+  {
+   "s": 7,
+   "i": 38,
+   "t": 1.37824,
+   "text": " purely"
+  },
+  {
+   "s": 0,
+   "i": 39,
+   "t": 1.38047,
+   "text": " diverse"
+  },
+  {
+   "s": 1,
+   "i": 39,
+   "t": 1.3805,
+   "text": " ("
+  },
+  {
+   "s": 2,
+   "i": 39,
+   "t": 1.38051,
+   "text": " essentially"
+  },
+  {
+   "s": 3,
+   "i": 39,
+   "t": 1.38052,
+   "text": ")**."
+  },
+  {
+   "s": 4,
+   "i": 39,
+   "t": 1.38052,
+   "text": " from"
+  },
+  {
+   "s": 5,
+   "i": 39,
+   "t": 1.38053,
+   "text": "   "
+  },
+  {
+   "s": 6,
+   "i": 39,
+   "t": 1.38054,
+   "text": " Band"
+  },
+  {
+   "s": 7,
+   "i": 39,
+   "t": 1.38055,
+   "text": " linear"
+  },
+  {
+   "s": 0,
+   "i": 40,
+   "t": 1.43985,
+   "text": " tasks"
+  },
+  {
+   "s": 1,
+   "i": 40,
+   "t": 1.43988,
+   "text": "len"
+  },
+  {
+   "s": 2,
+   "i": 40,
+   "t": 1.43989,
+   "text": " measuring"
+  },
+  {
+   "s": 3,
+   "i": 40,
+   "t": 1.4399,
+   "text": " Here"
+  },
+  {
+   "s": 4,
+   "i": 40,
+   "t": 1.43991,
+   "text": " a"
+  },
+  {
+   "s": 5,
+   "i": 40,
+   "t": 1.43992,
+   "text": " i"
+  },
+  {
+   "s": 6,
+   "i": 40,
+   "t": 1.43993,
+   "text": "width"
+  },
+  {
+   "s": 7,
+   "i": 40,
+   "t": 1.43994,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 41,
+   "t": 1.44224,
+   "text": " with"
+  },
+  {
+   "s": 1,
+   "i": 41,
+   "t": 1.44228,
+   "text": " <="
+  },
+  {
+   "s": 2,
+   "i": 41,
+   "t": 1.44229,
+   "text": " delay"
+  },
+  {
+   "s": 3,
+   "i": 41,
+   "t": 1.4423,
+   "text": "'s"
+  },
+  {
+   "s": 4,
+   "i": 41,
+   "t": 1.44231,
+   "text": " disk"
+  },
+  {
+   "s": 5,
+   "i": 41,
+   "t": 1.44232,
+   "text": ","
+  },
+  {
+   "s": 6,
+   "i": 41,
+   "t": 1.44233,
+   "text": " ("
+  },
+  {
+   "s": 7,
+   "i": 41,
+   "t": 1.44234,
+   "text": " the"
+  },
+  {
+   "s": 0,
+   "i": 42,
+   "t": 1.50128,
+   "text": " low"
+  },
+  {
+   "s": 1,
+   "i": 42,
+   "t": 1.50132,
+   "text": " "
+  },
+  {
+   "s": 2,
+   "i": 42,
+   "t": 1.50133,
+   "text": " or"
+  },
+  {
+   "s": 3,
+   "i": 42,
+   "t": 1.50134,
+   "text": " a"
+  },
+  {
+   "s": 4,
+   "i": 42,
+   "t": 1.50135,
+   "text": ","
+  },
+  {
+   "s": 5,
+   "i": 42,
+   "t": 1.50135,
+   "text": " j"
+  },
+  {
+   "s": 6,
+   "i": 42,
+   "t": 1.50136,
+   "text": "GB"
+  },
+  {
+   "s": 7,
+   "i": 42,
+   "t": 1.50137,
+   "text": " composition"
+  },
+  {
+   "s": 0,
+   "i": 43,
+   "t": 1.50368,
+   "text": " latency"
+  },
+  {
+   "s": 1,
+   "i": 43,
+   "t": 1.50371,
+   "text": "1"
+  },
+  {
+   "s": 2,
+   "i": 43,
+   "t": 1.50373,
+   "text": " responsiveness"
+  },
+  {
+   "s": 3,
+   "i": 43,
+   "t": 1.50374,
+   "text": " step"
+  },
+  {
+   "s": 4,
+   "i": 43,
+   "t": 1.50374,
+   "text": " it"
+  },
+  {
+   "s": 5,
+   "i": 43,
+   "t": 1.50375,
+   "text": " ="
+  },
+  {
+   "s": 6,
+   "i": 43,
+   "t": 1.50376,
+   "text": "/s"
+  },
+  {
+   "s": 7,
+   "i": 43,
+   "t": 1.50377,
+   "text": " of"
+  },
+  {
+   "s": 0,
+   "i": 44,
+   "t": 1.56224,
+   "text": ","
+  },
+  {
+   "s": 1,
+   "i": 44,
+   "t": 1.56227,
+   "text": ")"
+  },
+  {
+   "s": 2,
+   "i": 44,
+   "t": 1.56228,
+   "text": ","
+  },
+  {
+   "s": 3,
+   "i": 44,
+   "t": 1.56229,
+   "text": "-by"
+  },
+  {
+   "s": 4,
+   "i": 44,
+   "t": 1.5623,
+   "text": " saves"
+  },
+  {
+   "s": 5,
+   "i": 44,
+   "t": 1.56231,
+   "text": " "
+  },
+  {
+   "s": 6,
+   "i": 44,
+   "t": 1.56232,
+   "text": ")**."
+  },
+  {
+   "s": 7,
+   "i": 44,
+   "t": 1.56233,
+   "text": " multiple"
+  },
+  {
+   "s": 0,
+   "i": 45,
+   "t": 1.56457,
+   "text": " GPUs"
+  },
+  {
+   "s": 1,
+   "i": 45,
+   "t": 1.5646,
+   "text": " return"
+  },
+  {
+   "s": 2,
+   "i": 45,
+   "t": 1.56461,
+   "text": " while"
+  },
+  {
+   "s": 3,
+   "i": 45,
+   "t": 1.56462,
+   "text": "-step"
+  },
+  {
+   "s": 4,
+   "i": 45,
+   "t": 1.56463,
+   "text": " a"
+  },
+  {
+   "s": 5,
+   "i": 45,
+   "t": 1.56463,
+   "text": "0"
+  },
+  {
+   "s": 6,
+   "i": 45,
+   "t": 1.56464,
+   "text": "\n\n"
+  },
+  {
+   "s": 7,
+   "i": 45,
+   "t": 1.56465,
+   "text": " linear"
+  },
+  {
+   "s": 0,
+   "i": 46,
+   "t": 1.62388,
+   "text": " consist"
+  },
+  {
+   "s": 1,
+   "i": 46,
+   "t": 1.62391,
+   "text": ";"
+  },
+  {
+   "s": 2,
+   "i": 46,
+   "t": 1.62393,
+   "text": " throughput"
+  },
+  {
+   "s": 3,
+   "i": 46,
+   "t": 1.62394,
+   "text": " breakdown"
+  },
+  {
+   "s": 4,
+   "i": 46,
+   "t": 1.62394,
+   "text": " copy"
+  },
+  {
+   "s": 5,
+   "i": 46,
+   "t": 1.62395,
+   "text": ","
+  },
+  {
+   "s": 6,
+   "i": 46,
+   "t": 1.62396,
+   "text": "###"
+  },
+  {
+   "s": 7,
+   "i": 46,
+   "t": 1.62397,
+   "text": " operations"
+  },
+  {
+   "s": 0,
+   "i": 47,
+   "t": 1.62621,
+   "text": " of"
+  },
+  {
+   "s": 1,
+   "i": 47,
+   "t": 1.62624,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 47,
+   "t": 1.62625,
+   "text": " represents"
+  },
+  {
+   "s": 3,
+   "i": 47,
+   "t": 1.62626,
+   "text": ":"
+  },
+  {
+   "s": 4,
+   "i": 47,
+   "t": 1.62627,
+   "text": " of"
+  },
+  {
+   "s": 5,
+   "i": 47,
+   "t": 1.62628,
+   "text": " "
+  },
+  {
+   "s": 6,
+   "i": 47,
+   "t": 1.62629,
+   "text": " "
+  },
+  {
+   "s": 7,
+   "i": 47,
+   "t": 1.6263,
+   "text": " would"
+  },
+  {
+   "s": 0,
+   "i": 48,
+   "t": 1.6852,
+   "text": " thousands"
+  },
+  {
+   "s": 1,
+   "i": 48,
+   "t": 1.68523,
+   "text": "    \n"
+  },
+  {
+   "s": 2,
+   "i": 48,
+   "t": 1.68524,
+   "text": " the"
+  },
+  {
+   "s": 3,
+   "i": 48,
+   "t": 1.68525,
+   "text": "\n\n"
+  },
+  {
+   "s": 4,
+   "i": 48,
+   "t": 1.68526,
+   "text": " that"
+  },
+  {
+   "s": 5,
+   "i": 48,
+   "t": 1.68527,
+   "text": "0"
+  },
+  {
+   "s": 6,
+   "i": 48,
+   "t": 1.68528,
+   "text": "1"
+  },
+  {
+   "s": 7,
+   "i": 48,
+   "t": 1.68529,
+   "text": " simply"
+  },
+  {
+   "s": 0,
+   "i": 49,
+   "t": 1.68759,
+   "text": " of"
+  },
+  {
+   "s": 1,
+   "i": 49,
+   "t": 1.68762,
+   "text": "   "
+  },
+  {
+   "s": 2,
+   "i": 49,
+   "t": 1.68763,
+   "text": " total"
+  },
+  {
+   "s": 3,
+   "i": 49,
+   "t": 1.68764,
+   "text": "---"
+  },
+  {
+   "s": 4,
+   "i": 49,
+   "t": 1.68765,
+   "text": " data"
+  },
+  {
+   "s": 5,
+   "i": 49,
+   "t": 1.68766,
+   "text": "\n    \n"
+  },
+  {
+   "s": 6,
+   "i": 49,
+   "t": 1.68766,
+   "text": "."
+  },
+  {
+   "s": 7,
+   "i": 49,
+   "t": 1.68767,
+   "text": " result"
+  },
+  {
+   "s": 0,
+   "i": 50,
+   "t": 1.74619,
+   "text": " smaller"
+  },
+  {
+   "s": 1,
+   "i": 50,
+   "t": 1.74623,
+   "text": " int"
+  },
+  {
+   "s": 2,
+   "i": 50,
+   "t": 1.74625,
+   "text": " amount"
+  },
+  {
+   "s": 3,
+   "i": 50,
+   "t": 1.74626,
+   "text": "\n\n"
+  },
+  {
+   "s": 4,
+   "i": 50,
+   "t": 1.74627,
+   "text": " in"
+  },
+  {
+   "s": 5,
+   "i": 50,
+   "t": 1.74627,
+   "text": "   "
+  },
+  {
+   "s": 6,
+   "i": 50,
+   "t": 1.74628,
+   "text": " The"
+  },
+  {
+   "s": 7,
+   "i": 50,
+   "t": 1.74629,
+   "text": " in"
+  },
+  {
+   "s": 0,
+   "i": 51,
+   "t": 1.7486,
+   "text": ","
+  },
+  {
+   "s": 1,
+   "i": 51,
+   "t": 1.74863,
+   "text": " left"
+  },
+  {
+   "s": 2,
+   "i": 51,
+   "t": 1.74864,
+   "text": " of"
+  },
+  {
+   "s": 3,
+   "i": 51,
+   "t": 1.74865,
+   "text": "##"
+  },
+  {
+   "s": 4,
+   "i": 51,
+   "t": 1.74866,
+   "text": " the"
+  },
+  {
+   "s": 5,
+   "i": 51,
+   "t": 1.74867,
+   "text": " while"
+  },
+  {
+   "s": 6,
+   "i": 51,
+   "t": 1.74867,
+   "text": " Core"
+  },
+  {
+   "s": 7,
+   "i": 51,
+   "t": 1.74868,
+   "text": " another"
+  },
+  {
+   "s": 0,
+   "i": 52,
+   "t": 1.80728,
+   "text": " simpler"
+  },
+  {
+   "s": 1,
+   "i": 52,
+   "t": 1.80731,
+   "text": " ="
+  },
+  {
+   "s": 2,
+   "i": 52,
+   "t": 1.80733,
+   "text": " work"
+  },
+  {
+   "s": 3,
+   "i": 52,
+   "t": 1.80734,
+   "text": " "
+  },
+  {
+   "s": 4,
+   "i": 52,
+   "t": 1.80734,
+   "text": " page"
+  },
+  {
+   "s": 5,
+   "i": 52,
+   "t": 1.80735,
+   "text": " i"
+  },
+  {
+   "s": 6,
+   "i": 52,
+   "t": 1.80736,
+   "text": " Concept"
+  },
+  {
+   "s": 7,
+   "i": 52,
+   "t": 1.80737,
+   "text": " linear"
+  },
+  {
+   "s": 0,
+   "i": 53,
+   "t": 1.80964,
+   "text": " cores"
+  },
+  {
+   "s": 1,
+   "i": 53,
+   "t": 1.80967,
+   "text": " "
+  },
+  {
+   "s": 2,
+   "i": 53,
+   "t": 1.80968,
+   "text": " completed"
+  },
+  {
+   "s": 3,
+   "i": 53,
+   "t": 1.80969,
+   "text": "1"
+  },
+  {
+   "s": 4,
+   "i": 53,
+   "t": 1.8097,
+   "text": " cache"
+  },
+  {
+   "s": 5,
+   "i": 53,
+   "t": 1.80972,
+   "text": " <"
+  },
+  {
+   "s": 6,
+   "i": 53,
+   "t": 1.80973,
+   "text": ":"
+  },
+  {
+   "s": 7,
+   "i": 53,
+   "t": 1.80974,
+   "text": " operation"
+  },
+  {
+   "s": 0,
+   "i": 54,
+   "t": 1.86848,
+   "text": " that"
+  },
+  {
+   "s": 1,
+   "i": 54,
+   "t": 1.86851,
+   "text": "0"
+  },
+  {
+   "s": 2,
+   "i": 54,
+   "t": 1.86852,
+   "text": " within"
+  },
+  {
+   "s": 3,
+   "i": 54,
+   "t": 1.86853,
+   "text": "."
+  },
+  {
+   "s": 4,
+   "i": 54,
+   "t": 1.86854,
+   "text": ";"
+  },
+  {
+   "s": 5,
+   "i": 54,
+   "t": 1.86855,
+   "text": " len"
+  },
+  {
+   "s": 6,
+   "i": 54,
+   "t": 1.86856,
+   "text": " The"
+  },
+  {
+   "s": 7,
+   "i": 54,
+   "t": 1.86857,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 55,
+   "t": 1.87092,
+   "text": " can"
+  },
+  {
+   "s": 1,
+   "i": 55,
+   "t": 1.87095,
+   "text": ";"
+  },
+  {
+   "s": 2,
+   "i": 55,
+   "t": 1.87096,
+   "text": " a"
+  },
+  {
+   "s": 3,
+   "i": 55,
+   "t": 1.87097,
+   "text": " Host"
+  },
+  {
+   "s": 4,
+   "i": 55,
+   "t": 1.87098,
+   "text": " subsequently"
+  },
+  {
+   "s": 5,
+   "i": 55,
+   "t": 1.87099,
+   "text": "(list"
+  },
+  {
+   "s": 6,
+   "i": 55,
+   "t": 1.871,
+   "text": " \""
+  },
+  {
+   "s": 7,
+   "i": 55,
+   "t": 1.87101,
+   "text": " meaning"
+  },
+  {
+   "s": 0,
+   "i": 56,
+   "t": 1.92975,
+   "text": " execute"
+  },
+  {
+   "s": 1,
+   "i": 56,
+   "t": 1.92978,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 56,
+   "t": 1.9298,
+   "text": " specific"
+  },
+  {
+   "s": 3,
+   "i": 56,
+   "t": 1.92981,
+   "text": "-S"
+  },
+  {
+   "s": 4,
+   "i": 56,
+   "t": 1.92981,
+   "text": ","
+  },
+  {
+   "s": 5,
+   "i": 56,
+   "t": 1.92982,
+   "text": "1"
+  },
+  {
+   "s": 6,
+   "i": 56,
+   "t": 1.92983,
+   "text": "Memory"
+  },
+  {
+   "s": 7,
+   "i": 56,
+   "t": 1.92984,
+   "text": " the"
+  },
+  {
+   "s": 0,
+   "i": 57,
+   "t": 1.93207,
+   "text": " the"
+  },
+  {
+   "s": 1,
+   "i": 57,
+   "t": 1.9321,
+   "text": "   "
+  },
+  {
+   "s": 2,
+   "i": 57,
+   "t": 1.93212,
+   "text": " timeframe"
+  },
+  {
+   "s": 3,
+   "i": 57,
+   "t": 1.93212,
+   "text": "ide"
+  },
+  {
+   "s": 4,
+   "i": 57,
+   "t": 1.93213,
+   "text": " if"
+  },
+  {
+   "s": 5,
+   "i": 57,
+   "t": 1.93214,
+   "text": ")"
+  },
+  {
+   "s": 6,
+   "i": 57,
+   "t": 1.93215,
+   "text": " Wall"
+  },
+  {
+   "s": 7,
+   "i": 57,
+   "t": 1.93216,
+   "text": " network"
+  },
+  {
+   "s": 0,
+   "i": 58,
+   "t": 1.99121,
+   "text": " same"
+  },
+  {
+   "s": 1,
+   "i": 58,
+   "t": 1.99124,
+   "text": " int"
+  },
+  {
+   "s": 2,
+   "i": 58,
+   "t": 1.99125,
+   "text": ","
+  },
+  {
+   "s": 3,
+   "i": 58,
+   "t": 1.99126,
+   "text": " Preparation"
+  },
+  {
+   "s": 4,
+   "i": 58,
+   "t": 1.99127,
+   "text": " the"
+  },
+  {
+   "s": 5,
+   "i": 58,
+   "t": 1.99128,
+   "text": " and"
+  },
+  {
+   "s": 6,
+   "i": 58,
+   "t": 1.99129,
+   "text": "\""
+  },
+  {
+   "s": 7,
+   "i": 58,
+   "t": 1.9913,
+   "text": " could"
+  },
+  {
+   "s": 0,
+   "i": 59,
+   "t": 1.9936,
+   "text": " operation"
+  },
+  {
+   "s": 1,
+   "i": 59,
+   "t": 1.99363,
+   "text": " right"
+  },
+  {
+   "s": 2,
+   "i": 59,
+   "t": 1.99364,
+   "text": " measuring"
+  },
+  {
+   "s": 3,
+   "i": 59,
+   "t": 1.99365,
+   "text": "\n\n"
+  },
+  {
+   "s": 4,
+   "i": 59,
+   "t": 1.99366,
+   "text": " same"
+  },
+  {
+   "s": 5,
+   "i": 59,
+   "t": 1.99367,
+   "text": " j"
+  },
+  {
+   "s": 6,
+   "i": 59,
+   "t": 1.99368,
+   "text": "\n"
+  },
+  {
+   "s": 7,
+   "i": 59,
+   "t": 1.99369,
+   "text": " only"
+  },
+  {
+   "s": 0,
+   "i": 60,
+   "t": 2.05271,
+   "text": " on"
+  },
+  {
+   "s": 1,
+   "i": 60,
+   "t": 2.05274,
+   "text": " ="
+  },
+  {
+   "s": 2,
+   "i": 60,
+   "t": 2.05275,
+   "text": " the"
+  },
+  {
+   "s": 3,
+   "i": 60,
+   "t": 2.05276,
+   "text": "###"
+  },
+  {
+   "s": 4,
+   "i": 60,
+   "t": 2.05277,
+   "text": " data"
+  },
+  {
+   "s": 5,
+   "i": 60,
+   "t": 2.05278,
+   "text": " <"
+  },
+  {
+   "s": 6,
+   "i": 60,
+   "t": 2.05278,
+   "text": "LL"
+  },
+  {
+   "s": 7,
+   "i": 60,
+   "t": 2.05279,
+   "text": " model"
+  },
+  {
+   "s": 0,
+   "i": 61,
+   "t": 2.05505,
+   "text": " multiple"
+  },
+  {
+   "s": 1,
+   "i": 61,
+   "t": 2.05508,
+   "text": " len"
+  },
+  {
+   "s": 2,
+   "i": 61,
+   "t": 2.05509,
+   "text": " overall"
+  },
+  {
+   "s": 3,
+   "i": 61,
+   "t": 2.0551,
+   "text": " Kernel"
+  },
+  {
+   "s": 4,
+   "i": 61,
+   "t": 2.05511,
+   "text": " is"
+  },
+  {
+   "s": 5,
+   "i": 61,
+   "t": 2.05512,
+   "text": " len"
+  },
+  {
+   "s": 6,
+   "i": 61,
+   "t": 2.05513,
+   "text": "Ms"
+  },
+  {
+   "s": 7,
+   "i": 61,
+   "t": 2.05513,
+   "text": " linear"
+  },
+  {
+   "s": 0,
+   "i": 62,
+   "t": 2.11344,
+   "text": " data"
+  },
+  {
+   "s": 1,
+   "i": 62,
+   "t": 2.11347,
+   "text": " -"
+  },
+  {
+   "s": 2,
+   "i": 62,
+   "t": 2.11348,
+   "text": " capacity"
+  },
+  {
+   "s": 3,
+   "i": 62,
+   "t": 2.11349,
+   "text": " Launch"
+  },
+  {
+   "s": 4,
+   "i": 62,
+   "t": 2.1135,
+   "text": " requested"
+  },
+  {
+   "s": 5,
+   "i": 62,
+   "t": 2.11351,
+   "text": "(list"
+  },
+  {
+   "s": 6,
+   "i": 62,
+   "t": 2.11351,
+   "text": " are"
+  },
+  {
+   "s": 7,
+   "i": 62,
+   "t": 2.11352,
+   "text": " relationships"
+  },
+  {
+   "s": 0,
+   "i": 63,
+   "t": 2.11578,
+   "text": " points"
+  },
+  {
+   "s": 1,
+   "i": 63,
+   "t": 2.11581,
+   "text": " "
+  },
+  {
+   "s": 2,
+   "i": 63,
+   "t": 2.11582,
+   "text": " or"
+  },
+  {
+   "s": 3,
+   "i": 63,
+   "t": 2.11583,
+   "text": " Syntax"
+  },
+  {
+   "s": 4,
+   "i": 63,
+   "t": 2.11584,
+   "text": " again"
+  },
+  {
+   "s": 5,
+   "i": 63,
+   "t": 2.11585,
+   "text": "2"
+  },
+  {
+   "s": 6,
+   "i": 63,
+   "t": 2.11586,
+   "text": " primarily"
+  },
+  {
+   "s": 7,
+   "i": 63,
+   "t": 2.11587,
+   "text": " between"
+  },
+  {
+   "s": 0,
+   "i": 64,
+   "t": 2.1748,
+   "text": " simultaneously"
+  },
+  {
+   "s": 1,
+   "i": 64,
+   "t": 2.17484,
+   "text": "1"
+  },
+  {
+   "s": 2,
+   "i": 64,
+   "t": 2.17485,
+   "text": " rate"
+  },
+  {
+   "s": 3,
+   "i": 64,
+   "t": 2.17486,
+   "text": "\n"
+  },
+  {
+   "s": 4,
+   "i": 64,
+   "t": 2.17487,
+   "text": ","
+  },
+  {
+   "s": 5,
+   "i": 64,
+   "t": 2.17487,
+   "text": "):"
+  },
+  {
+   "s": 6,
+   "i": 64,
+   "t": 2.17488,
+   "text": " **"
+  },
+  {
+   "s": 7,
+   "i": 64,
+   "t": 2.17489,
+   "text": " inputs"
+  },
+  {
+   "s": 0,
+   "i": 65,
+   "t": 2.17709,
+   "text": "."
+  },
+  {
+   "s": 1,
+   "i": 65,
+   "t": 2.17713,
+   "text": ";"
+  },
+  {
+   "s": 2,
+   "i": 65,
+   "t": 2.17714,
+   "text": " of"
+  },
+  {
+   "s": 3,
+   "i": 65,
+   "t": 2.17715,
+   "text": "```"
+  },
+  {
+   "s": 4,
+   "i": 65,
+   "t": 2.17716,
+   "text": " the"
+  },
+  {
+   "s": 5,
+   "i": 65,
+   "t": 2.17716,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 65,
+   "t": 2.17717,
+   "text": "memory"
+  },
+  {
+   "s": 7,
+   "i": 65,
+   "t": 2.17718,
+   "text": " and"
+  },
+  {
+   "s": 0,
+   "i": 66,
+   "t": 2.23598,
+   "text": " Since"
+  },
+  {
+   "s": 1,
+   "i": 66,
+   "t": 2.23601,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 66,
+   "t": 2.23602,
+   "text": " processing"
+  },
+  {
+   "s": 3,
+   "i": 66,
+   "t": 2.23603,
+   "text": "cpp"
+  },
+  {
+   "s": 4,
+   "i": 66,
+   "t": 2.23604,
+   "text": " system"
+  },
+  {
+   "s": 5,
+   "i": 66,
+   "t": 2.23605,
+   "text": "       "
+  },
+  {
+   "s": 6,
+   "i": 66,
+   "t": 2.23606,
+   "text": "-bound"
+  },
+  {
+   "s": 7,
+   "i": 66,
+   "t": 2.23607,
+   "text": " outputs"
+  },
+  {
+   "s": 0,
+   "i": 67,
+   "t": 2.23831,
+   "text": " matrix"
+  },
+  {
+   "s": 1,
+   "i": 67,
+   "t": 2.23835,
+   "text": "    \n"
+  },
+  {
+   "s": 2,
+   "i": 67,
+   "t": 2.23836,
+   "text": "."
+  },
+  {
+   "s": 3,
+   "i": 67,
+   "t": 2.23837,
+   "text": "\n"
+  },
+  {
+   "s": 4,
+   "i": 67,
+   "t": 2.23838,
+   "text": " can"
+  },
+  {
+   "s": 5,
+   "i": 67,
+   "t": 2.23839,
+   "text": " if"
+  },
+  {
+   "s": 6,
+   "i": 67,
+   "t": 2.2384,
+   "text": "**,"
+  },
+  {
+   "s": 7,
+   "i": 67,
+   "t": 2.2384,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 68,
+   "t": 2.29728,
+   "text": " multiplication"
+  },
+  {
+   "s": 1,
+   "i": 68,
+   "t": 2.29732,
+   "text": "   "
+  },
+  {
+   "s": 2,
+   "i": 68,
+   "t": 2.29733,
+   "text": " To"
+  },
+  {
+   "s": 3,
+   "i": 68,
+   "t": 2.29734,
+   "text": "My"
+  },
+  {
+   "s": 4,
+   "i": 68,
+   "t": 2.29735,
+   "text": " retrieve"
+  },
+  {
+   "s": 5,
+   "i": 68,
+   "t": 2.29736,
+   "text": " list"
+  },
+  {
+   "s": 6,
+   "i": 68,
+   "t": 2.29736,
+   "text": " not"
+  },
+  {
+   "s": 7,
+   "i": 68,
+   "t": 2.29737,
+   "text": " severely"
+  },
+  {
+   "s": 0,
+   "i": 69,
+   "t": 2.29968,
+   "text": " involves"
+  },
+  {
+   "s": 1,
+   "i": 69,
+   "t": 2.29971,
+   "text": " while"
+  },
+  {
+   "s": 2,
+   "i": 69,
+   "t": 2.29972,
+   "text": " visualize"
+  },
+  {
+   "s": 3,
+   "i": 69,
+   "t": 2.29973,
+   "text": "Kernel"
+  },
+  {
+   "s": 4,
+   "i": 69,
+   "t": 2.29974,
+   "text": " it"
+  },
+  {
+   "s": 5,
+   "i": 69,
+   "t": 2.29975,
+   "text": "1"
+  },
+  {
+   "s": 6,
+   "i": 69,
+   "t": 2.29976,
+   "text": " compute"
+  },
+  {
+   "s": 7,
+   "i": 69,
+   "t": 2.29977,
+   "text": " limiting"
+  },
+  {
+   "s": 0,
+   "i": 70,
+   "t": 2.35861,
+   "text": " repetitive"
+  },
+  {
+   "s": 1,
+   "i": 70,
+   "t": 2.35865,
+   "text": " ("
+  },
+  {
+   "s": 2,
+   "i": 70,
+   "t": 2.35866,
+   "text": " this"
+  },
+  {
+   "s": 3,
+   "i": 70,
+   "t": 2.35867,
+   "text": "<<<"
+  },
+  {
+   "s": 4,
+   "i": 70,
+   "t": 2.35867,
+   "text": " directly"
+  },
+  {
+   "s": 5,
+   "i": 70,
+   "t": 2.35868,
+   "text": "[i"
+  },
+  {
+   "s": 6,
+   "i": 70,
+   "t": 2.35869,
+   "text": "-bound"
+  },
+  {
+   "s": 7,
+   "i": 70,
+   "t": 2.3587,
+   "text": " its"
+  },
+  {
+   "s": 0,
+   "i": 71,
+   "t": 2.36091,
+   "text": " mathematical"
+  },
+  {
+   "s": 1,
+   "i": 71,
+   "t": 2.36094,
+   "text": "left"
+  },
+  {
+   "s": 2,
+   "i": 71,
+   "t": 2.36095,
+   "text": ","
+  },
+  {
+   "s": 3,
+   "i": 71,
+   "t": 2.36096,
+   "text": "grid"
+  },
+  {
+   "s": 4,
+   "i": 71,
+   "t": 2.36097,
+   "text": " from"
+  },
+  {
+   "s": 5,
+   "i": 71,
+   "t": 2.36098,
+   "text": "]"
+  },
+  {
+   "s": 6,
+   "i": 71,
+   "t": 2.36099,
+   "text": "."
+  },
+  {
+   "s": 7,
+   "i": 71,
+   "t": 2.361,
+   "text": " expressive"
+  },
+  {
+   "s": 0,
+   "i": 72,
+   "t": 2.42063,
+   "text": " operations"
+  },
+  {
+   "s": 1,
+   "i": 72,
+   "t": 2.42066,
+   "text": " <"
+  },
+  {
+   "s": 2,
+   "i": 72,
+   "t": 2.42068,
+   "text": " think"
+  },
+  {
+   "s": 3,
+   "i": 72,
+   "t": 2.42069,
+   "text": "Dim"
+  },
+  {
+   "s": 4,
+   "i": 72,
+   "t": 2.42069,
+   "text": " the"
+  },
+  {
+   "s": 5,
+   "i": 72,
+   "t": 2.4207,
+   "text": " <="
+  },
+  {
+   "s": 6,
+   "i": 72,
+   "t": 2.42071,
+   "text": " This"
+  },
+  {
+   "s": 7,
+   "i": 72,
+   "t": 2.42072,
+   "text": " power"
+  },
+  {
+   "s": 0,
+   "i": 73,
+   "t": 2.42304,
+   "text": " on"
+  },
+  {
+   "s": 1,
+   "i": 73,
+   "t": 2.42308,
+   "text": " right"
+  },
+  {
+   "s": 2,
+   "i": 73,
+   "t": 2.42309,
+   "text": " of"
+  },
+  {
+   "s": 3,
+   "i": 73,
+   "t": 2.4231,
+   "text": ","
+  },
+  {
+   "s": 4,
+   "i": 73,
+   "t": 2.42311,
+   "text": " fast"
+  },
+  {
+   "s": 5,
+   "i": 73,
+   "t": 2.42312,
+   "text": " list"
+  },
+  {
+   "s": 6,
+   "i": 73,
+   "t": 2.42313,
+   "text": " means"
+  },
+  {
+   "s": 7,
+   "i": 73,
+   "t": 2.42313,
+   "text": "."
+  },
+  {
+   "s": 0,
+   "i": 74,
+   "t": 2.48209,
+   "text": " large"
+  },
+  {
+   "s": 1,
+   "i": 74,
+   "t": 2.48213,
+   "text": ")"
+  },
+  {
+   "s": 2,
+   "i": 74,
+   "t": 2.48214,
+   "text": " a"
+  },
+  {
+   "s": 3,
+   "i": 74,
+   "t": 2.48215,
+   "text": " blockDim"
+  },
+  {
+   "s": 4,
+   "i": 74,
+   "t": 2.48216,
+   "text": "-access"
+  },
+  {
+   "s": 5,
+   "i": 74,
+   "t": 2.48217,
+   "text": "2"
+  },
+  {
+   "s": 6,
+   "i": 74,
+   "t": 2.48218,
+   "text": " their"
+  },
+  {
+   "s": 7,
+   "i": 74,
+   "t": 2.48219,
+   "text": " Non"
+  },
+  {
+   "s": 0,
+   "i": 75,
+   "t": 2.4845,
+   "text": ","
+  },
+  {
+   "s": 1,
+   "i": 75,
+   "t": 2.48453,
+   "text": " {"
+  },
+  {
+   "s": 2,
+   "i": 75,
+   "t": 2.48454,
+   "text": " highway"
+  },
+  {
+   "s": 3,
+   "i": 75,
+   "t": 2.48456,
+   "text": ","
+  },
+  {
+   "s": 4,
+   "i": 75,
+   "t": 2.48456,
+   "text": " RAM"
+  },
+  {
+   "s": 5,
+   "i": 75,
+   "t": 2.48457,
+   "text": "[j"
+  },
+  {
+   "s": 6,
+   "i": 75,
+   "t": 2.48458,
+   "text": " performance"
+  },
+  {
+   "s": 7,
+   "i": 75,
+   "t": 2.48459,
+   "text": "-linear"
+  },
+  {
+   "s": 0,
+   "i": 76,
+   "t": 2.5435,
+   "text": " uniform"
+  },
+  {
+   "s": 1,
+   "i": 76,
+   "t": 2.54354,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 76,
+   "t": 2.54355,
+   "text": ":"
+  },
+  {
+   "s": 3,
+   "i": 76,
+   "t": 2.54356,
+   "text": " shared"
+  },
+  {
+   "s": 4,
+   "i": 76,
+   "t": 2.54357,
+   "text": " rather"
+  },
+  {
+   "s": 5,
+   "i": 76,
+   "t": 2.54358,
+   "text": "]:"
+  },
+  {
+   "s": 6,
+   "i": 76,
+   "t": 2.54359,
+   "text": " is"
+  },
+  {
+   "s": 7,
+   "i": 76,
+   "t": 2.5436,
+   "text": "ities"
+  },
+  {
+   "s": 0,
+   "i": 77,
+   "t": 2.54585,
+   "text": " datasets"
+  },
+  {
+   "s": 1,
+   "i": 77,
+   "t": 2.54588,
+   "text": "       "
+  },
+  {
+   "s": 2,
+   "i": 77,
+   "t": 2.54589,
+   "text": " latency"
+  },
+  {
+   "s": 3,
+   "i": 77,
+   "t": 2.5459,
+   "text": "Mem"
+  },
+  {
+   "s": 4,
+   "i": 77,
+   "t": 2.54591,
+   "text": " than"
+  },
+  {
+   "s": 5,
+   "i": 77,
+   "t": 2.54592,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 77,
+   "t": 2.54593,
+   "text": " limited"
+  },
+  {
+   "s": 7,
+   "i": 77,
+   "t": 2.54594,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 78,
+   "t": 2.60488,
+   "text": ","
+  },
+  {
+   "s": 1,
+   "i": 78,
+   "t": 2.60491,
+   "text": " char"
+  },
+  {
+   "s": 2,
+   "i": 78,
+   "t": 2.60492,
+   "text": " is"
+  },
+  {
+   "s": 3,
+   "i": 78,
+   "t": 2.60493,
+   "text": "Size"
+  },
+  {
+   "s": 4,
+   "i": 78,
+   "t": 2.60494,
+   "text": " performing"
+  },
+  {
+   "s": 5,
+   "i": 78,
+   "t": 2.60495,
+   "text": "           "
+  },
+  {
+   "s": 6,
+   "i": 78,
+   "t": 2.60496,
+   "text": " not"
+  },
+  {
+   "s": 7,
+   "i": 78,
+   "t": 2.60497,
+   "text": " such"
+  },
+  {
+   "s": 0,
+   "i": 79,
+   "t": 2.60723,
+   "text": " the"
+  },
+  {
+   "s": 1,
+   "i": 79,
+   "t": 2.60726,
+   "text": " temp"
+  },
+  {
+   "s": 2,
+   "i": 79,
+   "t": 2.60727,
+   "text": " the"
+  },
+  {
+   "s": 3,
+   "i": 79,
+   "t": 2.60728,
+   "text": ","
+  },
+  {
+   "s": 4,
+   "i": 79,
+   "t": 2.60729,
+   "text": " a"
+  },
+  {
+   "s": 5,
+   "i": 79,
+   "t": 2.6073,
+   "text": " merged"
+  },
+  {
+   "s": 6,
+   "i": 79,
+   "t": 2.6073,
+   "text": " by"
+  },
+  {
+   "s": 7,
+   "i": 79,
+   "t": 2.60731,
+   "text": " as"
+  },
+  {
+   "s": 0,
+   "i": 80,
+   "t": 2.6659,
+   "text": " GPU"
+  },
+  {
+   "s": 1,
+   "i": 80,
+   "t": 2.66594,
+   "text": " ="
+  },
+  {
+   "s": 2,
+   "i": 80,
+   "t": 2.66595,
+   "text": " time"
+  },
+  {
+   "s": 3,
+   "i": 80,
+   "t": 2.66596,
+   "text": " stream"
+  },
+  {
+   "s": 4,
+   "i": 80,
+   "t": 2.66597,
+   "text": " slower"
+  },
+  {
+   "s": 5,
+   "i": 80,
+   "t": 2.66597,
+   "text": ".append"
+  },
+  {
+   "s": 6,
+   "i": 80,
+   "t": 2.66598,
+   "text": " how"
+  },
+  {
+   "s": 7,
+   "i": 80,
+   "t": 2.66599,
+   "text": " Re"
+  },
+  {
+   "s": 0,
+   "i": 81,
+   "t": 2.66819,
+   "text": "\u2019s"
+  },
+  {
+   "s": 1,
+   "i": 81,
+   "t": 2.66822,
+   "text": " str"
+  },
+  {
+   "s": 2,
+   "i": 81,
+   "t": 2.66823,
+   "text": " it"
+  },
+  {
+   "s": 3,
+   "i": 81,
+   "t": 2.66824,
+   "text": ">>>("
+  },
+  {
+   "s": 4,
+   "i": 81,
+   "t": 2.66825,
+   "text": " physical"
+  },
+  {
+   "s": 5,
+   "i": 81,
+   "t": 2.66826,
+   "text": "(list"
+  },
+  {
+   "s": 6,
+   "i": 81,
+   "t": 2.66826,
+   "text": " fast"
+  },
+  {
+   "s": 7,
+   "i": 81,
+   "t": 2.66827,
+   "text": "LU"
+  },
+  {
+   "s": 0,
+   "i": 82,
+   "t": 2.72735,
+   "text": " massive"
+  },
+  {
+   "s": 1,
+   "i": 82,
+   "t": 2.72738,
+   "text": "[left"
+  },
+  {
+   "s": 2,
+   "i": 82,
+   "t": 2.72739,
+   "text": " takes"
+  },
+  {
+   "s": 3,
+   "i": 82,
+   "t": 2.7274,
+   "text": "args"
+  },
+  {
+   "s": 4,
+   "i": 82,
+   "t": 2.72741,
+   "text": " disk"
+  },
+  {
+   "s": 5,
+   "i": 82,
+   "t": 2.72742,
+   "text": "1"
+  },
+  {
+   "s": 6,
+   "i": 82,
+   "t": 2.72743,
+   "text": " the"
+  },
+  {
+   "s": 7,
+   "i": 82,
+   "t": 2.72744,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 83,
+   "t": 2.72969,
+   "text": " parallel"
+  },
+  {
+   "s": 1,
+   "i": 83,
+   "t": 2.72974,
+   "text": "];"
+  },
+  {
+   "s": 2,
+   "i": 83,
+   "t": 2.72976,
+   "text": " for"
+  },
+  {
+   "s": 3,
+   "i": 83,
+   "t": 2.72977,
+   "text": "..."
+  },
+  {
+   "s": 4,
+   "i": 83,
+   "t": 2.72978,
+   "text": " read"
+  },
+  {
+   "s": 5,
+   "i": 83,
+   "t": 2.72979,
+   "text": "[i"
+  },
+  {
+   "s": 6,
+   "i": 83,
+   "t": 2.7298,
+   "text": " GPU"
+  },
+  {
+   "s": 7,
+   "i": 83,
+   "t": 2.72981,
+   "text": " sigmoid"
+  },
+  {
+   "s": 0,
+   "i": 84,
+   "t": 2.78908,
+   "text": "ism"
+  },
+  {
+   "s": 1,
+   "i": 84,
+   "t": 2.78911,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 84,
+   "t": 2.78913,
+   "text": " one"
+  },
+  {
+   "s": 3,
+   "i": 84,
+   "t": 2.78913,
+   "text": ");"
+  },
+  {
+   "s": 4,
+   "i": 84,
+   "t": 2.78914,
+   "text": "."
+  },
+  {
+   "s": 5,
+   "i": 84,
+   "t": 2.78915,
+   "text": "])"
+  },
+  {
+   "s": 6,
+   "i": 84,
+   "t": 2.78916,
+   "text": " can"
+  },
+  {
+   "s": 7,
+   "i": 84,
+   "t": 2.78917,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 85,
+   "t": 2.79146,
+   "text": " allows"
+  },
+  {
+   "s": 1,
+   "i": 85,
+   "t": 2.79149,
+   "text": "       "
+  },
+  {
+   "s": 2,
+   "i": 85,
+   "t": 2.7915,
+   "text": " car"
+  },
+  {
+   "s": 3,
+   "i": 85,
+   "t": 2.79151,
+   "text": "\n"
+  },
+  {
+   "s": 4,
+   "i": 85,
+   "t": 2.79152,
+   "text": " This"
+  },
+  {
+   "s": 5,
+   "i": 85,
+   "t": 2.79153,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 85,
+   "t": 2.79154,
+   "text": " perform"
+  },
+  {
+   "s": 7,
+   "i": 85,
+   "t": 2.79155,
+   "text": " or"
+  },
+  {
+   "s": 0,
+   "i": 86,
+   "t": 2.85069,
+   "text": " it"
+  },
+  {
+   "s": 1,
+   "i": 86,
+   "t": 2.85072,
+   "text": " str"
+  },
+  {
+   "s": 2,
+   "i": 86,
+   "t": 2.85073,
+   "text": " to"
+  },
+  {
+   "s": 3,
+   "i": 86,
+   "t": 2.85074,
+   "text": "```"
+  },
+  {
+   "s": 4,
+   "i": 86,
+   "t": 2.85075,
+   "text": " mechanism"
+  },
+  {
+   "s": 5,
+   "i": 86,
+   "t": 2.85076,
+   "text": "           "
+  },
+  {
+   "s": 6,
+   "i": 86,
+   "t": 2.85077,
+   "text": " calculations"
+  },
+  {
+   "s": 7,
+   "i": 86,
+   "t": 2.85078,
+   "text": " tan"
+  },
+  {
+   "s": 0,
+   "i": 87,
+   "t": 2.85306,
+   "text": " to"
+  },
+  {
+   "s": 1,
+   "i": 87,
+   "t": 2.85309,
+   "text": "[left"
+  },
+  {
+   "s": 2,
+   "i": 87,
+   "t": 2.8531,
+   "text": " travel"
+  },
+  {
+   "s": 3,
+   "i": 87,
+   "t": 2.85311,
+   "text": "\n\n"
+  },
+  {
+   "s": 4,
+   "i": 87,
+   "t": 2.85312,
+   "text": " significantly"
+  },
+  {
+   "s": 5,
+   "i": 87,
+   "t": 2.85313,
+   "text": " i"
+  },
+  {
+   "s": 6,
+   "i": 87,
+   "t": 2.85313,
+   "text": " ("
+  },
+  {
+   "s": 7,
+   "i": 87,
+   "t": 2.85314,
+   "text": "h"
+  },
+  {
+   "s": 0,
+   "i": 88,
+   "t": 2.91249,
+   "text": " process"
+  },
+  {
+   "s": 1,
+   "i": 88,
+   "t": 2.91252,
+   "text": "]"
+  },
+  {
+   "s": 2,
+   "i": 88,
+   "t": 2.91254,
+   "text": " from"
+  },
+  {
+   "s": 3,
+   "i": 88,
+   "t": 2.91255,
+   "text": "The"
+  },
+  {
+   "s": 4,
+   "i": 88,
+   "t": 2.91256,
+   "text": " reduces"
+  },
+  {
+   "s": 5,
+   "i": 88,
+   "t": 2.91256,
+   "text": " +="
+  },
+  {
+   "s": 6,
+   "i": 88,
+   "t": 2.91257,
+   "text": "multiply"
+  },
+  {
+   "s": 7,
+   "i": 88,
+   "t": 2.91258,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 89,
+   "t": 2.91488,
+   "text": " these"
+  },
+  {
+   "s": 1,
+   "i": 89,
+   "t": 2.91491,
+   "text": " ="
+  },
+  {
+   "s": 2,
+   "i": 89,
+   "t": 2.91493,
+   "text": " point"
+  },
+  {
+   "s": 3,
+   "i": 89,
+   "t": 2.91494,
+   "text": " host"
+  },
+  {
+   "s": 4,
+   "i": 89,
+   "t": 2.91494,
+   "text": " latency"
+  },
+  {
+   "s": 5,
+   "i": 89,
+   "t": 2.91495,
+   "text": " "
+  },
+  {
+   "s": 6,
+   "i": 89,
+   "t": 2.91496,
+   "text": "-add"
+  },
+  {
+   "s": 7,
+   "i": 89,
+   "t": 2.91497,
+   "text": " introduce"
+  },
+  {
+   "s": 0,
+   "i": 90,
+   "t": 2.97413,
+   "text": " thousands"
+  },
+  {
+   "s": 1,
+   "i": 90,
+   "t": 2.97417,
+   "text": " str"
+  },
+  {
+   "s": 2,
+   "i": 90,
+   "t": 2.97418,
+   "text": " A"
+  },
+  {
+   "s": 3,
+   "i": 90,
+   "t": 2.97419,
+   "text": " performs"
+  },
+  {
+   "s": 4,
+   "i": 90,
+   "t": 2.9742,
+   "text": " and"
+  },
+  {
+   "s": 5,
+   "i": 90,
+   "t": 2.97421,
+   "text": "1"
+  },
+  {
+   "s": 6,
+   "i": 90,
+   "t": 2.97421,
+   "text": " operations"
+  },
+  {
+   "s": 7,
+   "i": 90,
+   "t": 2.97422,
+   "text": " the"
+  },
+  {
+   "s": 0,
+   "i": 91,
+   "t": 2.97654,
+   "text": " of"
+  },
+  {
+   "s": 1,
+   "i": 91,
+   "t": 2.97657,
+   "text": "[right"
+  },
+  {
+   "s": 2,
+   "i": 91,
+   "t": 2.97658,
+   "text": " to"
+  },
+  {
+   "s": 3,
+   "i": 91,
+   "t": 2.97659,
+   "text": " these"
+  },
+  {
+   "s": 4,
+   "i": 91,
+   "t": 2.9766,
+   "text": " I"
+  },
+  {
+   "s": 5,
+   "i": 91,
+   "t": 2.97661,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 91,
+   "t": 2.97662,
+   "text": "),"
+  },
+  {
+   "s": 7,
+   "i": 91,
+   "t": 2.97663,
+   "text": " capacity"
+  },
+  {
+   "s": 0,
+   "i": 92,
+   "t": 3.036,
+   "text": " independent"
+  },
+  {
+   "s": 1,
+   "i": 92,
+   "t": 3.03604,
+   "text": "];"
+  },
+  {
+   "s": 2,
+   "i": 92,
+   "t": 3.03605,
+   "text": " point"
+  },
+  {
+   "s": 3,
+   "i": 92,
+   "t": 3.03606,
+   "text": " steps"
+  },
+  {
+   "s": 4,
+   "i": 92,
+   "t": 3.03607,
+   "text": "/O"
+  },
+  {
+   "s": 5,
+   "i": 92,
+   "t": 3.03608,
+   "text": "       "
+  },
+  {
+   "s": 6,
+   "i": 92,
+   "t": 3.03609,
+   "text": " but"
+  },
+  {
+   "s": 7,
+   "i": 92,
+   "t": 3.0361,
+   "text": " to"
+  },
+  {
+   "s": 0,
+   "i": 93,
+   "t": 3.03839,
+   "text": " calculations"
+  },
+  {
+   "s": 1,
+   "i": 93,
+   "t": 3.03842,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 93,
+   "t": 3.03843,
+   "text": " B"
+  },
+  {
+   "s": 3,
+   "i": 93,
+   "t": 3.03844,
+   "text": ":"
+  },
+  {
+   "s": 4,
+   "i": 93,
+   "t": 3.03845,
+   "text": " bott"
+  },
+  {
+   "s": 5,
+   "i": 93,
+   "t": 3.03846,
+   "text": " else"
+  },
+  {
+   "s": 6,
+   "i": 93,
+   "t": 3.03847,
+   "text": " by"
+  },
+  {
+   "s": 7,
+   "i": 93,
+   "t": 3.03848,
+   "text": " approximate"
+  },
+  {
+   "s": 0,
+   "i": 94,
+   "t": 3.09746,
+   "text": " concurrently"
+  },
+  {
+   "s": 1,
+   "i": 94,
+   "t": 3.09749,
+   "text": "       "
+  },
+  {
+   "s": 2,
+   "i": 94,
+   "t": 3.0975,
+   "text": ","
+  },
+  {
+   "s": 3,
+   "i": 94,
+   "t": 3.09751,
+   "text": "\n\n"
+  },
+  {
+   "s": 4,
+   "i": 94,
+   "t": 3.09752,
+   "text": "lene"
+  },
+  {
+   "s": 5,
+   "i": 94,
+   "t": 3.09753,
+   "text": ":"
+  },
+  {
+   "s": 6,
+   "i": 94,
+   "t": 3.09754,
+   "text": " how"
+  },
+  {
+   "s": 7,
+   "i": 94,
+   "t": 3.09755,
+   "text": " complex"
+  },
+  {
+   "s": 0,
+   "i": 95,
+   "t": 3.09987,
+   "text": ","
+  },
+  {
+   "s": 1,
+   "i": 95,
+   "t": 3.0999,
+   "text": " str"
+  },
+  {
+   "s": 2,
+   "i": 95,
+   "t": 3.09992,
+   "text": " whereas"
+  },
+  {
+   "s": 3,
+   "i": 95,
+   "t": 3.09993,
+   "text": "-"
+  },
+  {
+   "s": 4,
+   "i": 95,
+   "t": 3.09994,
+   "text": "cks"
+  },
+  {
+   "s": 5,
+   "i": 95,
+   "t": 3.09995,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 95,
+   "t": 3.09995,
+   "text": " fast"
+  },
+  {
+   "s": 7,
+   "i": 95,
+   "t": 3.09996,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 96,
+   "t": 3.159,
+   "text": " significantly"
+  },
+  {
+   "s": 1,
+   "i": 96,
+   "t": 3.15904,
+   "text": "[right"
+  },
+  {
+   "s": 2,
+   "i": 96,
+   "t": 3.15905,
+   "text": " throughput"
+  },
+  {
+   "s": 3,
+   "i": 96,
+   "t": 3.15906,
+   "text": " **"
+  },
+  {
+   "s": 4,
+   "i": 96,
+   "t": 3.15907,
+   "text": ","
+  },
+  {
+   "s": 5,
+   "i": 96,
+   "t": 3.15907,
+   "text": "           "
+  },
+  {
+   "s": 6,
+   "i": 96,
+   "t": 3.15908,
+   "text": " it"
+  },
+  {
+   "s": 7,
+   "i": 96,
+   "t": 3.15909,
+   "text": " non"
+  },
+  {
+   "s": 0,
+   "i": 97,
+   "t": 3.16133,
+   "text": " reducing"
+  },
+  {
+   "s": 1,
+   "i": 97,
+   "t": 3.16137,
+   "text": "]"
+  },
+  {
+   "s": 2,
+   "i": 97,
+   "t": 3.16138,
+   "text": " is"
+  },
+  {
+   "s": 3,
+   "i": 97,
+   "t": 3.16139,
+   "text": "Valid"
+  },
+  {
+   "s": 4,
+   "i": 97,
+   "t": 3.1614,
+   "text": " allowing"
+  },
+  {
+   "s": 5,
+   "i": 97,
+   "t": 3.16141,
+   "text": " merged"
+  },
+  {
+   "s": 6,
+   "i": 97,
+   "t": 3.16142,
+   "text": " can"
+  },
+  {
+   "s": 7,
+   "i": 97,
+   "t": 3.16142,
+   "text": "-linear"
+  },
+  {
+   "s": 0,
+   "i": 98,
+   "t": 3.22016,
+   "text": " the"
+  },
+  {
+   "s": 1,
+   "i": 98,
+   "t": 3.22019,
+   "text": " ="
+  },
+  {
+   "s": 2,
+   "i": 98,
+   "t": 3.2202,
+   "text": " the"
+  },
+  {
+   "s": 3,
+   "i": 98,
+   "t": 3.22021,
+   "text": "ates"
+  },
+  {
+   "s": 4,
+   "i": 98,
+   "t": 3.22022,
+   "text": " applications"
+  },
+  {
+   "s": 5,
+   "i": 98,
+   "t": 3.22023,
+   "text": ".append"
+  },
+  {
+   "s": 6,
+   "i": 98,
+   "t": 3.22024,
+   "text": " **"
+  },
+  {
+   "s": 7,
+   "i": 98,
+   "t": 3.22025,
+   "text": " decision"
+  },
+  {
+   "s": 0,
+   "i": 99,
+   "t": 3.2225,
+   "text": " total"
+  },
+  {
+   "s": 1,
+   "i": 99,
+   "t": 3.22253,
+   "text": " temp"
+  },
+  {
+   "s": 2,
+   "i": 99,
+   "t": 3.22254,
+   "text": " number"
+  },
+  {
+   "s": 3,
+   "i": 99,
+   "t": 3.22255,
+   "text": " arguments"
+  },
+  {
+   "s": 4,
+   "i": 99,
+   "t": 3.22256,
+   "text": " to"
+  },
+  {
+   "s": 5,
+   "i": 99,
+   "t": 3.22256,
+   "text": "(list"
+  },
+  {
+   "s": 6,
+   "i": 99,
+   "t": 3.22257,
+   "text": "move"
+  },
+  {
+   "s": 7,
+   "i": 99,
+   "t": 3.22258,
+   "text": " boundaries"
+  },
+  {
+   "s": 0,
+   "i": 100,
+   "t": 3.28138,
+   "text": " computation"
+  },
+  {
+   "s": 1,
+   "i": 100,
+   "t": 3.28142,
+   "text": ";"
+  },
+  {
+   "s": 2,
+   "i": 100,
+   "t": 3.28143,
+   "text": " of"
+  },
+  {
+   "s": 3,
+   "i": 100,
+   "t": 3.28144,
+   "text": "**:"
+  },
+  {
+   "s": 4,
+   "i": 100,
+   "t": 3.28145,
+   "text": " run"
+  },
+  {
+   "s": 5,
+   "i": 100,
+   "t": 3.28146,
+   "text": "2"
+  },
+  {
+   "s": 6,
+   "i": 100,
+   "t": 3.28147,
+   "text": " data"
+  },
+  {
+   "s": 7,
+   "i": 100,
+   "t": 3.28147,
+   "text": " and"
+  },
+  {
+   "s": 0,
+   "i": 101,
+   "t": 3.28379,
+   "text": " time"
+  },
+  {
+   "s": 1,
+   "i": 101,
+   "t": 3.28382,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 101,
+   "t": 3.28383,
+   "text": " cars"
+  },
+  {
+   "s": 3,
+   "i": 101,
+   "t": 3.28384,
+   "text": " Checks"
+  },
+  {
+   "s": 4,
+   "i": 101,
+   "t": 3.28385,
+   "text": " more"
+  },
+  {
+   "s": 5,
+   "i": 101,
+   "t": 3.28386,
+   "text": "[j"
+  },
+  {
+   "s": 6,
+   "i": 101,
+   "t": 3.28387,
+   "text": "**"
+  },
+  {
+   "s": 7,
+   "i": 101,
+   "t": 3.28388,
+   "text": " intricate"
+  },
+  {
+   "s": 0,
+   "i": 102,
+   "t": 3.34293,
+   "text": " compared"
+  },
+  {
+   "s": 1,
+   "i": 102,
+   "t": 3.34296,
+   "text": "       "
+  },
+  {
+   "s": 2,
+   "i": 102,
+   "t": 3.34297,
+   "text": " that"
+  },
+  {
+   "s": 3,
+   "i": 102,
+   "t": 3.34298,
+   "text": " grid"
+  },
+  {
+   "s": 4,
+   "i": 102,
+   "t": 3.34299,
+   "text": " efficiently"
+  },
+  {
+   "s": 5,
+   "i": 102,
+   "t": 3.343,
+   "text": "])"
+  },
+  {
+   "s": 6,
+   "i": 102,
+   "t": 3.343,
+   "text": " from"
+  },
+  {
+   "s": 7,
+   "i": 102,
+   "t": 3.34301,
+   "text": " patterns"
+  },
+  {
+   "s": 0,
+   "i": 103,
+   "t": 3.34524,
+   "text": " to"
+  },
+  {
+   "s": 1,
+   "i": 103,
+   "t": 3.34527,
+   "text": " left"
+  },
+  {
+   "s": 2,
+   "i": 103,
+   "t": 3.34528,
+   "text": " can"
+  },
+  {
+   "s": 3,
+   "i": 103,
+   "t": 3.34529,
+   "text": "/block"
+  },
+  {
+   "s": 4,
+   "i": 103,
+   "t": 3.3453,
+   "text": " by"
+  },
+  {
+   "s": 5,
+   "i": 103,
+   "t": 3.34531,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 103,
+   "t": 3.34532,
+   "text": " the"
+  },
+  {
+   "s": 7,
+   "i": 103,
+   "t": 3.34533,
+   "text": " in"
+  },
+  {
+   "s": 0,
+   "i": 104,
+   "t": 3.40412,
+   "text": " the"
+  },
+  {
+   "s": 1,
+   "i": 104,
+   "t": 3.40415,
+   "text": "++;"
+  },
+  {
+   "s": 2,
+   "i": 104,
+   "t": 3.40417,
+   "text": " arrive"
+  },
+  {
+   "s": 3,
+   "i": 104,
+   "t": 3.40417,
+   "text": " dimensions"
+  },
+  {
+   "s": 4,
+   "i": 104,
+   "t": 3.40418,
+   "text": " minimizing"
+  },
+  {
+   "s": 5,
+   "i": 104,
+   "t": 3.40419,
+   "text": "           "
+  },
+  {
+   "s": 6,
+   "i": 104,
+   "t": 3.4042,
+   "text": " memory"
+  },
+  {
+   "s": 7,
+   "i": 104,
+   "t": 3.40421,
+   "text": " data"
+  },
+  {
+   "s": 0,
+   "i": 105,
+   "t": 3.40649,
+   "text": " CPU"
+  },
+  {
+   "s": 1,
+   "i": 105,
+   "t": 3.40652,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 105,
+   "t": 3.40654,
+   "text": " at"
+  },
+  {
+   "s": 3,
+   "i": 105,
+   "t": 3.40655,
+   "text": ","
+  },
+  {
+   "s": 4,
+   "i": 105,
+   "t": 3.40656,
+   "text": " the"
+  },
+  {
+   "s": 5,
+   "i": 105,
+   "t": 3.40656,
+   "text": " j"
+  },
+  {
+   "s": 6,
+   "i": 105,
+   "t": 3.40657,
+   "text": " ("
+  },
+  {
+   "s": 7,
+   "i": 105,
+   "t": 3.40658,
+   "text": ","
+  },
+  {
+   "s": 0,
+   "i": 106,
+   "t": 3.46584,
+   "text": "\u2019s"
+  },
+  {
+   "s": 1,
+   "i": 106,
+   "t": 3.46588,
+   "text": "       "
+  },
+  {
+   "s": 2,
+   "i": 106,
+   "t": 3.46589,
+   "text": " point"
+  },
+  {
+   "s": 3,
+   "i": 106,
+   "t": 3.4659,
+   "text": " shared"
+  },
+  {
+   "s": 4,
+   "i": 106,
+   "t": 3.46591,
+   "text": " need"
+  },
+  {
+   "s": 5,
+   "i": 106,
+   "t": 3.46591,
+   "text": " +="
+  },
+  {
+   "s": 6,
+   "i": 106,
+   "t": 3.46592,
+   "text": "VR"
+  },
+  {
+   "s": 7,
+   "i": 106,
+   "t": 3.46593,
+   "text": " enabling"
+  },
+  {
+   "s": 0,
+   "i": 107,
+   "t": 3.46821,
+   "text": " sequential"
+  },
+  {
+   "s": 1,
+   "i": 107,
+   "t": 3.46824,
+   "text": " right"
+  },
+  {
+   "s": 2,
+   "i": 107,
+   "t": 3.46825,
+   "text": " B"
+  },
+  {
+   "s": 3,
+   "i": 107,
+   "t": 3.46826,
+   "text": " memory"
+  },
+  {
+   "s": 4,
+   "i": 107,
+   "t": 3.46827,
+   "text": " for"
+  },
+  {
+   "s": 5,
+   "i": 107,
+   "t": 3.46828,
+   "text": " "
+  },
+  {
+   "s": 6,
+   "i": 107,
+   "t": 3.46829,
+   "text": "AM"
+  },
+  {
+   "s": 7,
+   "i": 107,
+   "t": 3.4683,
+   "text": " the"
+  },
+  {
+   "s": 0,
+   "i": 108,
+   "t": 3.52721,
+   "text": " or"
+  },
+  {
+   "s": 1,
+   "i": 108,
+   "t": 3.52724,
+   "text": "--;"
+  },
+  {
+   "s": 2,
+   "i": 108,
+   "t": 3.52725,
+   "text": " per"
+  },
+  {
+   "s": 3,
+   "i": 108,
+   "t": 3.52726,
+   "text": " size"
+  },
+  {
+   "s": 4,
+   "i": 108,
+   "t": 3.52727,
+   "text": " repeated"
+  },
+  {
+   "s": 5,
+   "i": 108,
+   "t": 3.52728,
+   "text": "1"
+  },
+  {
+   "s": 6,
+   "i": 108,
+   "t": 3.52729,
+   "text": ")"
+  },
+  {
+   "s": 7,
+   "i": 108,
+   "t": 3.5273,
+   "text": " network"
+  },
+  {
+   "s": 0,
+   "i": 109,
+   "t": 3.52952,
+   "text": " limited"
+  },
+  {
+   "s": 1,
+   "i": 109,
+   "t": 3.52956,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 109,
+   "t": 3.52957,
+   "text": " hour"
+  },
+  {
+   "s": 3,
+   "i": 109,
+   "t": 3.52958,
+   "text": ","
+  },
+  {
+   "s": 4,
+   "i": 109,
+   "t": 3.52959,
+   "text": " physical"
+  },
+  {
+   "s": 5,
+   "i": 109,
+   "t": 3.5296,
+   "text": "\n    \n"
+  },
+  {
+   "s": 6,
+   "i": 109,
+   "t": 3.52961,
+   "text": " to"
+  },
+  {
+   "s": 7,
+   "i": 109,
+   "t": 3.52962,
+   "text": " to"
+  },
+  {
+   "s": 0,
+   "i": 110,
+   "t": 3.58875,
+   "text": " parallel"
+  },
+  {
+   "s": 1,
+   "i": 110,
+   "t": 3.58879,
+   "text": "   "
+  },
+  {
+   "s": 2,
+   "i": 110,
+   "t": 3.5888,
+   "text": ";"
+  },
+  {
+   "s": 3,
+   "i": 110,
+   "t": 3.58881,
+   "text": " and"
+  },
+  {
+   "s": 4,
+   "i": 110,
+   "t": 3.58882,
+   "text": " disk"
+  },
+  {
+   "s": 5,
+   "i": 110,
+   "t": 3.58883,
+   "text": "   "
+  },
+  {
+   "s": 6,
+   "i": 110,
+   "t": 3.58884,
+   "text": " the"
+  },
+  {
+   "s": 7,
+   "i": 110,
+   "t": 3.58884,
+   "text": " learn"
+  },
+  {
+   "s": 0,
+   "i": 111,
+   "t": 3.59116,
+   "text": " approach"
+  },
+  {
+   "s": 1,
+   "i": 111,
+   "t": 3.5912,
+   "text": " }"
+  },
+  {
+   "s": 2,
+   "i": 111,
+   "t": 3.59121,
+   "text": " a"
+  },
+  {
+   "s": 3,
+   "i": 111,
+   "t": 3.59122,
+   "text": " stream"
+  },
+  {
+   "s": 4,
+   "i": 111,
+   "t": 3.59123,
+   "text": " accesses"
+  },
+  {
+   "s": 5,
+   "i": 111,
+   "t": 3.59124,
+   "text": " #"
+  },
+  {
+   "s": 6,
+   "i": 111,
+   "t": 3.59125,
+   "text": " processing"
+  },
+  {
+   "s": 7,
+   "i": 111,
+   "t": 3.59126,
+   "text": " hierarchical"
+  },
+  {
+   "s": 0,
+   "i": 112,
+   "t": 3.64972,
+   "text": "."
+  },
+  {
+   "s": 1,
+   "i": 112,
+   "t": 3.64975,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 112,
+   "t": 3.64976,
+   "text": " system"
+  },
+  {
+   "s": 3,
+   "i": 112,
+   "t": 3.64977,
+   "text": " validity"
+  },
+  {
+   "s": 4,
+   "i": 112,
+   "t": 3.64978,
+   "text": ","
+  },
+  {
+   "s": 5,
+   "i": 112,
+   "t": 3.64979,
+   "text": " Append"
+  },
+  {
+   "s": 6,
+   "i": 112,
+   "t": 3.6498,
+   "text": " units"
+  },
+  {
+   "s": 7,
+   "i": 112,
+   "t": 3.64981,
+   "text": " representations"
+  },
+  {
+   "s": 0,
+   "i": 113,
+   "t": 3.65213,
+   "text": ""
+  },
+  {
+   "s": 1,
+   "i": 113,
+   "t": 3.65217,
+   "text": "}"
+  },
+  {
+   "s": 2,
+   "i": 113,
+   "t": 3.65218,
+   "text": " can"
+  },
+  {
+   "s": 3,
+   "i": 113,
+   "t": 3.65219,
+   "text": "."
+  },
+  {
+   "s": 4,
+   "i": 113,
+   "t": 3.6522,
+   "text": " while"
+  },
+  {
+   "s": 5,
+   "i": 113,
+   "t": 3.65221,
+   "text": " remaining"
+  },
+  {
+   "s": 6,
+   "i": 113,
+   "t": 3.65222,
+   "text": " ("
+  },
+  {
+   "s": 7,
+   "i": 113,
+   "t": 3.65223,
+   "text": " and"
+  },
+  {
+   "s": 1,
+   "i": 114,
+   "t": 3.71063,
+   "text": "\n"
+  },
+  {
+   "s": 2,
+   "i": 114,
+   "t": 3.71066,
+   "text": " have"
+  },
+  {
+   "s": 3,
+   "i": 114,
+   "t": 3.71068,
+   "text": "\n"
+  },
+  {
+   "s": 4,
+   "i": 114,
+   "t": 3.71069,
+   "text": " the"
+  },
+  {
+   "s": 5,
+   "i": 114,
+   "t": 3.7107,
+   "text": " elements"
+  },
+  {
+   "s": 6,
+   "i": 114,
+   "t": 3.7107,
+   "text": "CUDA"
+  },
+  {
+   "s": 7,
+   "i": 114,
+   "t": 3.71071,
+   "text": " solve"
+  },
+  {
+   "s": 1,
+   "i": 115,
+   "t": 3.71304,
+   "text": "```"
+  },
+  {
+   "s": 2,
+   "i": 115,
+   "t": 3.71307,
+   "text": " low"
+  },
+  {
+   "s": 3,
+   "i": 115,
+   "t": 3.71308,
+   "text": "-"
+  },
+  {
+   "s": 4,
+   "i": 115,
+   "t": 3.7131,
+   "text": " operating"
+  },
+  {
+   "s": 5,
+   "i": 115,
+   "t": 3.71311,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 115,
+   "t": 3.71311,
+   "text": " cores"
+  },
+  {
+   "s": 7,
+   "i": 115,
+   "t": 3.71313,
+   "text": " tasks"
+  },
+  {
+   "s": 1,
+   "i": 116,
+   "t": 3.77151,
+   "text": ""
+  },
+  {
+   "s": 2,
+   "i": 116,
+   "t": 3.77155,
+   "text": " latency"
+  },
+  {
+   "s": 3,
+   "i": 116,
+   "t": 3.77156,
+   "text": " **"
+  },
+  {
+   "s": 4,
+   "i": 116,
+   "t": 3.77157,
+   "text": " system"
+  },
+  {
+   "s": 5,
+   "i": 116,
+   "t": 3.77158,
+   "text": "   "
+  },
+  {
+   "s": 6,
+   "i": 116,
+   "t": 3.77159,
+   "text": ")."
+  },
+  {
+   "s": 7,
+   "i": 116,
+   "t": 3.7716,
+   "text": " like"
+  },
+  {
+   "s": 2,
+   "i": 117,
+   "t": 3.77415,
+   "text": " ("
+  },
+  {
+   "s": 3,
+   "i": 117,
+   "t": 3.77419,
+   "text": "Enc"
+  },
+  {
+   "s": 4,
+   "i": 117,
+   "t": 3.7742,
+   "text": " intellig"
+  },
+  {
+   "s": 5,
+   "i": 117,
+   "t": 3.77421,
+   "text": " merged"
+  },
+  {
+   "s": 6,
+   "i": 117,
+   "t": 3.77422,
+   "text": "\n\n"
+  },
+  {
+   "s": 7,
+   "i": 117,
+   "t": 3.77423,
+   "text": " image"
+  },
+  {
+   "s": 2,
+   "i": 118,
+   "t": 3.83153,
+   "text": "fast"
+  },
+  {
+   "s": 3,
+   "i": 118,
+   "t": 3.83156,
+   "text": "odes"
+  },
+  {
+   "s": 4,
+   "i": 118,
+   "t": 3.83157,
+   "text": "ently"
+  },
+  {
+   "s": 5,
+   "i": 118,
+   "t": 3.83158,
+   "text": ".extend"
+  },
+  {
+   "s": 6,
+   "i": 118,
+   "t": 3.83159,
+   "text": "-"
+  },
+  {
+   "s": 7,
+   "i": 118,
+   "t": 3.8316,
+   "text": " recognition"
+  },
+  {
+   "s": 2,
+   "i": 119,
+   "t": 3.83386,
+   "text": " individual"
+  },
+  {
+   "s": 3,
+   "i": 119,
+   "t": 3.83389,
+   "text": " launch"
+  },
+  {
+   "s": 4,
+   "i": 119,
+   "t": 3.8339,
+   "text": " manages"
+  },
+  {
+   "s": 5,
+   "i": 119,
+   "t": 3.83391,
+   "text": "(list"
+  },
+  {
+   "s": 6,
+   "i": 119,
+   "t": 3.83392,
+   "text": " **"
+  },
+  {
+   "s": 7,
+   "i": 119,
+   "t": 3.83393,
+   "text": ","
+  },
+  {
+   "s": 2,
+   "i": 120,
+   "t": 3.89053,
+   "text": " response"
+  },
+  {
+   "s": 3,
+   "i": 120,
+   "t": 3.89057,
+   "text": " configuration"
+  },
+  {
+   "s": 4,
+   "i": 120,
+   "t": 3.89058,
+   "text": " the"
+  },
+  {
+   "s": 5,
+   "i": 120,
+   "t": 3.89059,
+   "text": "1"
+  },
+  {
+   "s": 6,
+   "i": 120,
+   "t": 3.8906,
+   "text": "Compute"
+  },
+  {
+   "s": 7,
+   "i": 120,
+   "t": 3.89061,
+   "text": " natural"
+  },
+  {
+   "s": 2,
+   "i": 121,
+   "t": 3.89294,
+   "text": ")"
+  },
+  {
+   "s": 3,
+   "i": 121,
+   "t": 3.89298,
+   "text": "**:"
+  },
+  {
+   "s": 4,
+   "i": 121,
+   "t": 3.89299,
+   "text": " cache"
+  },
+  {
+   "s": 5,
+   "i": 121,
+   "t": 3.893,
+   "text": "[i"
+  },
+  {
+   "s": 6,
+   "i": 121,
+   "t": 3.89301,
+   "text": " ("
+  },
+  {
+   "s": 7,
+   "i": 121,
+   "t": 3.89302,
+   "text": " language"
+  },
+  {
+   "s": 2,
+   "i": 122,
+   "t": 3.95008,
+   "text": " but"
+  },
+  {
+   "s": 3,
+   "i": 122,
+   "t": 3.95011,
+   "text": " Constructs"
+  },
+  {
+   "s": 4,
+   "i": 122,
+   "t": 3.95012,
+   "text": " by"
+  },
+  {
+   "s": 5,
+   "i": 122,
+   "t": 3.95013,
+   "text": ":])"
+  },
+  {
+   "s": 6,
+   "i": 122,
+   "t": 3.95014,
+   "text": "F"
+  },
+  {
+   "s": 7,
+   "i": 122,
+   "t": 3.95015,
+   "text": " processing"
+  },
+  {
+   "s": 2,
+   "i": 123,
+   "t": 3.95247,
+   "text": " low"
+  },
+  {
+   "s": 3,
+   "i": 123,
+   "t": 3.9525,
+   "text": " a"
+  },
+  {
+   "s": 4,
+   "i": 123,
+   "t": 3.95252,
+   "text": " ev"
+  },
+  {
+   "s": 5,
+   "i": 123,
+   "t": 3.95253,
+   "text": "\n"
+  },
+  {
+   "s": 6,
+   "i": 123,
+   "t": 3.95254,
+   "text": "LO"
+  },
+  {
+   "s": 7,
+   "i": 123,
+   "t": 3.95255,
+   "text": ","
+  },
+  {
+   "s": 2,
+   "i": 124,
+   "t": 4.00954,
+   "text": " throughput"
+  },
+  {
+   "s": 3,
+   "i": 124,
+   "t": 4.00958,
+   "text": " kernel"
+  },
+  {
+   "s": 4,
+   "i": 124,
+   "t": 4.00959,
+   "text": "ict"
+  },
+  {
+   "s": 5,
+   "i": 124,
+   "t": 4.0096,
+   "text": "   "
+  },
+  {
+   "s": 6,
+   "i": 124,
+   "t": 4.00961,
+   "text": "PS"
+  },
+  {
+   "s": 7,
+   "i": 124,
+   "t": 4.00962,
+   "text": " and"
+  },
+  {
+   "s": 2,
+   "i": 125,
+   "t": 4.01189,
+   "text": " ("
+  },
+  {
+   "s": 3,
+   "i": 125,
+   "t": 4.01192,
+   "text": " launch"
+  },
+  {
+   "s": 4,
+   "i": 125,
+   "t": 4.01193,
+   "text": "ing"
+  },
+  {
+   "s": 5,
+   "i": 125,
+   "t": 4.01194,
+   "text": " merged"
+  },
+  {
+   "s": 6,
+   "i": 125,
+   "t": 4.01195,
+   "text": ")**"
+  },
+  {
+   "s": 7,
+   "i": 125,
+   "t": 4.01196,
+   "text": " game"
+  },
+  {
+   "s": 2,
+   "i": 126,
+   "t": 4.06912,
+   "text": "few"
+  },
+  {
+   "s": 3,
+   "i": 126,
+   "t": 4.06915,
+   "text": " configuration"
+  },
+  {
+   "s": 4,
+   "i": 126,
+   "t": 4.06917,
+   "text": " less"
+  },
+  {
+   "s": 5,
+   "i": 126,
+   "t": 4.06918,
+   "text": ".extend"
+  },
+  {
+   "s": 6,
+   "i": 126,
+   "t": 4.06919,
+   "text": ":"
+  },
+  {
+   "s": 7,
+   "i": 126,
+   "t": 4.06919,
+   "text": " playing"
+  },
+  {
+   "s": 2,
+   "i": 127,
+   "t": 4.06971,
+   "text": " tasks"
+  },
+  {
+   "s": 3,
+   "i": 127,
+   "t": 4.06974,
+   "text": " structure"
+  },
+  {
+   "s": 4,
+   "i": 127,
+   "t": 4.06975,
+   "text": " frequently"
+  },
+  {
+   "s": 5,
+   "i": 127,
+   "t": 4.06976,
+   "text": "(list"
+  },
+  {
+   "s": 6,
+   "i": 127,
+   "t": 4.06976,
+   "text": " How"
+  },
+  {
+   "s": 7,
+   "i": 127,
+   "t": 4.06977,
+   "text": " that"
+  }
+ ]
+}

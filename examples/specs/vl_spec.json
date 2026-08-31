@@ -1,0 +1,16 @@
+{
+ "pane": 400,
+ "fps": 30,
+ "chapters": [
+  {"runs": "runs/qwen3vl_short", "arms": "eager,static,attach", "tail": 2.2,
+   "title": "Qwen3-VL-8B — a short question first",
+   "subtitle": "one image, greedy, 27 tokens · all three answers are token-identical",
+   "note": "the transformers host, unedited · one wall clock, three panes, each advancing at the rate it was measured at",
+   "footer": "decode 65.7 -> 89.2 -> 162.8 tok/s. Every pane produced the same 27 tokens, so the only thing that differs is when it finished: 0.42 s, 0.32 s, 0.19 s."},
+  {"runs": "runs/qwen3vl", "arms": "eager,static,attach", "tail": 2.5,
+   "title": "Qwen3-VL-8B — and the same three, asked for detail",
+   "subtitle": "greedy · 296 tokens, run to its own stop · 95-token prompt with the image · RTX 5090",
+   "note": "the transformers host, unedited · TTFT and decode are reported separately, never blended into one tokens/second",
+   "footer": "decode 65.6 -> 82.9 -> 145.7 tok/s: 2.22x over the host as shipped, 1.76x over the host's own compiled static-cache form, finishing at 4.52 s, 3.60 s and 2.06 s. TTFT is ~30 ms in all three panes — this film is about the decode half, and prefill is not where the work went.\nJudged step by step on the host's own sequence: teacher-forced same-token 0.9932 here, and 1.0000 on the short question above. Free-running, the compiled arm agrees with the host for 291 of 296 tokens; the attached arm agrees for 77, then says 'counter' where the host says 'table' and follows its own continuation. That cascade is why the gate is the teacher-forced rate and not free-run agreement. 180 seams plus the lm_head, bound automatically; the attached arm repeats bitwise across three runs."}
+ ]
+}

@@ -1,0 +1,127 @@
+{
+ "meta": {
+  "kind": "video",
+  "label": "+ FlashRT structures",
+  "sub": "W4A4 on 30 of 40 calls, FP8 on the rest",
+  "color": "native",
+  "steps": 20,
+  "frames": 33,
+  "size": 480,
+  "seed": 7,
+  "prompt": "A curious raccoon carefully opens a wooden box in a sunlit forest clearing, cinematic lighting, shallow depth of field",
+  "denoise_s": 2.1144,
+  "ms_per_step": 105.7,
+  "ms_per_call": 52.9,
+  "decode_s": 2.1144,
+  "vae_decode_s": 1.9136,
+  "done_s": 2.1144,
+  "clip_fps": 1.6,
+  "final_latent_vs_eager": 0.845298,
+  "stepwise_worst": 0.995614,
+  "stepwise_median": 0.998422,
+  "paired_call_ms": 46.6,
+  "_example_note": "frames subsampled 1/10 and scaled to 240px so this example fits in the repository; the timestamps are untouched"
+ },
+ "events": [
+  {
+   "kind": "step",
+   "i": 0,
+   "t": 0.0952
+  },
+  {
+   "kind": "step",
+   "i": 1,
+   "t": 0.1891
+  },
+  {
+   "kind": "step",
+   "i": 2,
+   "t": 0.3295
+  },
+  {
+   "kind": "step",
+   "i": 3,
+   "t": 0.4238
+  },
+  {
+   "kind": "step",
+   "i": 4,
+   "t": 0.5179
+  },
+  {
+   "kind": "step",
+   "i": 5,
+   "t": 0.6118
+  },
+  {
+   "kind": "step",
+   "i": 6,
+   "t": 0.7056
+  },
+  {
+   "kind": "step",
+   "i": 7,
+   "t": 0.7994
+  },
+  {
+   "kind": "step",
+   "i": 8,
+   "t": 0.8931
+  },
+  {
+   "kind": "step",
+   "i": 9,
+   "t": 0.9869
+  },
+  {
+   "kind": "step",
+   "i": 10,
+   "t": 1.0806
+  },
+  {
+   "kind": "step",
+   "i": 11,
+   "t": 1.1744
+  },
+  {
+   "kind": "step",
+   "i": 12,
+   "t": 1.2682
+  },
+  {
+   "kind": "step",
+   "i": 13,
+   "t": 1.362
+  },
+  {
+   "kind": "step",
+   "i": 14,
+   "t": 1.4557
+  },
+  {
+   "kind": "step",
+   "i": 15,
+   "t": 1.5495
+  },
+  {
+   "kind": "step",
+   "i": 16,
+   "t": 1.6894
+  },
+  {
+   "kind": "step",
+   "i": 17,
+   "t": 1.8304
+  },
+  {
+   "kind": "step",
+   "i": 18,
+   "t": 1.9718
+  },
+  {
+   "kind": "step",
+   "i": 19,
+   "t": 2.1132
+  }
+ ]
+}

@@ -54,6 +54,25 @@ python demokit/record.py --host lerobot_pi05 --arm eager \
 python demokit/compose/sim_compose.py --runs runs/pi05_race --out pi05_race.webm
 ```
 
+## Examples
+
+`examples/runs/` carries one real film per painter kind — the actual recorded
+events, with pixels subsampled or truncated only where a file would otherwise
+be too large for a repository (each says so in its own `_example_note`).
+
+```bash
+demokit check examples/runs/*/*                          # 9/9 ready to draw
+demokit draw  examples/runs/stream       --out /tmp/a.webm   # a VLM, 3 arms
+demokit draw  examples/runs/video        --out /tmp/b.webm   # Wan2.2, 2 arms
+demokit draw  examples/runs/stream_batch --out /tmp/c.webm   # vLLM at batch 8
+demokit draw  examples/runs/loop         --out /tmp/d.webm   # GR00T, 60 steps
+```
+
+They are also the answer to "do I need to run the model?" — usually not. A run
+someone else recorded draws exactly as well as one you made.
+
+`examples/specs/` holds the multi-chapter specs behind the published films.
+
 ## Adding a model
 
 Read [`docs/PROTOCOL.md`](docs/PROTOCOL.md), or hand an agent

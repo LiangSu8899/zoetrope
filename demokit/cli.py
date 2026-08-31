@@ -21,8 +21,18 @@ NEEDS = {
     "video":        ("steps", "ms_per_step"),
     "stream_batch": ("concurrency", "aggregate_tok_s",
                      "decode_tok_s_per_stream", "ttft_ms_median"),
-    "loop":         ("median_infer_ms", "steps"),
 }
+#: Robot rollouts predate the race contract and carry their own meta. They are
+#: read by compose/sim.py, which derives the wall clock from `infer_ms` and the
+#: control rate rather than reading a `t` off each event. Unifying the two is
+#: item 1 in docs/PROTOCOL.md; until then, both shapes are valid and `draw`
+#: picks the compositor that can read what it was given.
+SIM_NEEDS = ("arm", "host", "median_infer_ms", "steps")
+
+
+def shape_of(meta: dict) -> str:
+    """Which contract this run was written against: 'race' or 'sim'."""
+    return "race" if "kind" in meta else "sim"
 
 
 def check(path: pathlib.Path) -> list[str]:
@@ -36,6 +46,19 @@ def check(path: pathlib.Path) -> list[str]:
     except json.JSONDecodeError as e:
         return [f"{path}: events.json is not valid JSON ({e})"]
     meta, events = blob.get("meta", {}), blob.get("events", [])
+    if not events:
+        bad.append(f"{path}: no events")
+
+    if shape_of(meta) == "sim":
+        for k in SIM_NEEDS:
+            if k not in meta:
+                bad.append(f"{path}: a robot rollout needs meta[{k!r}]")
+        if not (path / "frames.npy").exists():
+            bad.append(f"{path}: a robot rollout needs frames.npy")
+        if events and "infer_ms" not in events[0]:
+            bad.append(f"{path}: a robot rollout event needs 'infer_ms'")
+        return bad
+
     for k in REQUIRED:
         if k not in meta:
             bad.append(f"{path}: meta is missing {k!r}")
@@ -46,11 +69,9 @@ def check(path: pathlib.Path) -> list[str]:
         for k in NEEDS[kind]:
             if k not in meta:
                 bad.append(f"{path}: a {kind} pane needs meta[{k!r}]")
-        if kind in ("video", "loop") and not (path / "frames.npy").exists():
-            bad.append(f"{path}: a {kind} pane needs frames.npy")
-    if not events:
-        bad.append(f"{path}: no events")
-    else:
+        if kind == "video" and not (path / "frames.npy").exists():
+            bad.append(f"{path}: a video pane needs frames.npy")
+    if events:
         ts = [e.get("t") for e in events]
         if any(t is None for t in ts):
             bad.append(f"{path}: an event has no 't'")
@@ -87,6 +108,24 @@ def main(argv=None) -> int:
         print(f"{len(a.runs) - len({b.split(':')[0] for b in bad})}"
               f"/{len(a.runs)} run(s) ready to draw")
         return 1 if bad else 0
+
+    if a.runs and not a.spec:
+        first = next((p for p in sorted(pathlib.Path(a.runs).iterdir())
+                      if (p / "events.json").exists()), None)
+        if first is not None:
+            meta = json.loads((first / "events.json").read_text())["meta"]
+            if shape_of(meta) == "sim":
+                import subprocess
+                cmd = [sys.executable,
+                       str(pathlib.Path(__file__).parent / "compose"
+                           / "sim_compose.py"),
+                       "--runs", a.runs, "--out", a.out,
+                       "--pane", str(a.pane), "--fps", str(a.fps),
+                       "--speed", str(a.speed)]
+                for flag in ("title", "note", "footer"):
+                    if getattr(a, flag, None):
+                        cmd += [f"--{flag}", getattr(a, flag)]
+                return subprocess.run(cmd).returncode
 
     from demokit.compose import race_compose as R
     if a.spec:

@@ -1,0 +1,154 @@
+{
+ "meta": {
+  "kind": "stream",
+  "label": "Qwen3-VL-8B, as shipped",
+  "sub": "eager PyTorch",
+  "color": "stock",
+  "prompt": "In one sentence, what is the robot arm doing?",
+  "ttft_ms": 29.8,
+  "decode_tok_s": 65.7,
+  "done_s": 0.4256,
+  "n_tokens": 27,
+  "tokens_match_host": 1.0,
+  "e2e_ms": 423.7,
+  "stamp_drift": 0.0046,
+  "stream_note": "the reference stream"
+ },
+ "events": [
+  {
+   "i": 0,
+   "t": 0.0298,
+   "text": "The"
+  },
+  {
+   "i": 1,
+   "t": 0.0451,
+   "text": " robot"
+  },
+  {
+   "i": 2,
+   "t": 0.0603,
+   "text": " arm"
+  },
+  {
+   "i": 3,
+   "t": 0.0756,
+   "text": " is"
+  },
+  {
+   "i": 4,
+   "t": 0.0908,
+   "text": " positioned"
+  },
+  {
+   "i": 5,
+   "t": 0.106,
+   "text": " above"
+  },
+  {
+   "i": 6,
+   "t": 0.1212,
+   "text": " the"
+  },
+  {
+   "i": 7,
+   "t": 0.1365,
+   "text": " kitchen"
+  },
+  {
+   "i": 8,
+   "t": 0.1516,
+   "text": " counter"
+  },
+  {
+   "i": 9,
+   "t": 0.1668,
+   "text": ","
+  },
+  {
+   "i": 10,
+   "t": 0.1821,
+   "text": " seemingly"
+  },
+  {
+   "i": 11,
+   "t": 0.1973,
+   "text": " preparing"
+  },
+  {
+   "i": 12,
+   "t": 0.2125,
+   "text": " to"
+  },
+  {
+   "i": 13,
+   "t": 0.2277,
+   "text": " interact"
+  },
+  {
+   "i": 14,
+   "t": 0.2429,
+   "text": " with"
+  },
+  {
+   "i": 15,
+   "t": 0.2582,
+   "text": " the"
+  },
+  {
+   "i": 16,
+   "t": 0.2734,
+   "text": " two"
+  },
+  {
+   "i": 17,
+   "t": 0.2886,
+   "text": " coffee"
+  },
+  {
+   "i": 18,
+   "t": 0.3039,
+   "text": " pots"
+  },
+  {
+   "i": 19,
+   "t": 0.3191,
+   "text": " or"
+  },
+  {
+   "i": 20,
+   "t": 0.3343,
+   "text": " the"
+  },
+  {
+   "i": 21,
+   "t": 0.3495,
+   "text": " st"
+  },
+  {
+   "i": 22,
+   "t": 0.3647,
+   "text": "ov"
+  },
+  {
+   "i": 23,
+   "t": 0.38,
+   "text": "et"
+  },
+  {
+   "i": 24,
+   "t": 0.3952,
+   "text": "op"
+  },
+  {
+   "i": 25,
+   "t": 0.4104,
+   "text": "."
+  },
+  {
+   "i": 26,
+   "t": 0.4256,
+   "text": ""
+  }
+ ]
+}

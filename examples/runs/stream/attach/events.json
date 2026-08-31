@@ -1,0 +1,158 @@
+{
+ "meta": {
+  "kind": "stream",
+  "label": "+ FlashRT structures",
+  "sub": "auto_swaps + decode_loop",
+  "color": "accent",
+  "prompt": "In one sentence, what is the robot arm doing?",
+  "ttft_ms": 28.9,
+  "decode_tok_s": 162.8,
+  "done_s": 0.1887,
+  "n_tokens": 27,
+  "tokens_match_host": 1.0,
+  "teacher_forced_same_token": 1.0,
+  "agrees_for_first": 27,
+  "repeat_identical": true,
+  "seams": 180,
+  "e2e_ms": 188.5,
+  "stamp_drift": 0.0007,
+  "stream_note": "token-identical to the host, all 27"
+ },
+ "events": [
+  {
+   "i": 0,
+   "t": 0.0289,
+   "text": "The"
+  },
+  {
+   "i": 1,
+   "t": 0.0351,
+   "text": " robot"
+  },
+  {
+   "i": 2,
+   "t": 0.0412,
+   "text": " arm"
+  },
+  {
+   "i": 3,
+   "t": 0.0474,
+   "text": " is"
+  },
+  {
+   "i": 4,
+   "t": 0.0535,
+   "text": " positioned"
+  },
+  {
+   "i": 5,
+   "t": 0.0597,
+   "text": " above"
+  },
+  {
+   "i": 6,
+   "t": 0.0658,
+   "text": " the"
+  },
+  {
+   "i": 7,
+   "t": 0.072,
+   "text": " kitchen"
+  },
+  {
+   "i": 8,
+   "t": 0.0781,
+   "text": " counter"
+  },
+  {
+   "i": 9,
+   "t": 0.0842,
+   "text": ","
+  },
+  {
+   "i": 10,
+   "t": 0.0904,
+   "text": " seemingly"
+  },
+  {
+   "i": 11,
+   "t": 0.0965,
+   "text": " preparing"
+  },
+  {
+   "i": 12,
+   "t": 0.1027,
+   "text": " to"
+  },
+  {
+   "i": 13,
+   "t": 0.1088,
+   "text": " interact"
+  },
+  {
+   "i": 14,
+   "t": 0.1149,
+   "text": " with"
+  },
+  {
+   "i": 15,
+   "t": 0.1211,
+   "text": " the"
+  },
+  {
+   "i": 16,
+   "t": 0.1272,
+   "text": " two"
+  },
+  {
+   "i": 17,
+   "t": 0.1334,
+   "text": " coffee"
+  },
+  {
+   "i": 18,
+   "t": 0.1395,
+   "text": " pots"
+  },
+  {
+   "i": 19,
+   "t": 0.1457,
+   "text": " or"
+  },
+  {
+   "i": 20,
+   "t": 0.1518,
+   "text": " the"
+  },
+  {
+   "i": 21,
+   "t": 0.158,
+   "text": " st"
+  },
+  {
+   "i": 22,
+   "t": 0.1641,
+   "text": "ov"
+  },
+  {
+   "i": 23,
+   "t": 0.1702,
+   "text": "et"
+  },
+  {
+   "i": 24,
+   "t": 0.1764,
+   "text": "op"
+  },
+  {
+   "i": 25,
+   "t": 0.1825,
+   "text": "."
+  },
+  {
+   "i": 26,
+   "t": 0.1887,
+   "text": ""
+  }
+ ]
+}

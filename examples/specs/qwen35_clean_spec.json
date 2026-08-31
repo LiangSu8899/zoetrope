@@ -1,0 +1,43 @@
+{
+ "pane": 430,
+ "fps": 30,
+ "speed": 1.0,
+ "chapters": [
+  {
+   "runs": "runs/qwen35_clean/c1",
+   "arms": "base,attach",
+   "tail": 1.6,
+   "title": "Qwen3.5-35B-A3B on vLLM \u00b7 concurrency 1 \u00b7 Jetson AGX Thor",
+   "subtitle": "one request at a time",
+   "note": "the latency case: no other token to share a weight read with \u2014 2.02x",
+   "footer": "two separate processes, and they have to be: a serving engine bakes its model tree into a compiled, graph-captured decode path at load time, so the seats are bound by a hook that fires after load_model and before the engine's first trace \u2014 nothing is forked, replaced or reimplemented\nteacher-forced same-token 0.949, against a floor of 0.993 for the engine scored against its own tokens; most of that distance is the expert bank at four bits \u00b7 Jetson AGX Thor, sm_110 \u00b7 vLLM 0.26.0 \u00b7 200 seats \u2014 160 dense projections + 40 routed expert banks \u2014 plus the LM head in 4 row slabs, 0 refused \u00b7 128 tokens, greedy, thinking off"
+  },
+  {
+   "runs": "runs/qwen35_clean/c4",
+   "arms": "base,attach",
+   "tail": 1.6,
+   "title": "Qwen3.5-35B-A3B on vLLM \u00b7 concurrency 4 \u00b7 Jetson AGX Thor",
+   "subtitle": "four at once",
+   "note": "the batch starts paying for itself \u2014 2.36x",
+   "footer": "two separate processes, and they have to be: a serving engine bakes its model tree into a compiled, graph-captured decode path at load time, so the seats are bound by a hook that fires after load_model and before the engine's first trace \u2014 nothing is forked, replaced or reimplemented\nteacher-forced same-token 0.949, against a floor of 0.993 for the engine scored against its own tokens; most of that distance is the expert bank at four bits \u00b7 Jetson AGX Thor, sm_110 \u00b7 vLLM 0.26.0 \u00b7 200 seats \u2014 160 dense projections + 40 routed expert banks \u2014 plus the LM head in 4 row slabs, 0 refused \u00b7 128 tokens, greedy, thinking off"
+  },
+  {
+   "runs": "runs/qwen35_clean/c8",
+   "arms": "base,attach",
+   "tail": 1.6,
+   "title": "Qwen3.5-35B-A3B on vLLM \u00b7 concurrency 8 \u00b7 Jetson AGX Thor",
+   "subtitle": "eight at once",
+   "note": "the peak, 2.48x \u2014 a routed MoE does not dilute the way a dense model does",
+   "footer": "two separate processes, and they have to be: a serving engine bakes its model tree into a compiled, graph-captured decode path at load time, so the seats are bound by a hook that fires after load_model and before the engine's first trace \u2014 nothing is forked, replaced or reimplemented\nteacher-forced same-token 0.949, against a floor of 0.993 for the engine scored against its own tokens; most of that distance is the expert bank at four bits \u00b7 Jetson AGX Thor, sm_110 \u00b7 vLLM 0.26.0 \u00b7 200 seats \u2014 160 dense projections + 40 routed expert banks \u2014 plus the LM head in 4 row slabs, 0 refused \u00b7 128 tokens, greedy, thinking off"
+  },
+  {
+   "runs": "runs/qwen35_clean/c16",
+   "arms": "base,attach",
+   "tail": 1.6,
+   "title": "Qwen3.5-35B-A3B on vLLM \u00b7 concurrency 16 \u00b7 Jetson AGX Thor",
+   "subtitle": "sixteen at once",
+   "note": "the curve turns down to 1.43x, and that is the finding, not the embarrassment",
+   "footer": "two separate processes, and they have to be: a serving engine bakes its model tree into a compiled, graph-captured decode path at load time, so the seats are bound by a hook that fires after load_model and before the engine's first trace \u2014 nothing is forked, replaced or reimplemented\nteacher-forced same-token 0.949, against a floor of 0.993 for the engine scored against its own tokens; most of that distance is the expert bank at four bits \u00b7 Jetson AGX Thor, sm_110 \u00b7 vLLM 0.26.0 \u00b7 200 seats \u2014 160 dense projections + 40 routed expert banks \u2014 plus the LM head in 4 row slabs, 0 refused \u00b7 128 tokens, greedy, thinking off"
+  }
+ ]
+}

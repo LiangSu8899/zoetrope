@@ -1,0 +1,11 @@
+{
+ "pane": 360,
+ "fps": 30,
+ "chapters": [
+  {"runs": "runs/wan22_quad", "arms": "eager,compiled,band,sage", "tail": 6.5,
+   "title": "Wan2.2 TI2V-5B — one clip, four ways of making it",
+   "subtitle": "480x480 · 33 frames · 20 denoise steps · same prompt, same seed · all four in one process against one baseline · RTX 5090",
+   "note": "the diffusers WanPipeline, unedited · every accelerated pane went through the same automatic path: discover, calibrate, qualify, attach — then torch.export + AOTInductor over the whole transformer",
+   "footer": "6.48 s   ·   5.23 s   ·   2.11 s   ·   1.68 s  —  1.24x, 3.07x and 3.85x over the host. One transformer call: 162.2 -> 130.5 -> 46.6 -> 41.8 ms. 270 seams bound automatically in each attached form, no edit to diffusers.\nThe third pane is the balance point: W4A4 runs every call whose own per-step score holds 0.995 and hands the other five timesteps to FP8, so it passes the gate at 0.9956 and still runs 3.07x. Routing is per call rather than by a threshold, and that matters here — W4A4's profile is a clean decline into the tail apart from one early call, at t=978 on one CFG branch, that scores 0.9949 while its partner scores 0.9984. A threshold rule has to send everything below that one call to FP8 and collapses to 2.38x; routing the call itself costs nothing.\nThe fourth pane spends the rest: W4A4 everywhere plus SageAttention2, per-step worst 0.9830 and median 0.9979 — under the warn band, and published because the clip is the evidence the band cannot see. The leaves, the fallen log and the wet rocks are where the host put them, and the film ends with all four playing side by side so that is yours to check rather than ours to assert."}
+ ]
+}
