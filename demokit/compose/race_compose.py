@@ -167,9 +167,20 @@ class VideoArm(Arm):
         im.paste(img, (x + (pane - cw) // 2, y + (pane - ch) // 2))
         d.rectangle([x, y, x + pane - 1, y + pane - 1], outline=LINE)
 
+    def step_ms(self, t):
+        """The step in force, or the paired median once the clip is done."""
+        if self.finished(t):
+            return self.ms_per_step
+        k = self.steps_done(t)
+        if k < 1:
+            return None
+        prev = self.step_t[k - 2] if k >= 2 else 0.0
+        return (self.step_t[k - 1] - prev) * 1e3
+
     def paint_readout(self, im, d, x, y, pane, t, fonts):
         f_hz, f_unit, f_sub, f_small = fonts
-        val = f"{self.ms_per_step:.0f}"
+        live = self.step_ms(t)
+        val = "--" if live is None else f"{live:.0f}"
         d.text((x, y), val, self.color, font=f_hz)
         w = d.textlength(val, font=f_hz)
         d.text((x + w + 8, y + 30), "ms / step", MUTED, font=f_unit)
@@ -197,6 +208,23 @@ class StreamArm(Arm):
 
     def n_tokens(self, t):
         return int(np.searchsorted(self.tok_t, t, side="right"))
+
+    #: seconds of history the live rate averages over. One token is
+    #: 5-15 ms, so a per-token rate is unreadable; the robot pane can
+    #: show a per-step rate because a control step is 20-100 ms.
+    RATE_WINDOW = 0.6
+
+    def rate(self, t):
+        """tok/s over the trailing window, or the final median once done."""
+        if self.finished(t):
+            return self.decode_tok_s
+        n = self.n_tokens(t)
+        if n < 2:
+            return None                      # still prefilling
+        lo = np.searchsorted(self.tok_t, t - self.RATE_WINDOW, side="left")
+        lo = min(int(lo), n - 2)
+        span = self.tok_t[n - 1] - self.tok_t[lo]
+        return (n - 1 - lo) / span if span > 1e-6 else None
 
     def paint_pane(self, im, d, x, y, pane, t):
         d.rectangle([x, y, x + pane - 1, y + pane - 1], fill=CARD,
@@ -233,12 +261,16 @@ class StreamArm(Arm):
 
     def paint_readout(self, im, d, x, y, pane, t, fonts):
         f_hz, f_unit, f_sub, f_small = fonts
-        val = f"{self.decode_tok_s:.0f}"
+        live = self.rate(t)
+        val = "--" if live is None else f"{live:.0f}"
         d.text((x, y), val, self.color, font=f_hz)
         w = d.textlength(val, font=f_hz)
         d.text((x + w + 8, y + 30), "tok / s", MUTED, font=f_unit)
-        d.text((x + w + 8, y + 6), f"TTFT {self.ttft_ms:.0f} ms", INK,
-               font=f_sub)
+        # the first token is an event: it has not happened yet at t=0
+        arrived = self.tok_t and t >= self.tok_t[0]
+        d.text((x + w + 8, y + 6),
+               (f"TTFT {self.ttft_ms:.0f} ms" if arrived else "prefill..."),
+               INK if arrived else MUTED, font=f_sub)
         n = self.n_tokens(t)
         d.text((x, y + 62), f"{n} of {len(self.tok_t)} tokens", MUTED,
                font=f_small)
@@ -273,9 +305,26 @@ class StreamBatchArm(Arm):
         self.ttft = float(self.meta["ttft_ms_median"])
         self.total = sum(len(st) for st in self.streams)
 
+    #: same reasoning as StreamArm.RATE_WINDOW, wider because the
+    #: aggregate is the sum of N bursty streams.
+    RATE_WINDOW = 1.0
+
     def done_tokens(self, t):
         return sum(int(np.searchsorted(ts, t, side="right"))
                    for ts in self.times)
+
+    def rate(self, t):
+        """Aggregate tok/s over the trailing window, final value once done."""
+        if self.finished(t):
+            return self.agg
+        lo = t - self.RATE_WINDOW
+        if lo < 0:
+            lo = 0.0
+        n = sum(int(np.searchsorted(ts, t, side="right"))
+                - int(np.searchsorted(ts, lo, side="left"))
+                for ts in self.times)
+        span = t - lo
+        return n / span if span > 1e-6 and n else None
 
     def paint_pane(self, im, d, x, y, pane, t):
         d.rectangle([x, y, x + pane - 1, y + pane - 1], fill=CARD,
@@ -309,13 +358,16 @@ class StreamBatchArm(Arm):
 
     def paint_readout(self, im, d, x, y, pane, t, fonts):
         f_hz, f_unit, f_sub, f_small = fonts
-        val = f"{self.agg:.0f}"
+        live = self.rate(t)
+        val = "--" if live is None else f"{live:.0f}"
         d.text((x, y), val, self.color, font=f_hz)
         w = d.textlength(val, font=f_hz)
         d.text((x + w + 8, y + 30), "tok / s total", MUTED, font=f_unit)
+        started = any(ts and t >= ts[0] for ts in self.times)
         d.text((x + w + 8, y + 6),
-               f"{self.per:.0f} per request · TTFT {self.ttft:.0f} ms",
-               INK, font=f_sub)
+               (f"{self.per:.0f} per request · TTFT {self.ttft:.0f} ms"
+                if started else "prefill..."),
+               INK if started else MUTED, font=f_sub)
         d.text((x, y + 62),
                f"{self.done_tokens(t)} of {self.total} tokens", MUTED,
                font=f_small)
