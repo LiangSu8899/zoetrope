@@ -64,6 +64,30 @@ Reads `frames.npy` and plays the clip once the arm is done.
 ### `kind: "stream_batch"` — one serving engine under concurrency
 One row per in-flight request; `meta` adds the aggregate and per-request rates.
 
+### `kind: "arch"` — the model's own module tree
+```json
+{"kind": "enter", "t": 0.41, "node": "blocks.*", "idx": 12}
+{"kind": "exit",  "t": 0.55, "node": "blocks.*", "idx": 12}
+```
+`meta` adds: `model_class`, `depth`, `nodes`, `n_modules`, `n_groups`,
+`stretch`, and — when the run was recorded after an attach — `seats`, `bound`,
+`refused`, `fallbacks`.
+
+`nodes` is the tree in the order the forward hooks first fired, which is the
+order the model actually ran. Each node carries `node` (its module path),
+`cls`, `depth`, `parent`, `repeat` and `calls`. A module that never fires did
+not run in this pass; that is observed, not inferred.
+
+`seats` maps a node to what FlashRT put there — `bound`, `kinds`, `calls`,
+`fallbacks`, `refused`, and `reasons`. The keys of `handle.report()` *are*
+module paths, so this is a join, and it is the part a tool that reads source
+code cannot produce.
+
+The pane draws no performance figure. One forward pass is milliseconds, so
+`stretch` records what the timestamps were multiplied by to make it watchable.
+The node timings in `nodes` exist to pace that animation and are perturbed by
+the hooks themselves — they are not a measurement of anything.
+
 ### `kind: "loop"` — a robot policy
 ```json
 {"step": 0, "infer_ms": 22.25, "fresh": true, "action": [...]}

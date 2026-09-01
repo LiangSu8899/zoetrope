@@ -13,6 +13,9 @@ Two pane painters:
             clip itself, played at its own frame rate
     stream  a text buffer filled at the timestamps the tokens really
             arrived, with a tok/s readout
+    arch    the model's own module tree, lighting up in the order the
+            forward hooks actually fired, with FlashRT's seats shown where
+            they landed
 
 Both arms record the same shape: `events.json` holding a meta block and a
 list of events carrying the wall time, in seconds from the start of the
@@ -42,8 +45,10 @@ STOCK = (171, 175, 164)
 COMPILED = (140, 165, 200)
 NATIVE = (226, 178, 96)
 
-COLORS = {"stock": STOCK, "compiled": COMPILED, "accent": ACCENT,
-          "native": NATIVE}
+#: `ours` is the name in the protocol; `accent` is the older spelling and
+#: stays readable so published specs keep drawing.
+COLORS = {"stock": STOCK, "compiled": COMPILED, "ours": ACCENT,
+          "accent": ACCENT, "native": NATIVE}
 
 
 def _ffmpeg() -> str:
@@ -107,6 +112,9 @@ class Arm:
         self.sub = self.meta["sub"]
         self.color = COLORS.get(self.meta.get("color", "stock"), STOCK)
         self.done_t = float(self.meta["done_s"])
+
+    #: pixels this painter needs under its readout, beyond the common block
+    readout_extra = 0
 
     def finished(self, t):
         return t >= self.done_t
@@ -379,12 +387,194 @@ class StreamBatchArm(Arm):
             d.text((x, y + 98), note, MUTED, font=f_small)
 
 
+
+def _short(node: str) -> str:
+    """`blocks.*.attn1` reads as `attn1`; the indent carries the rest."""
+    parts = [p for p in node.split(".") if p != "*"]
+    return parts[-1] if parts else node
+
+
+class ArchArm(Arm):
+    """The model's own module tree, drawn from a run rather than from source.
+
+    Nodes come from `named_modules()`, their order from the order the forward
+    hooks first fired, and — when the arm was recorded after an attach — each
+    row carries what FlashRT put in that seat, or why it was left alone.
+
+    This pane reports no performance figure. One forward pass is milliseconds,
+    so the recorder stretched it for viewing and the pane says so.
+    """
+
+    readout_extra = 36
+
+    def __init__(self, run_dir):
+        super().__init__(run_dir)
+        self.nodes = [n for n in self.meta["nodes"]]
+        self.seats = self.meta.get("seats", {})
+        self.stretch = float(self.meta.get("stretch", 1.0))
+        self.root = self.nodes[0]["node"] if self.nodes else "<root>"
+        self.spans = {n["node"]: [] for n in self.nodes}
+        open_at = {}
+        for e in self.events:
+            key = (e["node"], e.get("idx", 0))
+            if e["kind"] == "enter":
+                open_at[key] = float(e["t"])
+            elif key in open_at:
+                self.spans.setdefault(e["node"], []).append(
+                    (open_at.pop(key), float(e["t"])))
+        self.rows = [n for n in self.nodes if n["node"] != self.root]
+
+    # -- state of one node at time t -----------------------------------
+    def _state(self, node, t):
+        sp = self.spans.get(node, [])
+        if not sp:
+            return "pending", 0.0
+        n_done = sum(1 for a, b in sp if b <= t)
+        live = any(a <= t < b for a, b in sp)
+        frac = n_done / len(sp)
+        if live:
+            return "active", frac
+        return ("done", 1.0) if n_done == len(sp) else (
+            ("pending", 0.0) if n_done == 0 else ("active", frac))
+
+    def current(self, t):
+        """The deepest node running right now, for the readout."""
+        best = None
+        for n in self.rows:
+            if any(a <= t < b for a, b in self.spans.get(n["node"], [])):
+                if best is None or n["depth"] >= best["depth"]:
+                    best = n
+        return best
+
+    def _chip(self, node):
+        """What FlashRT put in this seat, and what it turned down.
+
+        Both, when both happened: a stack whose fused form was refused can
+        still bind the pieces, and hiding either half of that would be the
+        one thing this pane exists to prevent.
+        """
+        s = self.seats.get(node)
+        if not s:
+            return []
+        out = []
+        if s["bound"]:
+            kinds = s["kinds"]
+            txt = (kinds[0] if len(kinds) == 1 else
+                   f"{kinds[0]} +{len(kinds) - 1}" if kinds else "bound")
+            out.append((txt, NATIVE if s["fallbacks"] else self.color))
+            if s["fallbacks"]:
+                out.append((f"{s['fallbacks']} fell back", NATIVE))
+        if s["refused"]:
+            out.append((f"\u00d7{s['refused']} refused", MUTED))
+        return out
+
+    def reason(self, node):
+        """Why a node was refused, in the ledger's own words."""
+        s = self.seats.get(node) or {}
+        why = [w for w in s.get("reasons", {})]
+        return why[0] if why else None
+
+    def paint_pane(self, im, d, x, y, pane, t):
+        d.rectangle([x, y, x + pane - 1, y + pane - 1], fill=CARD,
+                    outline=LINE)
+        head = f'{self.meta.get("model_class", "")}   ' \
+               f'{self.meta.get("n_modules", len(self.nodes))} modules'
+        d.text((x + 12, y + 9), head, MUTED, font=font(12))
+        top, bottom = y + 30, y + pane - 8
+        rows = self.rows
+        if not rows:
+            return
+        rh = max(13, min(30, (bottom - top) // len(rows)))
+        fits = max(1, (bottom - top) // rh)
+        # a tree taller than the pane scrolls to keep the running node in
+        # view, the way a debugger follows a stack
+        first = 0
+        if len(rows) > fits:
+            live = next((i for i, n in enumerate(rows)
+                         if self._state(n["node"], t)[0] == "active"), None)
+            if live is None:
+                live = sum(1 for n in rows
+                           if self._state(n["node"], t)[0] == "done") - 1
+            first = min(max(0, live - fits // 2), len(rows) - fits)
+        fs = max(9, min(14, rh - 6))
+        f_row, f_chip = font(fs), font(max(8, fs - 2))
+        for i, n in enumerate(rows[first:first + fits]):
+            ry = top + i * rh
+            ind = 10 + (n["depth"] - 1) * 12
+            x0, x1 = x + ind, x + pane - 10
+            state, frac = self._state(n["node"], t)
+            if state == "pending":
+                d.rectangle([x0, ry, x1, ry + rh - 3], outline=LINE)
+                ink, bar = MUTED, LINE
+            elif state == "active":
+                d.rectangle([x0, ry, x1, ry + rh - 3], fill=LINE,
+                            outline=self.color)
+                ink, bar = INK, self.color
+            else:
+                d.rectangle([x0, ry, x1, ry + rh - 3], outline=self.color)
+                ink, bar = INK, self.color
+            d.rectangle([x0, ry, x0 + 2, ry + rh - 3], fill=bar)
+            name = _short(n["node"])
+            if n["repeat"] > 1:
+                name += f'  \u00d7{n["repeat"]}'
+            d.text((x0 + 8, ry + (rh - 3 - fs) // 2 - 1), name, ink,
+                   font=f_row)
+            cx = x1 - 8
+            for txt, cc in reversed(self._chip(n["node"])):
+                cx -= d.textlength(txt, font=f_chip)
+                d.text((cx, ry + (rh - 3 - f_chip.size) // 2), txt,
+                       cc if state != "pending" else MUTED, font=f_chip)
+                cx -= 10
+            if n["repeat"] > 1 and state == "active":
+                d.rectangle([x0, ry + rh - 5,
+                             x0 + int((x1 - x0) * frac), ry + rh - 4],
+                            fill=self.color)
+        if len(rows) > fits:
+            d.text((x + pane - 40, y + 9), f"{first + fits}/{len(rows)}",
+                   MUTED, font=font(11))
+
+    def paint_readout(self, im, d, x, y, pane, t, fonts):
+        f_hz, f_unit, f_sub, f_small = fonts
+        if self.seats:
+            val, unit = str(self.meta.get("bound", 0)), "seats bound"
+            sub = f'{self.meta.get("refused", 0)} refused'
+        else:
+            val, unit = str(self.meta.get("n_modules", 0)), "modules"
+            sub = f'depth {self.meta.get("depth", 2)} · ' \
+                  f'{self.meta.get("n_groups", len(self.nodes))} groups'
+        d.text((x, y), val, self.color, font=f_hz)
+        w = d.textlength(val, font=f_hz)
+        d.text((x + w + 8, y + 30), unit, MUTED, font=f_unit)
+        d.text((x + w + 8, y + 6), sub, INK, font=f_sub)
+        now = self.current(t)
+        d.text((x, y + 62),
+               (f'{now["node"]}   {now["cls"]}' if now else
+                ("pass complete" if self.finished(t) else "entering")),
+               INK if now else MUTED, font=f_small)
+        # deliberately without the factor: a stretch is a duration, and a
+        # duration on this pane would be a performance figure
+        d.text((x, y + 80), "one forward pass, slowed for viewing", MUTED,
+               font=f_small)
+        fb = self.meta.get("fallbacks", 0)
+        why = self.reason(now["node"]) if now else None
+        if fb:
+            d.text((x, y + 98), f"{fb} silent fall-back(s) in the ledger",
+                   NATIVE, font=f_small)
+        elif why:
+            for j, ln in enumerate(wrap(d, why, f_small, pane)[:2]):
+                d.text((x, y + 98 + j * 16), ln, MUTED, font=f_small)
+
+
 KINDS = {"video": VideoArm, "stream": StreamArm,
-         "stream_batch": StreamBatchArm}
+         "stream_batch": StreamBatchArm, "arch": ArchArm}
 
 
-def _layout(n_panes, pane, footer):
-    """Canvas size for one chapter, and its wrapped footer lines."""
+def _layout(n_panes, pane, footer, extra=0):
+    """Canvas size for one chapter, and its wrapped footer lines.
+
+    `extra` is room a painter asked for under its readout — an `arch` pane
+    prints the ledger's refusal reason there.
+    """
     gap, pad, head = 26, 34, 168
     W = pad * 2 + pane * n_panes + gap * (n_panes - 1)
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
@@ -392,11 +582,11 @@ def _layout(n_panes, pane, footer):
     for para in (footer or "").split("\n"):
         if para:
             lines.extend(wrap(probe, para, font(13), W - pad * 2))
-    H = head + pane + 145 + 17 * len(lines) + 18
+    H = head + pane + 145 + extra + 17 * len(lines) + 18
     return W, H, lines
 
 
-def paint(chapter, t, W, H, pane, foot_lines):
+def paint(chapter, t, W, H, pane, foot_lines, extra=0):
     """One frame of one chapter, on the canvas the whole film shares."""
     gap, pad, head = 26, 34, 168
     arms = chapter["arms"]
@@ -432,7 +622,7 @@ def paint(chapter, t, W, H, pane, foot_lines):
         d.text((x, head - 46), a.label, a.color, font=f_lab)
         d.text((x, head - 24), a.sub, MUTED, font=f_sub)
         a.paint_readout(im, d, x, head + pane + 12, pane, t, fonts)
-        bar_y = head + pane + 132
+        bar_y = head + pane + 132 + extra
         width = int(pane * min(t / a.done_t, 1.0))
         d.rectangle([x, bar_y, x + pane, bar_y + 5], fill=LINE)
         d.rectangle([x, bar_y, x + width, bar_y + 5], fill=a.color)
@@ -448,10 +638,11 @@ def render(chapters, out_path, fps=30, pane=400, speed=1.0):
     """Render every chapter onto one canvas and encode them as one film."""
     sized = []
     for c in chapters:
-        W, H, lines = _layout(len(c["arms"]), pane, c.get("footer"))
-        sized.append((W, H, lines))
-    W = max(w for w, _, _ in sized)
-    H = max(h for _, h, _ in sized)
+        room = max((a.readout_extra for a in c["arms"]), default=0)
+        W, H, lines = _layout(len(c["arms"]), pane, c.get("footer"), room)
+        sized.append((W, H, lines, room))
+    W = max(w for w, _, _, _ in sized)
+    H = max(h for _, h, _, _ in sized)
 
     frames_dir = pathlib.Path(out_path).parent / "_race_frames"
     frames_dir.mkdir(parents=True, exist_ok=True)
@@ -459,11 +650,11 @@ def render(chapters, out_path, fps=30, pane=400, speed=1.0):
         old.unlink()
 
     k = 0
-    for c, (_, _, lines) in zip(chapters, sized):
+    for c, (_, _, lines, room) in zip(chapters, sized):
         span = (c["seconds"] if c.get("seconds") is not None
                 else max(a.done_t for a in c["arms"]) + c.get("tail", 2.0))
         for i in range(int(span / speed * fps)):
-            paint(c, i / fps * speed, W, H, pane, lines).save(
+            paint(c, i / fps * speed, W, H, pane, lines, room).save(
                 frames_dir / f"{k:05d}.jpg", quality=88)
             k += 1
 

@@ -18,8 +18,8 @@ demokit/
   record.py             one arm per process; maps --host to an adapter
   hosts/                8 host adapters (lerobot, openpi, Isaac-GR00T, native)
   pipelines/            4 recorders: Wan2.2, Qwen3-VL, Qwen3.6-35B, vLLM/SGLang
-  compose/race.py       stream / video / stream_batch panes
-  compose/sim.py        robot panes
+  compose/race_compose.py   stream / video / stream_batch / arch panes
+  compose/sim_compose.py    robot panes
 adapters/
   diffusers_cli_hook.py attach inside `diffusers-cli run`, no diffusers edit
 docs/PROTOCOL.md        the run-directory contract and the adapter protocols
@@ -45,6 +45,28 @@ demokit check runs/wan22/eager runs/wan22/attach    # names what would fail
 demokit draw  runs/wan22 --arms eager,attach --out wan22.webm \
     --title "Wan2.2 TI2V-5B" --subtitle "480x480 · 33 frames · 20 steps"
 ```
+
+## Recording the architecture
+
+`hook.on_tree` records the model's own module tree and one real pass through
+it: nodes from `named_modules()`, order from the order the forward hooks first
+fired. Recorded after an attach, `hook.seats` joins the structures receipt onto
+that tree by module path — so each node says what FlashRT put in it, whether it
+truly ran, and, where a seam was turned down, the ledger's reason.
+
+```python
+rec = hook.Recorder("arch", label="the same tree, after attach", color="ours")
+with hook.on_tree(rec, model, depth=4):
+    run_one_pass()
+hook.seats(rec, handle.report(),
+           refused=[{"path": p, "reason": why} for p, why in refusals])
+rec.write("runs/arch/attach")
+```
+
+Draw it beside the same tree recorded without FlashRT in the process and the
+distribution layer is visible rather than described. The pane carries no
+performance figure: one forward pass is milliseconds, so the recorder stretches
+the timestamps to make it watchable and says so on its face.
 
 Robot policies have their own path, because the LIBERO loop is shared:
 
@@ -96,6 +118,9 @@ Read [`docs/PROTOCOL.md`](docs/PROTOCOL.md), or hand an agent
 
 - **a diffusers / transformers host** — one `hook.Recorder` and one `with`
   block. No new script.
+- **its architecture** — `hook.on_tree` takes any `nn.Module`. Containers,
+  repeated stacks and engines that own their own model tree all read the same
+  way.
 - **a robot policy** — one host adapter plus one branch in
   `record.py:build_host()`; the loop, the timing and the event writing are done.
 - **something with no hook yet** — call `rec.stamp(...)` where the thing

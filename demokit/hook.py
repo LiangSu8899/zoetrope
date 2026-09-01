@@ -28,10 +28,11 @@ import statistics
 import time
 from typing import Any
 
-__all__ = ["Recorder", "on_tokens", "on_denoiser", "on_calls"]
+__all__ = ["Recorder", "on_tokens", "on_denoiser", "on_calls",
+           "on_tree", "seats"]
 
 #: pane accents the compositors know
-COLORS = ("stock", "compiled", "ours", "native")
+COLORS = ("stock", "compiled", "ours", "native", "accent")
 
 
 def _now() -> float:
@@ -236,3 +237,317 @@ def on_calls(rec: Recorder, module, event_kind: str = "step"):
     finally:
         module.forward = original
         rec.finish()
+
+
+# ---------------------------------------------------------------------
+# the module tree, as it actually ran
+# ---------------------------------------------------------------------
+
+def _fold_key(name: str) -> str:
+    """`blocks.7.attn1` and `blocks.8.attn1` are one node drawn once.
+
+    Every index segment collapses to `*`, so a repeated stack folds at any
+    depth. Only indices fold: `encoder.layer_norm` keeps its own row.
+    """
+    return ".".join("*" if part.isdigit() else part
+                    for part in name.split("."))
+
+
+class _Clock:
+    """Marks on the device timeline, read once at the end.
+
+    A forward hook that calls `cuda.synchronize()` measures the model plus
+    the stall it just caused. CUDA events are recorded on the stream and
+    only read after the run, so the hot path pays for the record alone.
+    On CPU this is `perf_counter` and the distinction does not arise.
+    """
+
+    def __init__(self):
+        self.cuda = False
+        try:
+            import torch
+            self.cuda = torch.cuda.is_available()
+            self._torch = torch
+        except Exception:                               # noqa: BLE001
+            pass
+
+    def mark(self):
+        if self.cuda:
+            e = self._torch.cuda.Event(enable_timing=True)
+            e.record()
+            return e
+        return _now()
+
+    def settle(self) -> None:
+        if self.cuda:
+            self._torch.cuda.synchronize()
+
+    def since(self, ref, mark) -> float:
+        """Seconds from `ref` to `mark`."""
+        if self.cuda:
+            return ref.elapsed_time(mark) / 1e3
+        return mark - ref
+
+
+@contextlib.contextmanager
+def on_tree(rec: Recorder, model, *, depth: int = 2, stretch: float | None = None,
+            target_s: float = 8.0, root_name: str = "<root>"):
+    """Record the module tree and one real pass through it.
+
+    Nodes come from `named_modules()`; edges come from the order the forward
+    hooks first fire, which is the order the model actually ran. A module
+    that never fires did not run in this pass — that is observed, not
+    guessed.
+
+        rec = hook.Recorder("arch", label="Wan2.2, as shipped", color="stock")
+        with hook.on_tree(rec, pipe.transformer):
+            pipe(prompt=..., num_inference_steps=2)
+        rec.write("runs/arch/stock")
+
+    One forward pass is milliseconds, so the events are stretched to
+    `target_s` seconds for viewing and the pane says by how much. Pass
+    `stretch=` to fix the factor instead.
+
+    Two things this gets right that a naive version does not:
+
+    * **Containers never fire.** `ModuleList` and `Sequential` have no
+      `forward`, so a parent link walks up to the nearest *recorded*
+      ancestor. Otherwise every block's time lands in the root.
+    * **The pass is the median one, not the first.** The first pass carries
+      warm-up and would pace the animation wrongly.
+    """
+    clock = _Clock()
+    spans: list[list] = []           # [name, pass_id, start_mark, end_mark]
+    order: list[str] = []
+    seen: set[str] = set()
+    info: dict[str, dict] = {}
+    passes = [0]
+    handles = []
+
+    def pre(name):
+        def f(mod, args):
+            spans.append([name, passes[0], clock.mark(), None])
+            if name not in seen:
+                seen.add(name)
+                order.append(name)
+        return f
+
+    def post(name):
+        def f(mod, args, out):
+            mark = clock.mark()
+            for s in reversed(spans):
+                if s[0] == name and s[3] is None:
+                    s[3] = mark
+                    break
+            if name == root_name:
+                passes[0] += 1
+        return f
+
+    for name, mod in model.named_modules():
+        d = 0 if name == "" else name.count(".") + 1
+        if d > depth:
+            continue
+        key = name or root_name
+        info[key] = {"cls": type(mod).__name__, "depth": d}
+        handles.append(mod.register_forward_pre_hook(pre(key)))
+        handles.append(mod.register_forward_hook(post(key)))
+
+    ref = clock.mark()
+    rec.start()
+    try:
+        yield rec
+    finally:
+        for h in handles:
+            h.remove()
+        clock.settle()
+        _resolve_tree(rec, clock, ref, spans, order, info, depth,
+                      root_name, stretch, target_s,
+                      type(model).__name__)
+
+
+def _resolve_tree(rec, clock, ref, spans, order, info, depth, root_name,
+                  stretch, target_s, model_class) -> None:
+    """Turn recorded marks into a folded tree and one pass of events."""
+    done = [s for s in spans if s[3] is not None]
+    if not done:
+        raise RuntimeError("no module fired: is this the module that runs?")
+
+    # A container (`ModuleList`, `Sequential`) has no forward, so it never
+    # fires and is not in `order`. Parent links walk up to the nearest
+    # ancestor that did fire, or every child's time lands in the root.
+    fired = set(order)
+    for name in order:
+        head, parent = name, None
+        while "." in head:
+            head = head.rsplit(".", 1)[0]
+            if head in fired:
+                parent = head
+                break
+        info[name]["parent"] = (
+            None if name == root_name else (parent or root_name))
+
+    # every span, on one timeline in seconds from the reference mark
+    timed = [(n, p, clock.since(ref, a), clock.since(ref, b))
+             for n, p, a, b in done]
+
+    # the representative pass: the median root call, never the first
+    roots = sorted((t1 - t0, p) for n, p, t0, t1 in timed if n == root_name)
+    if roots:
+        pick = roots[len(roots) // 2][1]
+    else:                                     # no root span: take pass 0
+        pick = min(p for _, p, _, _ in timed)
+    pass_spans = [s for s in timed if s[1] == pick]
+    base = min(t0 for _, _, t0, _ in pass_spans)
+    span_s = max(t1 for _, _, _, t1 in pass_spans) - base
+    if stretch is None:
+        stretch = round(target_s / span_s, 2) if span_s > 1e-9 else 1.0
+
+    # fold identical siblings, but only when they really are identical
+    families: dict[str, list[str]] = {}
+    for name in order:
+        families.setdefault(_fold_key(name), []).append(name)
+    fold: dict[str, str] = {}
+    for key, members in families.items():
+        classes = {info[m]["cls"] for m in members}
+        if "*" in key.split(".") and len(classes) == 1 and len(members) > 1:
+            for m in members:
+                fold[m] = key
+        else:
+            for m in members:
+                fold[m] = m
+
+    calls: dict[str, int] = {}
+    incl: dict[str, float] = {}
+    for n, _, t0, t1 in timed:
+        k = fold[n]
+        calls[k] = calls.get(k, 0) + 1
+        incl[k] = incl.get(k, 0.0) + (t1 - t0)
+
+    nodes, place = [], {}
+    for name in order:
+        k = fold[name]
+        if k in place:
+            continue
+        members = families[_fold_key(name)] if "*" in k.split(".") else [name]
+        place[k] = len(nodes)
+        parent = info[name]["parent"]
+        nodes.append({
+            "node": k,
+            "cls": info[name]["cls"],
+            "depth": info[name]["depth"],
+            "parent": fold.get(parent, parent),
+            "repeat": len(members),
+            "calls": calls.get(k, 0),
+        })
+    for nd in nodes:                    # self time, after the fold
+        kids = sum(incl.get(c["node"], 0.0) for c in nodes
+                   if c["parent"] == nd["node"])
+        nd["incl_ms"] = round(incl.get(nd["node"], 0.0) * 1e3, 3)
+        nd["self_ms"] = round(nd["incl_ms"] - kids * 1e3, 3)
+
+    index = {}
+    for key, members in families.items():
+        for i, m in enumerate(members):
+            index[m] = i
+    for n, _, t0, t1 in sorted(pass_spans, key=lambda s: s[2]):
+        k = fold[n]
+        tag = {"idx": index[n]} if "*" in k.split(".") else {}
+        rec.events.append({"t": round((t0 - base) * stretch, 6),
+                           "kind": "enter", "node": k, **tag})
+        rec.events.append({"t": round((t1 - base) * stretch, 6),
+                           "kind": "exit", "node": k, **tag})
+    rec.events.sort(key=lambda e: e["t"])
+
+    rec.meta.update({
+        "model_class": model_class,
+        "depth": depth,
+        "nodes": nodes,
+        "n_modules": len(order),
+        "n_groups": len(nodes),
+        "passes": max(p for _, p, _, _ in timed) + 1,
+        "pass_ms": round(span_s * 1e3, 3),
+        "stretch": stretch,
+        "_timing_note": "hook-perturbed, and it paces the animation. "
+                        "Never quote it as a performance figure.",
+    })
+    rec.meta["done_s"] = round(span_s * stretch, 4)
+
+
+def seats(rec: Recorder, report: dict, refused=None) -> Recorder:
+    """Join a structures receipt onto the tree, by module path.
+
+    Call after `on_tree` and before `write`. The keys of `handle.report()`
+    *are* module paths, so this is a join rather than a guess, and it is the
+    one thing a tool that reads source code cannot produce: which node was
+    replaced, what it became, whether it truly ran, and — through `refused`
+    — why a node was left alone.
+
+        with hook.on_tree(rec, model):
+            run()
+        hook.seats(rec, handle.report(), refused=handle.refusals())
+
+    `refused` takes a mapping of path to reason, a list of
+    `{"path", "reason"}`, or a bare count when the ledger is not to hand.
+    """
+    nodes = rec.meta.get("nodes")
+    if not nodes:
+        raise RuntimeError("call on_tree before seats: there is no tree yet")
+    names = {n["node"] for n in nodes}
+
+    def owner(path: str) -> str | None:
+        """The deepest drawn node this path sits under."""
+        parts = path.split(".")
+        for i in range(len(parts), 0, -1):
+            head = ".".join(parts[:i])
+            for cand in (head, _fold_key(head)):
+                if cand in names:
+                    return cand
+        return rec.meta.get("_root", "<root>") if "<root>" in names else None
+
+    seat: dict[str, dict] = {}
+
+    def slot(node):
+        return seat.setdefault(node, {
+            "bound": 0, "refused": 0, "calls": 0, "fallbacks": 0,
+            "detached": 0, "kinds": [], "reasons": {}})
+
+    for key, entry in (report or {}).items():
+        node = owner(str(key).split("::", 1)[0])
+        if node is None:
+            continue
+        s = slot(node)
+        s["bound"] += 1
+        s["calls"] += int(entry.get("calls", 0) or 0)
+        s["fallbacks"] += int(entry.get("fallbacks", 0) or 0)
+        s["detached"] += 1 if entry.get("detached") else 0
+        kind = entry.get("kind")
+        if kind and kind not in s["kinds"]:
+            s["kinds"].append(kind)
+        why = entry.get("last_reason")
+        if why:
+            s["reasons"][str(why)] = s["reasons"].get(str(why), 0) + 1
+
+    n_refused = 0
+    if isinstance(refused, int):
+        n_refused = refused
+    elif refused:
+        items = (refused.items() if isinstance(refused, dict) else
+                 [(r.get("path", ""), r.get("reason", "")) for r in refused])
+        for path, why in items:
+            n_refused += 1
+            node = owner(str(path).split("::", 1)[0])
+            if node is None:
+                continue
+            s = slot(node)
+            s["refused"] += 1
+            why = str(why or "no reason recorded")
+            s["reasons"][why] = s["reasons"].get(why, 0) + 1
+
+    for s in seat.values():
+        s["kinds"].sort()
+    rec.meta["seats"] = seat
+    rec.meta["bound"] = sum(s["bound"] for s in seat.values())
+    rec.meta["refused"] = (n_refused if isinstance(refused, int)
+                           else sum(s["refused"] for s in seat.values()))
+    rec.meta["fallbacks"] = sum(s["fallbacks"] for s in seat.values())
+    return rec

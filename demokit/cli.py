@@ -21,6 +21,7 @@ NEEDS = {
     "video":        ("steps", "ms_per_step"),
     "stream_batch": ("concurrency", "aggregate_tok_s",
                      "decode_tok_s_per_stream", "ttft_ms_median"),
+    "arch":         ("nodes", "depth", "stretch", "model_class"),
 }
 #: Robot rollouts predate the race contract and carry their own meta. They are
 #: read by compose/sim.py, which derives the wall clock from `infer_ms` and the
@@ -71,6 +72,16 @@ def check(path: pathlib.Path) -> list[str]:
                 bad.append(f"{path}: a {kind} pane needs meta[{k!r}]")
         if kind == "video" and not (path / "frames.npy").exists():
             bad.append(f"{path}: a video pane needs frames.npy")
+        if kind == "arch":
+            nodes = meta.get("nodes") or []
+            names = {n.get("node") for n in nodes}
+            for n in nodes:
+                if n.get("parent") not in names and n.get("parent") is not None:
+                    bad.append(f"{path}: node {n.get('node')!r} hangs off "
+                               f"{n.get('parent')!r}, which is not in the tree")
+            fired = {e.get("node") for e in events}
+            for n in fired - names:
+                bad.append(f"{path}: an event names {n!r}, absent from nodes")
     if events:
         ts = [e.get("t") for e in events]
         if any(t is None for t in ts):

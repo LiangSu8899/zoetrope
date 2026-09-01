@@ -53,7 +53,7 @@ run each arm  →  runs/<film>/<arm>/events.json   (+ frames.npy if it has pixel
 from demokit import hook
 
 rec = hook.Recorder(
-    "video",                       # stream | video | stream_batch | loop
+    "video",                       # stream | video | stream_batch | loop | arch
     label="+ FlashRT structures",  # the pane header
     sub="auto_swaps, nvfp4_balance",
     color="ours")                  # stock | compiled | ours | native
@@ -64,16 +64,33 @@ with hook.on_denoiser(rec, pipe):  # stamps every denoiser call, restores on exi
 rec.frames(np.asarray(out.frames[0])).write("runs/wan22/attach")
 ```
 
-Three hooks, by what the host is:
+Four hooks, by what the host is:
 
 | host | hook |
 |---|---|
 | a diffusers pipeline | `hook.on_denoiser(rec, pipe)` |
 | any module you want one stamp per call from | `hook.on_calls(rec, module)` |
 | a `transformers` generate | `with hook.on_tokens(rec, tokenizer): model.generate(..., streamer=rec.streamer)` |
+| the model's own structure | `hook.on_tree(rec, model, depth=4)` |
 
 Anything else: call `rec.stamp(...)` yourself at the moment the thing arrives.
 That is all a hook does.
+
+## Recording the architecture
+
+`hook.on_tree` is the odd one out: it records structure, not speed. Nodes come
+from `named_modules()`, edges from the order the forward hooks first fired.
+After an attach, `hook.seats(rec, handle.report(), refused=...)` joins the
+receipt onto that tree by module path, so each node says what FlashRT put in
+it, whether it truly ran, and where a seam was turned down, why.
+
+Record the same tree twice — once with no FlashRT in the process, once after
+attach — and draw the two arms side by side.
+
+Two rules for this pane. **No performance figure goes on it**, ever: a forward
+pass is milliseconds, the recorder stretches it to make it watchable, and the
+node timings exist only to pace that. And **a refusal is drawn, never
+dropped** — it is the half of the picture that explains the other half.
 
 `ttft_ms`, `decode_tok_s`, `ms_per_step` and friends are derived from the
 timestamps on write — do not pass them unless you measured them a different way
