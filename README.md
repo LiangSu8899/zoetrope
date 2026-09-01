@@ -59,6 +59,18 @@ number a person can hold in their head, which a kernel taxonomy is not.
 one shared memory bar, two counters, and a race on the measured wall clock.
 The arms are ordinary `runtime` runs.
 
+Both lanes span the full width, because both do the same job — one decision.
+So **length is the work, the sweep is the clock, and the density of the marks
+is the trips it took**. A lane that stopped a fifth of the way across would
+read as an arm that did less, which is the opposite of the point.
+
+Each trip crosses the gap as it really happened: the recorded launch
+timestamps drive the animation, so the bursts and the gaps are the shape of
+the run and not a loop. Colour says what the trip was for, on the same
+palette both sides, which makes the storms themselves the comparison — the
+shipped host's is grey, operands being moved; the native one's is gold and
+green, arithmetic and the quantizing that feeds it.
+
 ```bash
 python -m demokit.compose.trips_compose --runs examples/runs/trips \
     --arms torch,fp8 --gate compiled --out why.webm
