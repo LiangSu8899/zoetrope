@@ -52,7 +52,7 @@ class Lane:
         return self.shown(t, slow_ms) >= self.trips
 
 
-def paint(lanes, t, slow_ms, peak, note=None):
+def paint(lanes, t, slow_ms, peak, note=None, gate=None):
     im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
 
@@ -107,19 +107,32 @@ def paint(lanes, t, slow_ms, peak, note=None):
     if t > LEAD + RACE + 0.4:
         fast = min(lanes, key=lambda a: a.ms)
         slow = max(lanes, key=lambda a: a.ms)
-        line = (f"{slow.ms:.0f} ms  →  {fast.ms:.0f} ms")
-        d.text((LX, H - 112), line, INK, font=font(46, True))
-        d.text((LX + d.textlength(line, font=font(46, True)) + 34, H - 96),
-               f"{slow.trips / fast.trips:.1f}x fewer trips   ·   "
-               f"{slow.ms / fast.ms:.1f}x the speed", MUTED, font=font(22))
+        line = f"{slow.ms:.0f} ms  \u2192  {fast.ms:.0f} ms"
+        f_end = font(46, True)
+        d.text((LX, H - 112), line, INK, font=f_end)
+        # Two baselines, because one of them is the one that judges: the
+        # host as shipped is what a reader recognises, and the compiled
+        # host is what the claim has to survive.
+        # the trips ratio is already on screen twice, in the counters
+        tail = (f"{slow.ms / fast.ms:.1f}x over PyTorch as shipped"
+                + (f"   \u00b7   {gate.ms / fast.ms:.1f}x over torch.compile"
+                   if gate else ""))
+        tx = LX + d.textlength(line, font=f_end) + 34
+        f_tail = font(21)
+        while (d.textlength(tail, font=f_tail) > RX - tx
+               and f_tail.size > 12):
+            f_tail = font(f_tail.size - 1)
+        d.text((tx, H - 94), tail, MUTED, font=f_tail)
     if note:
         for j, ln in enumerate(wrap(d, note, font(14), RX - LX)[:2]):
             d.text((LX, H - 44 + j * 18), ln, MUTED, font=font(14))
     return im
 
 
-def render(runs, out_path, *, fps=30, note=None):
+def render(runs, out_path, *, fps=30, note=None, gate=None):
+    """`gate` is the baseline the claim must survive, named but not drawn."""
     lanes = [Lane(r, above=(i == 0)) for i, r in enumerate(runs)]
+    gate = Lane(gate, above=True) if gate else None
     slow_ms = max(a.ms for a in lanes)
     peak = max(a.trips for a in lanes)
     frames = pathlib.Path(out_path).parent / "_trip_frames"
@@ -129,7 +142,7 @@ def render(runs, out_path, *, fps=30, note=None):
     total = LEAD + RACE + TAIL
     k = 0
     for i in range(int(total * fps)):
-        paint(lanes, i / fps, slow_ms, peak, note).save(
+        paint(lanes, i / fps, slow_ms, peak, note, gate).save(
             frames / f"{k:05d}.jpg", quality=92)
         k += 1
     subprocess.run([
@@ -150,10 +163,11 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--fps", type=int, default=30)
     ap.add_argument("--note")
+    ap.add_argument("--gate", help="the compiled baseline, named in the tail")
     a = ap.parse_args()
     root = pathlib.Path(a.runs)
     render([root / n.strip() for n in a.arms.split(",")], a.out, fps=a.fps,
-           note=a.note)
+           note=a.note, gate=(root / a.gate) if a.gate else None)
 
 
 if __name__ == "__main__":

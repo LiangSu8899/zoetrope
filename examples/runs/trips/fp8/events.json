@@ -442,7 +442,7 @@
   "min_ms": 21.933,
   "p90_ms": 22.507,
   "decision_ms": 22.344,
-  "_example_note": "pi0.5 on LIBERO spatial task 0, RTX 5090, both arms driving the simulator with their own actions. The launch count is profiled once; the time is a median of 50 taken afterwards with the profiler off, so the instrument is not in the number it reports."
+  "_example_note": "pi0.5 on LIBERO spatial task 0, RTX 5090, each arm driving the simulator with its own actions. The launch count is profiled after eight calls; the time is a median of 50 taken afterwards with the profiler off, so the instrument is not in the number it reports."
  },
  "events": [
   {
