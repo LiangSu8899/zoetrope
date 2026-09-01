@@ -66,7 +66,15 @@ def _patch_tokenizer(model_path: pathlib.Path) -> None:
     original = transformers.AutoTokenizer.from_pretrained
 
     def from_pretrained(name, *args, **kwargs):
-        if str(name) == "google/paligemma-3b-pt-224":
+        # The checkpoint's processor config names the tokenizer by whatever
+        # path it was trained against -- often a directory inside someone
+        # else's container. A hub id resolves; an absent absolute path is
+        # the same request, spelled locally.
+        text = str(name)
+        if text == "google/paligemma-3b-pt-224":
+            return local
+        if ("/" in text and not pathlib.Path(text).exists()
+                and "paligemma" in text.lower()):
             return local
         return original(name, *args, **kwargs)
 
@@ -126,6 +134,15 @@ class LeRobotPi05Host:
             pathlib.Path(tmp).unlink(missing_ok=True)
 
     def build(self):
+        from lerobot_policies import import_policies
+
+        # `lerobot.policies.__init__` imports every family; one that does
+        # not load in this environment would take pi05 down with it
+        self._stubbed = import_policies(need="pi05")
+        if self._stubbed:
+            print(f"[lerobot] stubbed unused policy families: "
+                  f"{sorted(self._stubbed)}", flush=True)
+
         from lerobot.policies.pi05.modeling_pi05 import PI05Policy
         from lerobot.processor import PolicyProcessorPipeline
         from lerobot.processor.converters import (batch_to_transition,
@@ -172,6 +189,7 @@ class LeRobotPi05Host:
             "compile_mode": self.compile_mode,
             "timed_region": "PI05Policy.predict_action_chunk",
             "flash_attn": self._flash_attn,
+            "stubbed_policies": self._stubbed,
         })
 
     # -- the model call ------------------------------------------------

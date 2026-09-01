@@ -253,6 +253,19 @@ def _fold_key(name: str) -> str:
                     for part in name.split("."))
 
 
+def _overlap(outer, inner) -> float:
+    """Seconds of `inner` that fall inside `outer`. Both sorted by start."""
+    total, j = 0.0, 0
+    for a0, a1 in outer:
+        while j < len(inner) and inner[j][1] <= a0:
+            j += 1
+        k = j
+        while k < len(inner) and inner[k][0] < a1:
+            total += max(0.0, min(a1, inner[k][1]) - max(a0, inner[k][0]))
+            k += 1
+    return total
+
+
 class _Clock:
     """Marks on the device timeline, read once at the end.
 
@@ -418,10 +431,14 @@ def _resolve_tree(rec, clock, ref, spans, order, info, depth, root_name,
 
     calls: dict[str, int] = {}
     incl: dict[str, float] = {}
+    windows: dict[str, list[tuple[float, float]]] = {}
     for n, _, t0, t1 in timed:
         k = fold[n]
         calls[k] = calls.get(k, 0) + 1
         incl[k] = incl.get(k, 0.0) + (t1 - t0)
+        windows.setdefault(k, []).append((t0, t1))
+    for w in windows.values():
+        w.sort()
 
     nodes, place = [], {}
     for name in order:
@@ -439,9 +456,15 @@ def _resolve_tree(rec, clock, ref, spans, order, info, depth, root_name,
             "repeat": len(members),
             "calls": calls.get(k, 0),
         })
-    for nd in nodes:                    # self time, after the fold
-        kids = sum(incl.get(c["node"], 0.0) for c in nodes
-                   if c["parent"] == nd["node"])
+    for nd in nodes:
+        # A child's time counts against its parent only where the two
+        # really overlap. An engine that calls part of the tree from its
+        # own entry point -- vLLM computes logits outside `forward` -- has
+        # children that ran while the parent was not on the stack, and
+        # subtracting those wholesale drives self time negative.
+        own = windows.get(nd["node"], [])
+        kids = sum(_overlap(own, windows.get(c["node"], []))
+                   for c in nodes if c["parent"] == nd["node"])
         nd["incl_ms"] = round(incl.get(nd["node"], 0.0) * 1e3, 3)
         nd["self_ms"] = round(nd["incl_ms"] - kids * 1e3, 3)
 

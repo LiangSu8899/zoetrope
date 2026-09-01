@@ -1,0 +1,2339 @@
+{
+ "meta": {
+  "kind": "arch",
+  "label": "the same engine, seats bound at load",
+  "sub": "flash_rt.structures.adapters.vllm_engine",
+  "color": "ours",
+  "model_class": "Qwen3ForCausalLM",
+  "depth": 4,
+  "nodes": [
+   {
+    "node": "<root>",
+    "cls": "Qwen3ForCausalLM",
+    "depth": 0,
+    "parent": null,
+    "repeat": 1,
+    "calls": 8,
+    "incl_ms": 87.416,
+    "self_ms": 0.332
+   },
+   {
+    "node": "model.embed_tokens",
+    "cls": "VocabParallelEmbedding",
+    "depth": 2,
+    "parent": "<root>",
+    "repeat": 1,
+    "calls": 8,
+    "incl_ms": 0.255,
+    "self_ms": 0.255
+   },
+   {
+    "node": "model.layers.*",
+    "cls": "Qwen3DecoderLayer",
+    "depth": 3,
+    "parent": "<root>",
+    "repeat": 36,
+    "calls": 288,
+    "incl_ms": 86.793,
+    "self_ms": 5.503
+   },
+   {
+    "node": "model.layers.*.input_layernorm",
+    "cls": "RMSNorm",
+    "depth": 4,
+    "parent": "model.layers.*",
+    "repeat": 36,
+    "calls": 288,
+    "incl_ms": 1.434,
+    "self_ms": 1.434
+   },
+   {
+    "node": "model.layers.*.self_attn",
+    "cls": "Qwen3Attention",
+    "depth": 4,
+    "parent": "model.layers.*",
+    "repeat": 36,
+    "calls": 288,
+    "incl_ms": 47.26,
+    "self_ms": 47.26
+   },
+   {
+    "node": "model.layers.*.post_attention_layernorm",
+    "cls": "RMSNorm",
+    "depth": 4,
+    "parent": "model.layers.*",
+    "repeat": 36,
+    "calls": 288,
+    "incl_ms": 4.065,
+    "self_ms": 4.065
+   },
+   {
+    "node": "model.layers.*.mlp",
+    "cls": "Qwen2MLP",
+    "depth": 4,
+    "parent": "model.layers.*",
+    "repeat": 36,
+    "calls": 288,
+    "incl_ms": 28.53,
+    "self_ms": 28.53
+   },
+   {
+    "node": "model.norm",
+    "cls": "RMSNorm",
+    "depth": 2,
+    "parent": "<root>",
+    "repeat": 1,
+    "calls": 8,
+    "incl_ms": 0.036,
+    "self_ms": 0.036
+   },
+   {
+    "node": "logits_processor",
+    "cls": "LogitsProcessor",
+    "depth": 1,
+    "parent": "<root>",
+    "repeat": 1,
+    "calls": 8,
+    "incl_ms": 2.281,
+    "self_ms": 2.281
+   }
+  ],
+  "n_modules": 184,
+  "n_groups": 9,
+  "passes": 9,
+  "pass_ms": 11.49,
+  "stretch": 696.26,
+  "_timing_note": "hook-perturbed, and it paces the animation. Never quote it as a performance figure.",
+  "done_s": 7.9999,
+  "seats": {
+   "model.layers.*.mlp": {
+    "bound": 72,
+    "refused": 0,
+    "calls": 72,
+    "fallbacks": 0,
+    "detached": 0,
+    "kinds": [
+     "LinearProjNvfp4Dynamic"
+    ],
+    "reasons": {}
+   },
+   "model.layers.*.self_attn": {
+    "bound": 72,
+    "refused": 0,
+    "calls": 72,
+    "fallbacks": 0,
+    "detached": 0,
+    "kinds": [
+     "LinearProjNvfp4Dynamic"
+    ],
+    "reasons": {}
+   }
+  },
+  "bound": 144,
+  "refused": 0,
+  "fallbacks": 0,
+  "_example_note": "Qwen3-8B on vLLM 0.27, recorded inside the engine's worker: one forward pass of the tree the engine built for itself. The node timings pace the animation and are perturbed by the hooks that collected them; nothing here is a performance figure."
+ },
+ "events": [
+  {
+   "t": 0.0,
+   "kind": "enter",
+   "node": "logits_processor"
+  },
+  {
+   "t": 0.195531,
+   "kind": "exit",
+   "node": "logits_processor"
+  },
+  {
+   "t": 0.485935,
+   "kind": "enter",
+   "node": "<root>"
+  },
+  {
+   "t": 0.499101,
+   "kind": "enter",
+   "node": "model.embed_tokens"
+  },
+  {
+   "t": 0.519733,
+   "kind": "exit",
+   "node": "model.embed_tokens"
+  },
+  {
+   "t": 0.527419,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 0
+  },
+  {
+   "t": 0.532365,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 0
+  },
+  {
+   "t": 0.553555,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 0
+  },
+  {
+   "t": 0.559302,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 0
+  },
+  {
+   "t": 0.721304,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 0
+  },
+  {
+   "t": 0.72861,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 0
+  },
+  {
+   "t": 0.740331,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 0
+  },
+  {
+   "t": 0.745566,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 0
+  },
+  {
+   "t": 0.812541,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 0
+  },
+  {
+   "t": 0.813077,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 0
+  },
+  {
+   "t": 0.813343,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 1
+  },
+  {
+   "t": 0.813587,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 1
+  },
+  {
+   "t": 0.815815,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 1
+  },
+  {
+   "t": 0.819226,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 1
+  },
+  {
+   "t": 0.94366,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 1
+  },
+  {
+   "t": 0.950032,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 1
+  },
+  {
+   "t": 0.959769,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 1
+  },
+  {
+   "t": 0.964648,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 1
+  },
+  {
+   "t": 1.030018,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 1
+  },
+  {
+   "t": 1.030576,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 1
+  },
+  {
+   "t": 1.03082,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 2
+  },
+  {
+   "t": 1.031089,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 2
+  },
+  {
+   "t": 1.033986,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 2
+  },
+  {
+   "t": 1.034831,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 2
+  },
+  {
+   "t": 1.153452,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 2
+  },
+  {
+   "t": 1.159712,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 2
+  },
+  {
+   "t": 1.169295,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 2
+  },
+  {
+   "t": 1.174195,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 2
+  },
+  {
+   "t": 1.241459,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 2
+  },
+  {
+   "t": 1.242439,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 2
+  },
+  {
+   "t": 1.242707,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 3
+  },
+  {
+   "t": 1.242951,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 3
+  },
+  {
+   "t": 1.245159,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 3
+  },
+  {
+   "t": 1.250125,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 3
+  },
+  {
+   "t": 1.37465,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 3
+  },
+  {
+   "t": 1.381357,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 3
+  },
+  {
+   "t": 1.391585,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 3
+  },
+  {
+   "t": 1.396754,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 3
+  },
+  {
+   "t": 1.463484,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 3
+  },
+  {
+   "t": 1.464063,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 3
+  },
+  {
+   "t": 1.464307,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 4
+  },
+  {
+   "t": 1.464575,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 4
+  },
+  {
+   "t": 1.46747,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 4
+  },
+  {
+   "t": 1.469053,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 4
+  },
+  {
+   "t": 1.588008,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 4
+  },
+  {
+   "t": 1.594402,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 4
+  },
+  {
+   "t": 1.603982,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 4
+  },
+  {
+   "t": 1.608707,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 4
+  },
+  {
+   "t": 1.673097,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 4
+  },
+  {
+   "t": 1.673519,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 4
+  },
+  {
+   "t": 1.673787,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 5
+  },
+  {
+   "t": 1.674032,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 5
+  },
+  {
+   "t": 1.677083,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 5
+  },
+  {
+   "t": 1.6786,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 5
+  },
+  {
+   "t": 1.795149,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 5
+  },
+  {
+   "t": 1.801165,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 5
+  },
+  {
+   "t": 1.811101,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 5
+  },
+  {
+   "t": 1.815645,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 5
+  },
+  {
+   "t": 1.881284,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 5
+  },
+  {
+   "t": 1.881751,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 5
+  },
+  {
+   "t": 1.882019,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 6
+  },
+  {
+   "t": 1.882867,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 6
+  },
+  {
+   "t": 1.885985,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 6
+  },
+  {
+   "t": 1.888503,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 6
+  },
+  {
+   "t": 2.004738,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 6
+  },
+  {
+   "t": 2.011399,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 6
+  },
+  {
+   "t": 2.020648,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 6
+  },
+  {
+   "t": 2.025705,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 6
+  },
+  {
+   "t": 2.090607,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 6
+  },
+  {
+   "t": 2.091521,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 6
+  },
+  {
+   "t": 2.091765,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 7
+  },
+  {
+   "t": 2.092034,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 7
+  },
+  {
+   "t": 2.095176,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 7
+  },
+  {
+   "t": 2.09542,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 7
+  },
+  {
+   "t": 2.234449,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 7
+  },
+  {
+   "t": 2.240354,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 7
+  },
+  {
+   "t": 2.251071,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 7
+  },
+  {
+   "t": 2.256083,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 7
+  },
+  {
+   "t": 2.321187,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 7
+  },
+  {
+   "t": 2.321811,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 7
+  },
+  {
+   "t": 2.322077,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 8
+  },
+  {
+   "t": 2.322321,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 8
+  },
+  {
+   "t": 2.325174,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 8
+  },
+  {
+   "t": 2.327134,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 8
+  },
+  {
+   "t": 2.446915,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 8
+  },
+  {
+   "t": 2.45351,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 8
+  },
+  {
+   "t": 2.463178,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 8
+  },
+  {
+   "t": 2.468325,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 8
+  },
+  {
+   "t": 2.534075,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 8
+  },
+  {
+   "t": 2.534965,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 8
+  },
+  {
+   "t": 2.535233,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 9
+  },
+  {
+   "t": 2.535478,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 9
+  },
+  {
+   "t": 2.538351,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 9
+  },
+  {
+   "t": 2.539355,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 9
+  },
+  {
+   "t": 2.657508,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 9
+  },
+  {
+   "t": 2.664079,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 9
+  },
+  {
+   "t": 2.673883,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 9
+  },
+  {
+   "t": 2.678762,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 9
+  },
+  {
+   "t": 2.743263,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 9
+  },
+  {
+   "t": 2.743845,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 9
+  },
+  {
+   "t": 2.744089,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 10
+  },
+  {
+   "t": 2.744355,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 10
+  },
+  {
+   "t": 2.747253,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 10
+  },
+  {
+   "t": 2.748166,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 10
+  },
+  {
+   "t": 2.862731,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 10
+  },
+  {
+   "t": 2.868859,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 10
+  },
+  {
+   "t": 2.878373,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 10
+  },
+  {
+   "t": 2.883384,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 10
+  },
+  {
+   "t": 2.949023,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 10
+  },
+  {
+   "t": 2.949982,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 10
+  },
+  {
+   "t": 2.95025,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 11
+  },
+  {
+   "t": 2.950962,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 11
+  },
+  {
+   "t": 2.954013,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 11
+  },
+  {
+   "t": 2.95426,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 11
+  },
+  {
+   "t": 3.064013,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 11
+  },
+  {
+   "t": 3.07074,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 11
+  },
+  {
+   "t": 3.080209,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 11
+  },
+  {
+   "t": 3.084976,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 11
+  },
+  {
+   "t": 3.15037,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 11
+  },
+  {
+   "t": 3.150928,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 11
+  },
+  {
+   "t": 3.151194,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 12
+  },
+  {
+   "t": 3.151441,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 12
+  },
+  {
+   "t": 3.15436,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 12
+  },
+  {
+   "t": 3.155204,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 12
+  },
+  {
+   "t": 3.266494,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 12
+  },
+  {
+   "t": 3.274651,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 12
+  },
+  {
+   "t": 3.284298,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 12
+  },
+  {
+   "t": 3.28931,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 12
+  },
+  {
+   "t": 3.354257,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 12
+  },
+  {
+   "t": 3.354613,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 12
+  },
+  {
+   "t": 3.35486,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 13
+  },
+  {
+   "t": 3.355126,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 13
+  },
+  {
+   "t": 3.358268,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 13
+  },
+  {
+   "t": 3.359227,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 13
+  },
+  {
+   "t": 3.472811,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 13
+  },
+  {
+   "t": 3.478872,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 13
+  },
+  {
+   "t": 3.488742,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 13
+  },
+  {
+   "t": 3.493666,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 13
+  },
+  {
+   "t": 3.558614,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 13
+  },
+  {
+   "t": 3.559483,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 13
+  },
+  {
+   "t": 3.559727,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 14
+  },
+  {
+   "t": 3.559971,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 14
+  },
+  {
+   "t": 3.56289,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 14
+  },
+  {
+   "t": 3.563783,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 14
+  },
+  {
+   "t": 3.674626,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 14
+  },
+  {
+   "t": 3.680998,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 14
+  },
+  {
+   "t": 3.690156,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 14
+  },
+  {
+   "t": 3.695415,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 14
+  },
+  {
+   "t": 3.760674,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 14
+  },
+  {
+   "t": 3.761253,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 14
+  },
+  {
+   "t": 3.761521,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 15
+  },
+  {
+   "t": 3.761765,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 15
+  },
+  {
+   "t": 3.76466,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 15
+  },
+  {
+   "t": 3.765508,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 15
+  },
+  {
+   "t": 3.877153,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 15
+  },
+  {
+   "t": 3.88297,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 15
+  },
+  {
+   "t": 3.892261,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 15
+  },
+  {
+   "t": 3.896896,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 15
+  },
+  {
+   "t": 3.962444,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 15
+  },
+  {
+   "t": 3.963023,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 15
+  },
+  {
+   "t": 3.963267,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 16
+  },
+  {
+   "t": 3.963535,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 16
+  },
+  {
+   "t": 3.966433,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 16
+  },
+  {
+   "t": 3.967368,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 16
+  },
+  {
+   "t": 4.081957,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 16
+  },
+  {
+   "t": 4.087369,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 16
+  },
+  {
+   "t": 4.096995,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 16
+  },
+  {
+   "t": 4.101741,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 16
+  },
+  {
+   "t": 4.168649,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 16
+  },
+  {
+   "t": 4.168915,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 16
+  },
+  {
+   "t": 4.169162,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 17
+  },
+  {
+   "t": 4.169406,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 17
+  },
+  {
+   "t": 4.172479,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 17
+  },
+  {
+   "t": 4.179297,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 17
+  },
+  {
+   "t": 4.296292,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 17
+  },
+  {
+   "t": 4.302552,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 17
+  },
+  {
+   "t": 4.312157,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 17
+  },
+  {
+   "t": 4.317102,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 17
+  },
+  {
+   "t": 4.382807,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 17
+  },
+  {
+   "t": 4.383051,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 17
+  },
+  {
+   "t": 4.383943,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 18
+  },
+  {
+   "t": 4.384188,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 18
+  },
+  {
+   "t": 4.387086,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 18
+  },
+  {
+   "t": 4.387954,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 18
+  },
+  {
+   "t": 4.499467,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 18
+  },
+  {
+   "t": 4.505281,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 18
+  },
+  {
+   "t": 4.514638,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 18
+  },
+  {
+   "t": 4.519653,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 18
+  },
+  {
+   "t": 4.584176,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 18
+  },
+  {
+   "t": 4.584733,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 18
+  },
+  {
+   "t": 4.585002,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 19
+  },
+  {
+   "t": 4.585267,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 19
+  },
+  {
+   "t": 4.588141,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 19
+  },
+  {
+   "t": 4.588988,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 19
+  },
+  {
+   "t": 4.702685,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 19
+  },
+  {
+   "t": 4.708812,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 19
+  },
+  {
+   "t": 4.718793,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 19
+  },
+  {
+   "t": 4.723651,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 19
+  },
+  {
+   "t": 4.788777,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 19
+  },
+  {
+   "t": 4.789332,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 19
+  },
+  {
+   "t": 4.789579,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 20
+  },
+  {
+   "t": 4.789845,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 20
+  },
+  {
+   "t": 4.792764,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 20
+  },
+  {
+   "t": 4.794301,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 20
+  },
+  {
+   "t": 4.907642,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 20
+  },
+  {
+   "t": 4.913724,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 20
+  },
+  {
+   "t": 4.923081,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 20
+  },
+  {
+   "t": 4.928072,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 20
+  },
+  {
+   "t": 4.99311,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 20
+  },
+  {
+   "t": 4.993978,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 20
+  },
+  {
+   "t": 4.994244,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 21
+  },
+  {
+   "t": 4.994491,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 21
+  },
+  {
+   "t": 4.997386,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 21
+  },
+  {
+   "t": 4.99839,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 21
+  },
+  {
+   "t": 5.107518,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 21
+  },
+  {
+   "t": 5.113467,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 21
+  },
+  {
+   "t": 5.123003,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 21
+  },
+  {
+   "t": 5.127682,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 21
+  },
+  {
+   "t": 5.193454,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 21
+  },
+  {
+   "t": 5.194301,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 21
+  },
+  {
+   "t": 5.194566,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 22
+  },
+  {
+   "t": 5.194813,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 22
+  },
+  {
+   "t": 5.197732,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 22
+  },
+  {
+   "t": 5.197977,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 22
+  },
+  {
+   "t": 5.305413,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 22
+  },
+  {
+   "t": 5.311139,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 22
+  },
+  {
+   "t": 5.320518,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 22
+  },
+  {
+   "t": 5.325243,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 22
+  },
+  {
+   "t": 5.390546,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 22
+  },
+  {
+   "t": 5.391125,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 22
+  },
+  {
+   "t": 5.391391,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 23
+  },
+  {
+   "t": 5.391659,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 23
+  },
+  {
+   "t": 5.394512,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 23
+  },
+  {
+   "t": 5.395513,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 23
+  },
+  {
+   "t": 5.50629,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 23
+  },
+  {
+   "t": 5.512418,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 23
+  },
+  {
+   "t": 5.521265,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 23
+  },
+  {
+   "t": 5.525942,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 23
+  },
+  {
+   "t": 5.590199,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 23
+  },
+  {
+   "t": 5.590555,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 23
+  },
+  {
+   "t": 5.5908,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 24
+  },
+  {
+   "t": 5.591068,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 24
+  },
+  {
+   "t": 5.594144,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 24
+  },
+  {
+   "t": 5.595012,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 24
+  },
+  {
+   "t": 5.706212,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 24
+  },
+  {
+   "t": 5.712095,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 24
+  },
+  {
+   "t": 5.721609,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 24
+  },
+  {
+   "t": 5.726467,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 24
+  },
+  {
+   "t": 5.791635,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 24
+  },
+  {
+   "t": 5.79266,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 24
+  },
+  {
+   "t": 5.792928,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 25
+  },
+  {
+   "t": 5.793172,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 25
+  },
+  {
+   "t": 5.795914,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 25
+  },
+  {
+   "t": 5.796915,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 25
+  },
+  {
+   "t": 5.906848,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 25
+  },
+  {
+   "t": 5.913041,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 25
+  },
+  {
+   "t": 5.922956,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 25
+  },
+  {
+   "t": 5.927434,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 25
+  },
+  {
+   "t": 5.992358,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 25
+  },
+  {
+   "t": 5.992738,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 25
+  },
+  {
+   "t": 5.992982,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 26
+  },
+  {
+   "t": 5.993251,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 26
+  },
+  {
+   "t": 5.996257,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 26
+  },
+  {
+   "t": 5.997126,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 26
+  },
+  {
+   "t": 6.110312,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 26
+  },
+  {
+   "t": 6.116105,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 26
+  },
+  {
+   "t": 6.125574,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 26
+  },
+  {
+   "t": 6.130564,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 26
+  },
+  {
+   "t": 6.194463,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 26
+  },
+  {
+   "t": 6.195355,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 26
+  },
+  {
+   "t": 6.1956,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 27
+  },
+  {
+   "t": 6.195868,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 27
+  },
+  {
+   "t": 6.198742,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 27
+  },
+  {
+   "t": 6.199634,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 27
+  },
+  {
+   "t": 6.308717,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 27
+  },
+  {
+   "t": 6.315378,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 27
+  },
+  {
+   "t": 6.324937,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 27
+  },
+  {
+   "t": 6.329551,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 27
+  },
+  {
+   "t": 6.394809,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 27
+  },
+  {
+   "t": 6.395678,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 27
+  },
+  {
+   "t": 6.395922,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 28
+  },
+  {
+   "t": 6.396166,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 28
+  },
+  {
+   "t": 6.399085,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 28
+  },
+  {
+   "t": 6.399956,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 28
+  },
+  {
+   "t": 6.510755,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 28
+  },
+  {
+   "t": 6.516816,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 28
+  },
+  {
+   "t": 6.52604,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 28
+  },
+  {
+   "t": 6.530585,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 28
+  },
+  {
+   "t": 6.595867,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 28
+  },
+  {
+   "t": 6.596935,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 28
+  },
+  {
+   "t": 6.597203,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 29
+  },
+  {
+   "t": 6.597448,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 29
+  },
+  {
+   "t": 6.600143,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 29
+  },
+  {
+   "t": 6.601169,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 29
+  },
+  {
+   "t": 6.712214,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 29
+  },
+  {
+   "t": 6.71823,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 29
+  },
+  {
+   "t": 6.728055,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 29
+  },
+  {
+   "t": 6.732689,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 29
+  },
+  {
+   "t": 6.797927,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 29
+  },
+  {
+   "t": 6.798639,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 29
+  },
+  {
+   "t": 6.798886,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 30
+  },
+  {
+   "t": 6.799151,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 30
+  },
+  {
+   "t": 6.801913,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 30
+  },
+  {
+   "t": 6.803876,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 30
+  },
+  {
+   "t": 6.91668,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 30
+  },
+  {
+   "t": 6.922584,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 30
+  },
+  {
+   "t": 6.932189,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 30
+  },
+  {
+   "t": 6.93711,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 30
+  },
+  {
+   "t": 7.00226,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 30
+  },
+  {
+   "t": 7.003107,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 30
+  },
+  {
+   "t": 7.003373,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 31
+  },
+  {
+   "t": 7.003641,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 31
+  },
+  {
+   "t": 7.006536,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 31
+  },
+  {
+   "t": 7.007049,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 31
+  },
+  {
+   "t": 7.115087,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 31
+  },
+  {
+   "t": 7.12117,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 31
+  },
+  {
+   "t": 7.129882,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 31
+  },
+  {
+   "t": 7.134426,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 31
+  },
+  {
+   "t": 7.199751,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 31
+  },
+  {
+   "t": 7.20071,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 31
+  },
+  {
+   "t": 7.200954,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 32
+  },
+  {
+   "t": 7.201201,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 32
+  },
+  {
+   "t": 7.20403,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 32
+  },
+  {
+   "t": 7.204898,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 32
+  },
+  {
+   "t": 7.313293,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 32
+  },
+  {
+   "t": 7.318594,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 32
+  },
+  {
+   "t": 7.328464,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 32
+  },
+  {
+   "t": 7.333256,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 32
+  },
+  {
+   "t": 7.397956,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 32
+  },
+  {
+   "t": 7.398828,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 32
+  },
+  {
+   "t": 7.399093,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 33
+  },
+  {
+   "t": 7.399361,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 33
+  },
+  {
+   "t": 7.402235,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 33
+  },
+  {
+   "t": 7.403282,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 33
+  },
+  {
+   "t": 7.51404,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 33
+  },
+  {
+   "t": 7.520256,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 33
+  },
+  {
+   "t": 7.530014,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 33
+  },
+  {
+   "t": 7.534492,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 33
+  },
+  {
+   "t": 7.599017,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 33
+  },
+  {
+   "t": 7.599995,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 33
+  },
+  {
+   "t": 7.600266,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 34
+  },
+  {
+   "t": 7.60051,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 34
+  },
+  {
+   "t": 7.603293,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 34
+  },
+  {
+   "t": 7.604207,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 34
+  },
+  {
+   "t": 7.71329,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 34
+  },
+  {
+   "t": 7.719308,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 34
+  },
+  {
+   "t": 7.728551,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 34
+  },
+  {
+   "t": 7.73321,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 34
+  },
+  {
+   "t": 7.797932,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 34
+  },
+  {
+   "t": 7.798803,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 34
+  },
+  {
+   "t": 7.799047,
+   "kind": "enter",
+   "node": "model.layers.*",
+   "idx": 35
+  },
+  {
+   "t": 7.799313,
+   "kind": "enter",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 35
+  },
+  {
+   "t": 7.802213,
+   "kind": "exit",
+   "node": "model.layers.*.input_layernorm",
+   "idx": 35
+  },
+  {
+   "t": 7.803101,
+   "kind": "enter",
+   "node": "model.layers.*.self_attn",
+   "idx": 35
+  },
+  {
+   "t": 7.910892,
+   "kind": "exit",
+   "node": "model.layers.*.self_attn",
+   "idx": 35
+  },
+  {
+   "t": 7.917065,
+   "kind": "enter",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 35
+  },
+  {
+   "t": 7.926292,
+   "kind": "exit",
+   "node": "model.layers.*.post_attention_layernorm",
+   "idx": 35
+  },
+  {
+   "t": 7.931084,
+   "kind": "enter",
+   "node": "model.layers.*.mlp",
+   "idx": 35
+  },
+  {
+   "t": 7.995428,
+   "kind": "exit",
+   "node": "model.layers.*.mlp",
+   "idx": 35
+  },
+  {
+   "t": 7.996294,
+   "kind": "exit",
+   "node": "model.layers.*",
+   "idx": 35
+  },
+  {
+   "t": 7.996539,
+   "kind": "enter",
+   "node": "model.norm"
+  },
+  {
+   "t": 7.999705,
+   "kind": "exit",
+   "node": "model.norm"
+  },
+  {
+   "t": 7.999949,
+   "kind": "exit",
+   "node": "<root>"
+  }
+ ]
+}

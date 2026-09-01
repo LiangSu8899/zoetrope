@@ -99,11 +99,12 @@ events, with pixels subsampled or truncated only where a file would otherwise
 be too large for a repository (each says so in its own `_example_note`).
 
 ```bash
-demokit check examples/runs/*/*                          # 9/9 ready to draw
+demokit check examples/runs/*/*                          # 11/11 ready to draw
 demokit draw  examples/runs/stream       --out /tmp/a.webm   # a VLM, 3 arms
 demokit draw  examples/runs/video        --out /tmp/b.webm   # Wan2.2, 2 arms
 demokit draw  examples/runs/stream_batch --out /tmp/c.webm   # vLLM at batch 8
 demokit draw  examples/runs/loop         --out /tmp/d.webm   # GR00T, 60 steps
+demokit draw  examples/runs/arch         --out /tmp/e.webm   # the tree inside vLLM
 ```
 
 They are also the answer to "do I need to run the model?" — usually not. A run

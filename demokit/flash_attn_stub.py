@@ -56,7 +56,30 @@ def install_if_broken() -> str:
         module.__spec__ = importlib.machinery.ModuleSpec(
             name, loader=None, is_package=hasattr(module, "__path__"))
     sys.modules.update(modules)
+    _teach_transformers()
     return f"stubbed ({reason})"
+
+
+def _teach_transformers() -> None:
+    """Tell transformers the stub is not an installed distribution.
+
+    `is_flash_attn_2_available()` indexes a mapping built from installed
+    distributions, keyed by importable name. A module that imports without
+    having been installed is a key it does not have, so the probe raises
+    `KeyError` instead of answering "absent".
+
+    The entry has to name a distribution and it must not be the real one:
+    an empty list trips `distributions[0]`, and `flash-attn` would claim
+    the stub is the genuine article. A name nothing has installed makes the
+    version lookup miss, which is the branch that answers "absent".
+    """
+    try:
+        from transformers.utils import import_utils
+    except Exception:                                       # noqa: BLE001
+        return
+    mapping = getattr(import_utils, "PACKAGE_DISTRIBUTION_MAPPING", None)
+    if isinstance(mapping, dict):
+        mapping.setdefault("flash_attn", ["flash-attn-stub"])
 
 
 def probe() -> str:
