@@ -1,6 +1,0 @@
-numpy
-pillow
-imageio-ffmpeg
-
-[robot]
-torch

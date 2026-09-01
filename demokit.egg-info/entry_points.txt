@@ -1,2 +1,0 @@
-[console_scripts]
-demokit = demokit.cli:main

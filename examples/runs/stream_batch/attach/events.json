@@ -6,7 +6,7 @@
   "color": "accent",
   "concurrency": 8,
   "arm": "attach",
-  "model": "/home/heima-thor/suliang/models/Qwen3.6-35B-A3B",
+  "model": "Qwen3.6-35B-A3B",
   "max_tokens": 128,
   "ttft_ms_median": 216.2,
   "ttft_ms_p90": 216.2,
