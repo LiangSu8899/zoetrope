@@ -96,6 +96,13 @@ def paint(lanes, t, slow_ms, peak, note=None):
         unit = "trips to memory"
         d.text((RX - d.textlength(unit, font=font(17)), ly + 52), unit,
                MUTED, font=font(17))
+        # a lane that has finished says so and waits, the way a demo pane
+        # does -- otherwise the long tail reads as the film having stalled
+        if lane.done(t, slow_ms):
+            fin = f"done in {lane.ms:.0f} ms"
+            f_fin = font(19, True)
+            d.text((RX - d.textlength(fin, font=f_fin), ly + 76), fin,
+                   lane.color, font=f_fin)
 
     if t > LEAD + RACE + 0.4:
         fast = min(lanes, key=lambda a: a.ms)

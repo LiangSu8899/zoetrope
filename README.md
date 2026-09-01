@@ -60,9 +60,20 @@ one shared memory bar, two counters, and a race on the measured wall clock.
 The arms are ordinary `runtime` runs.
 
 ```bash
-python -m demokit.compose.trips_compose --runs runs/pi05_trips \
+python -m demokit.compose.trips_compose --runs examples/runs/trips \
     --arms torch,fp8 --out why.webm
 ```
+
+On pi0.5, one decision on LIBERO, an RTX 5090:
+
+| | trips to memory | one decision |
+|---|---|---|
+| PyTorch as shipped (LeRobot, eager, bf16) | 13,637 | 134.3 ms |
+| FlashRT native, FP16 | 2,862 | 27.7 ms |
+| FlashRT native, FP8 | **2,742** | **22.3 ms** |
+
+Five times fewer trips, six times the speed — close enough that the first
+number is visibly the reason for the second, which is the whole argument.
 
 The other panes describe. This one argues, and it is the only one that puts a
 speed figure on the canvas — because that is the one thing everybody reads.
@@ -166,7 +177,7 @@ events, with pixels subsampled or truncated only where a file would otherwise
 be too large for a repository (each says so in its own `_example_note`).
 
 ```bash
-demokit check examples/runs/*/*                          # 16/16 ready to draw
+demokit check examples/runs/*/*                          # 19/19 ready to draw
 demokit draw  examples/runs/stream       --out /tmp/a.webm   # a VLM, 3 arms
 demokit draw  examples/runs/video        --out /tmp/b.webm   # Wan2.2, 2 arms
 demokit draw  examples/runs/stream_batch --out /tmp/c.webm   # vLLM at batch 8
@@ -176,6 +187,8 @@ demokit draw  examples/runs/runtime --arms eager,compiled,attach \
                                         --out /tmp/f.webm   # 3 runtimes, one call
 demokit draw  examples/runs/doors   --arms eager,attach \
                                         --out /tmp/g.webm   # the diagram, lit
+python -m demokit.compose.trips_compose --runs examples/runs/trips \
+    --arms torch,fp8 --out /tmp/h.webm                      # why it is fast
 ```
 
 They are also the answer to "do I need to run the model?" — usually not. A run
