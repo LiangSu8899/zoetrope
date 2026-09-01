@@ -19,6 +19,8 @@ demokit/
   hosts/                8 host adapters (lerobot, openpi, Isaac-GR00T, native)
   pipelines/            4 recorders: Wan2.2, Qwen3-VL, Qwen3.6-35B, vLLM/SGLang
   compose/race_compose.py   stream / video / stream_batch / arch / runtime / diagram
+  compose/trips_compose.py  the one-idea film: trips to memory, on one clock
+  stubs.py                  satisfy an import a recording path never calls
   diagrams/                 authored architecture layouts, wired to entry points
   compose/sim_compose.py    robot panes
 adapters/
@@ -46,6 +48,24 @@ demokit check runs/wan22/eager runs/wan22/attach    # names what would fail
 demokit draw  runs/wan22 --arms eager,attach --out wan22.webm \
     --title "Wan2.2 TI2V-5B" --subtitle "480x480 · 33 frames · 20 steps"
 ```
+
+## One idea, for someone who will not read a chart
+
+Every CUDA kernel reads its operands from device memory and writes its result
+back, so a kernel launch is a trip to memory. That makes the launch count a
+number a person can hold in their head, which a kernel taxonomy is not.
+
+`compose/trips_compose.py` draws exactly that and nothing else: two lanes,
+one shared memory bar, two counters, and a race on the measured wall clock.
+The arms are ordinary `runtime` runs.
+
+```bash
+python -m demokit.compose.trips_compose --runs runs/pi05_trips \
+    --arms torch,fp8 --out why.webm
+```
+
+The other panes describe. This one argues, and it is the only one that puts a
+speed figure on the canvas — because that is the one thing everybody reads.
 
 ## Lighting an architecture diagram
 
