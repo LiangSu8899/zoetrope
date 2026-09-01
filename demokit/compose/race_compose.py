@@ -16,6 +16,8 @@ Two pane painters:
     arch    the model's own module tree, lighting up in the order the
             forward hooks actually fired, with FlashRT's seats shown where
             they landed
+    runtime every CUDA kernel the arm launched, in the order it launched
+            them, bucketed by what it was for and whose code it was
 
 Both arms record the same shape: `events.json` holding a meta block and a
 list of events carrying the wall time, in seconds from the start of the
@@ -26,6 +28,7 @@ import argparse
 import json
 import os
 import pathlib
+import re
 import shutil
 import subprocess
 
@@ -565,8 +568,266 @@ class ArchArm(Arm):
                 d.text((x, y + 98 + j * 16), ln, MUTED, font=f_small)
 
 
+
+#: fixed row order, so two panes line up and the eye can compare a row
+#: across them rather than hunting for it
+FAMILY_ROWS = ("gemm", "attention", "quantize", "norm", "elementwise",
+               "copy", "layout", "other")
+
+#: whose kernel it is, in ink. The green band is FlashRT's share of the GPU.
+ORIGIN_INK = {"FlashRT": ACCENT, "inductor": COMPILED, "FA2": NATIVE,
+              "cuBLAS/CUTLASS": (108, 116, 110), "PyTorch": STOCK,
+              "cuDNN": (86, 94, 88), "memory op": LINE, "other": MUTED}
+ORIGIN_ORDER = ("FlashRT", "inductor", "FA2", "cuBLAS/CUTLASS", "PyTorch",
+                "cuDNN", "memory op", "other")
+
+
+class RuntimeArm(Arm):
+    """What this arm asked the GPU to do, one kernel launch at a time.
+
+    The demo film says one arm finished sooner. This says what each spent
+    the GPU on to get there: how many kernels ran, what they were for, and
+    whose code they were.
+
+    Read the rows across panes, not down one. And read them as composition,
+    not as a score: an arm can launch more kernels than its baseline and
+    still finish first, because it made each one cheaper. That is what the
+    NVFP4 row is.
+    """
+
+    readout_extra = 36
+
+    def __init__(self, run_dir):
+        super().__init__(run_dir)
+        self.legend = self.meta["legend"]
+        self.launches = int(self.meta["launches"])
+        self.distinct = int(self.meta["distinct"])
+        #: filled in by load_chapter so every pane shares one bar scale
+        self.scale = self.launches
+        t = np.array([float(e["t"]) for e in self.events])
+        k = np.array([int(e["k"]) for e in self.events])
+        fam = np.array([e["family"] for e in self.legend])
+        org = np.array([e["origin"] for e in self.legend])
+        self._fam_t = {f: t[fam[k] == f] for f in FAMILY_ROWS}
+        self._org_t = {o: t[org[k] == o] for o in ORIGIN_ORDER}
+        self._t, self._k = t, k
+
+    def _done(self, times, t):
+        return int(np.searchsorted(times, t, side="right"))
+
+    def counts(self, t):
+        return {f: self._done(v, t) for f, v in self._fam_t.items()}
+
+    def total(self, t):
+        return self._done(self._t, t)
+
+    def top_kernels(self, t, k=5):
+        """The busiest kernels so far, as (symbol, count, origin)."""
+        n = self.total(t)
+        if not n:
+            return []
+        idx, counts = np.unique(self._k[:n], return_counts=True)
+        rank = np.argsort(-counts)[:k]
+        return [(self.legend[int(idx[i])]["name"], int(counts[i]),
+                 self.legend[int(idx[i])]["origin"]) for i in rank]
+
+    def newest(self, t):
+        """The kernel that launched most recently, for the readout."""
+        n = self.total(t)
+        return self.legend[int(self._k[n - 1])] if n else None
+
+    def paint_pane(self, im, d, x, y, pane, t):
+        d.rectangle([x, y, x + pane - 1, y + pane - 1], fill=CARD,
+                    outline=LINE)
+        f_head, f_row, f_num = font(12), font(13), font(12, True)
+        counts = self.counts(t)
+        d.text((x + 12, y + 10), "kernel launches, by what they are for",
+               MUTED, font=f_head)
+
+        top, rh = y + 34, 30
+        left = x + 12
+        label_w = 86
+        bar_x0 = left + label_w
+        bar_w = pane - label_w - 74
+        for i, fam in enumerate(FAMILY_ROWS):
+            ry = top + i * rh
+            n = counts[fam]
+            d.text((left, ry + 4), fam, INK if n else MUTED, font=f_row)
+            d.rectangle([bar_x0, ry + 3, bar_x0 + bar_w, ry + 17], fill=BG)
+            if n:
+                w = max(2, int(bar_w * n / max(self.scale, 1)))
+                d.rectangle([bar_x0, ry + 3, bar_x0 + w, ry + 17],
+                            fill=self.color)
+            txt = str(n) if n else "-"
+            d.text((bar_x0 + bar_w + 10, ry + 4), txt,
+                   INK if n else MUTED, font=f_num)
+
+        # whose kernel: one stacked band, and the legend under it
+        band_y = top + len(FAMILY_ROWS) * rh + 14
+        d.text((left, band_y), "whose kernel", MUTED, font=f_head)
+        band_y += 18
+        total = max(self.total(t), 1)
+        cx, width = left, pane - 24
+        for org in ORIGIN_ORDER:
+            n = self._done(self._org_t[org], t)
+            if not n:
+                continue
+            w = int(width * n / total)
+            d.rectangle([cx, band_y, cx + w, band_y + 13],
+                        fill=ORIGIN_INK.get(org, MUTED))
+            cx += w
+        d.rectangle([left, band_y, left + width, band_y + 13], outline=LINE)
+
+        ly, lx, f_leg = band_y + 20, left, font(11)
+        for org in ORIGIN_ORDER:
+            n = self._done(self._org_t[org], t)
+            if not n:
+                continue
+            chip = f"{org} {n}"
+            w = d.textlength(chip, font=f_leg)
+            if lx + w + 18 > left + width:
+                lx, ly = left, ly + 15
+            d.rectangle([lx, ly + 3, lx + 7, ly + 10],
+                        fill=ORIGIN_INK.get(org, MUTED))
+            d.text((lx + 11, ly), chip, MUTED, font=f_leg)
+            lx += w + 24
+
+        # and the kernels themselves, because a family is an argument and a
+        # symbol is a fact the reader can go and look up
+        ky = ly + 28
+        d.text((left, ky), "the kernels doing the most of it", MUTED,
+               font=f_head)
+        ky += 18
+        live = self.top_kernels(t, 5)
+        for name, n, org in live:
+            if ky + 15 > y + pane - 8:
+                break
+            d.rectangle([left, ky + 4, left + 7, ky + 11],
+                        fill=ORIGIN_INK.get(org, MUTED))
+            d.text((left + 11, ky), _kname(name), INK, font=f_leg)
+            num = str(n)
+            d.text((left + width - d.textlength(num, font=f_leg), ky),
+                   num, MUTED, font=f_leg)
+            ky += 15
+
+    def paint_readout(self, im, d, x, y, pane, t, fonts):
+        f_hz, f_unit, f_sub, f_small = fonts
+        n = self.total(t)
+        val = str(n)
+        d.text((x, y), val, self.color, font=f_hz)
+        w = d.textlength(val, font=f_hz)
+        d.text((x + w + 8, y + 30), "kernel launches", MUTED, font=f_unit)
+        d.text((x + w + 8, y + 6), f"{self.distinct} distinct kernels", INK,
+               font=f_sub)
+        prec = self.meta.get("precisions") or {}
+        line = "  ".join(f"{k} x{v}" for k, v in list(prec.items())[:4])
+        d.text((x, y + 62), line or "arithmetic not named in the symbols",
+               MUTED, font=f_small)
+        now = self.newest(t)
+        if now:
+            line = f'{now["origin"]}  {_kname(now["name"])}'
+            while (d.textlength(line, font=f_small) > pane
+                   and len(line) > 12):
+                line = line[:-2]
+            d.text((x, y + 80), line, INK, font=f_small)
+        note = self.meta.get("runtime_note")
+        if note:
+            for j, ln in enumerate(wrap(d, note, f_small, pane)[:2]):
+                d.text((x, y + 98 + j * 16), ln, MUTED, font=f_small)
+
+
+#: identifiers that appear in every symbol and distinguish nothing
+_NOISE = {
+    "at", "native", "std", "c10", "cuda", "detail", "anonymous", "namespace",
+    "gpu_kernel_impl", "gpu_kernel_impl_nocast", "array", "tuple", "pair",
+    "TensorIterator", "TensorIteratorBase", "func_wrapper_t", "OpaqueType",
+    "BFloat16", "Half", "float", "double", "int", "unsigned", "char", "bool",
+    "true", "false", "void", "long", "short", "signed", "const", "Array",
+    "operator", "type", "value_type", "__half", "__nv_bfloat16",
+}
+#: wrappers whose own name says nothing; the template argument is the kernel
+_WRAPPERS = ("Kernel2", "device_kernel", "kernel_impl", "Kernel")
+
+
+def _mangled_parts(sym: str) -> list[str]:
+    """Every length-prefixed identifier in an Itanium-mangled symbol.
+
+    Done by counting rather than by regex: an identifier may contain digits,
+    so a pattern that reads "digits then word characters" swallows the whole
+    symbol on the first match.
+    """
+    parts, i = [], 0
+    while i < len(sym):
+        if sym[i].isdigit():
+            j = i
+            while j < len(sym) and sym[j].isdigit():
+                j += 1
+            n = int(sym[i:j])
+            if 0 < n <= len(sym) - j:
+                parts.append(sym[j:j + n])
+                i = j + n
+                continue
+        i += 1
+    return parts
+
+
+def _demangle_lite(sym: str) -> str | None:
+    """`_ZN7cutlass13device_kernelI...` -> `cutlass::device_kernel`.
+
+    Enough of the Itanium mangling to read a nested name. Anything harder
+    than that is left alone rather than guessed at.
+    """
+    if not sym.startswith("_ZN"):
+        return None
+    parts, i = [], 3
+    while i < len(sym) and sym[i].isdigit():
+        j = i
+        while j < len(sym) and sym[j].isdigit():
+            j += 1
+        n = int(sym[i:j])
+        parts.append(sym[j:j + n])
+        i = j + n
+    return "::".join(parts) or None
+
+
+def _kname(sym: str) -> str:
+    """A CUDA symbol, shortened to the part a reader can act on.
+
+    Two instantiations of `elementwise_kernel` are two different kernels,
+    and printing both as `elementwise_kernel` would read as a bug. So the
+    name carries the first template argument that actually distinguishes
+    it, which is usually the functor that says what the kernel computes.
+    """
+    head = sym.replace("(anonymous namespace)::", "").split("(")[0]
+    if head.startswith("void "):
+        head = head[5:]
+    nested = _demangle_lite(head)
+    base = (nested or head).split("<")[0].strip().split("::")[-1]
+    if "<" in sym:
+        inner = next((w for w in re.findall(r"[A-Za-z_][A-Za-z_0-9]*",
+                                            sym.split("<", 1)[1])
+                      if w not in _NOISE and w != base), "")
+    else:
+        # a symbol that never demangled: the length-prefixed pieces are all
+        # we have, and the longest of them is the one that names the kernel
+        # Substitution codes (S_, S1_) break the length counting, so the
+        # tail of a deeply mangled symbol yields debris. Keep only pieces
+        # that read like a name a person wrote.
+        pieces = [m for m in _mangled_parts(sym)
+                  if m not in _NOISE and m != base and len(m) >= 4
+                  and "EEE" not in m
+                  and sum(c.isupper() for c in m) / len(m) < 0.5]
+        inner = max(pieces, key=len) if pieces else ""
+    # the origin chip beside the name already says whose kernel it is, so
+    # the namespace is redundant and the template argument is not
+    if base in _WRAPPERS and inner:
+        return inner[:56]
+    return (f"{base}  {inner}" if inner else base)[:56]
+
+
 KINDS = {"video": VideoArm, "stream": StreamArm,
-         "stream_batch": StreamBatchArm, "arch": ArchArm}
+         "stream_batch": StreamBatchArm, "arch": ArchArm,
+         "runtime": RuntimeArm}
 
 
 def _layout(n_panes, pane, footer, extra=0):
@@ -679,6 +940,13 @@ def load_chapter(spec):
         d = runs / str(name).strip()
         meta = json.loads((d / "events.json").read_text())["meta"]
         arms.append(KINDS[meta["kind"]](d))
+    # runtime panes are only comparable on one bar scale: eager launching
+    # 1900 kernels and a compiled arm launching 700 must look different
+    peak = max([a.launches for a in arms if isinstance(a, RuntimeArm)],
+               default=0)
+    for a in arms:
+        if isinstance(a, RuntimeArm):
+            a.scale = peak
     return dict(spec, arms=arms)
 
 

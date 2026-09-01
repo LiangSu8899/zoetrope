@@ -29,7 +29,8 @@ import time
 from typing import Any
 
 __all__ = ["Recorder", "on_tokens", "on_denoiser", "on_calls",
-           "on_tree", "seats"]
+           "on_tree", "seats", "on_kernels",
+           "kernel_origin", "kernel_family", "kernel_precision"]
 
 #: pane accents the compositors know
 COLORS = ("stock", "compiled", "ours", "native", "accent")
@@ -574,3 +575,173 @@ def seats(rec: Recorder, report: dict, refused=None) -> Recorder:
                            else sum(s["refused"] for s in seat.values()))
     rec.meta["fallbacks"] = sum(s["fallbacks"] for s in seat.values())
     return rec
+
+
+# ---------------------------------------------------------------------
+# what the GPU was actually asked to do
+# ---------------------------------------------------------------------
+
+#: Who wrote the kernel that ran. The crispest axis there is: it answers
+#: "whose code is on the GPU right now" with no interpretation at all.
+ORIGIN = (
+    ("FlashRT", ("flash_rt", "flashrt")),
+    ("inductor", ("triton_",)),
+    ("cuBLAS/CUTLASS", ("cutlass", "xmma", "ampere_", "sm80_", "sm90_",
+                        "sm100_", "sm120_", "gemv", "splitkreduce")),
+    ("cuDNN", ("cudnn",)),
+    ("FA2", ("pytorch_flash", "flash_fwd", "fmha")),
+    ("memory op", ("memcpy", "memset")),
+    ("PyTorch", ("at::native", "at_cuda", "c10::")),
+)
+
+#: What the kernel is for. First match wins, so a GEMM is a GEMM before it
+#: is "something with e2m1 in the name", and a quantizer is a quantizer
+#: before it is "something with add in it".
+FAMILY = (
+    ("attention", ("flash_fwd", "fmha", "pytorch_flash", "mha_",
+                   "attention", "flash::")),
+    ("gemm", ("gemm", "cutlass", "xmma", "ampere_", "sm80_", "sm90_",
+              "sm100_", "sm120_", "gemv", "matmul", "conv")),
+    ("quantize", ("quantize", "quant_", "_quant", "dequant", "nvfp4",
+                  "fp4_", "fp8_", "e4m3", "e2m1", "scale_max")),
+    ("norm", ("norm", "reduce_kernel", "welford", "rms", "softmax")),
+    ("layout", ("nchwtonhwc", "nhwctonchw", "transpose", "permute",
+                "catarray", "index_", "gather", "scatter")),
+    ("copy", ("memcpy", "memset", "copy_kernel", "fill", "zero_")),
+    ("elementwise", ("elementwise", "silu", "gelu", "unary", "binary",
+                     "add", "mul", "clamp", "rope")),
+)
+
+#: The arithmetic a kernel names in its own symbol. Absent for most, which
+#: is why it is reported as a count and never as a share.
+PRECISION = (
+    ("nvfp4", ("e2m1", "nvfp4", "fp4")),
+    ("fp8", ("e4m3", "e5m2", "fp8")),
+    ("int8", ("int8", "s8_", "i8_")),
+    ("bf16", ("bf16", "bfloat16")),
+    ("fp16", ("fp16", "__half", "half_t")),
+    ("fp32", ("float32", "_f32", "fp32")),
+)
+
+
+def _bucket(rules, name: str, fallback: str) -> str:
+    low = name.lower()
+    for label, keys in rules:
+        if any(k in low for k in keys):
+            return label
+    return fallback
+
+
+def kernel_origin(name: str) -> str:
+    """Whose kernel this is."""
+    return _bucket(ORIGIN, name, "other")
+
+
+def kernel_family(name: str) -> str:
+    """What the kernel is for."""
+    return _bucket(FAMILY, name, "other")
+
+
+def kernel_precision(name: str) -> str:
+    """The arithmetic the kernel names in its own symbol, if it names one."""
+    return _bucket(PRECISION, name, "")
+
+
+@contextlib.contextmanager
+def on_kernels(rec: Recorder, *, stretch: float | None = None,
+               target_s: float = 8.0, top: int = 24):
+    """Record every CUDA kernel that ran, and who asked for it.
+
+    This is the runtime companion to a demo film. The demo shows that one
+    arm finished sooner; this shows what each arm spent the GPU on to get
+    there. One instrument covers all four forms, because a profiler records
+    the kernel that ran and does not care who launched it: eager PyTorch,
+    an inductor-generated Triton kernel, a FlashRT seam, or a FlashRT
+    native pipeline that never enters torch at all.
+
+        rec = hook.Recorder("runtime", label="eager PyTorch", color="stock")
+        with hook.on_kernels(rec):
+            model(**inputs)
+        rec.write("runs/wan22_runtime/eager")
+
+    Launch counts and kernel names are structural facts and go on the
+    canvas. The timestamps are perturbed by the profiler and pace the
+    animation only.
+
+    Fewer launches is not the point, and the film should not imply it is:
+    an arm can issue more kernels than its baseline and still finish first,
+    because it made each one cheaper.
+    """
+    from torch.profiler import ProfilerActivity, profile
+
+    _sync()
+    with profile(activities=[ProfilerActivity.CUDA]) as prof:
+        rec.start()
+        yield rec
+        _sync()
+    _collect_kernels(rec, prof, stretch, target_s, top)
+
+
+def _collect_kernels(rec, prof, stretch, target_s, top) -> None:
+    raw = []
+    for e in prof.events():
+        if getattr(e, "device_type", None) is None:
+            continue
+        if e.device_type.name != "CUDA":
+            continue
+        rng = getattr(e, "time_range", None)
+        if rng is None:
+            continue
+        raw.append((e.name, rng.start / 1e6, rng.end / 1e6))
+    if not raw:
+        raise RuntimeError(
+            "the profiler recorded no CUDA kernel: did anything run on the "
+            "device inside the block?")
+    raw.sort(key=lambda r: r[1])
+    base = raw[0][1]
+    span = max(r[2] for r in raw) - base
+    if stretch is None:
+        stretch = round(target_s / span, 3) if span > 1e-9 else 1.0
+
+    order: dict[str, int] = {}
+    kernels: list[dict[str, Any]] = []
+    for name, _, _ in raw:
+        if name not in order:
+            order[name] = len(kernels)
+            kernels.append({
+                "name": name,
+                "origin": kernel_origin(name),
+                "family": kernel_family(name),
+                "precision": kernel_precision(name),
+                "count": 0,
+            })
+        kernels[order[name]]["count"] += 1
+
+    for name, t0, _ in raw:
+        rec.events.append({"t": round((t0 - base) * stretch, 6),
+                           "kind": "launch", "k": order[name]})
+    rec.events.sort(key=lambda e: e["t"])
+
+    def tally(key):
+        out: dict[str, int] = {}
+        for k in kernels:
+            if k[key]:
+                out[k[key]] = out.get(k[key], 0) + k["count"]
+        return dict(sorted(out.items(), key=lambda kv: -kv[1]))
+
+    rec.meta.update({
+        "launches": len(raw),
+        "distinct": len(kernels),
+        "kernels": sorted(kernels, key=lambda k: -k["count"])[:top],
+        "families": tally("family"),
+        "origins": tally("origin"),
+        "precisions": tally("precision"),
+        "stretch": stretch,
+        "_timing_note": "profiler-perturbed, and it paces the animation. "
+                        "Never quote it as a performance figure.",
+    })
+    # the legend the events index into, in first-launch order
+    rec.meta["legend"] = [{"name": k["name"], "origin": k["origin"],
+                           "family": k["family"],
+                           "precision": k["precision"]} for k in kernels]
+    rec.meta["done_s"] = round(span * stretch, 4)

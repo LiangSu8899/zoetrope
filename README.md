@@ -18,7 +18,7 @@ demokit/
   record.py             one arm per process; maps --host to an adapter
   hosts/                8 host adapters (lerobot, openpi, Isaac-GR00T, native)
   pipelines/            4 recorders: Wan2.2, Qwen3-VL, Qwen3.6-35B, vLLM/SGLang
-  compose/race_compose.py   stream / video / stream_batch / arch panes
+  compose/race_compose.py   stream / video / stream_batch / arch / runtime
   compose/sim_compose.py    robot panes
 adapters/
   diffusers_cli_hook.py attach inside `diffusers-cli run`, no diffusers edit
@@ -45,6 +45,31 @@ demokit check runs/wan22/eager runs/wan22/attach    # names what would fail
 demokit draw  runs/wan22 --arms eager,attach --out wan22.webm \
     --title "Wan2.2 TI2V-5B" --subtitle "480x480 · 33 frames · 20 steps"
 ```
+
+## Recording what the runtime did
+
+A demo film says which arm finished first. `hook.on_kernels` says what each
+one asked the GPU to do to get there — every CUDA kernel that ran, in the
+order it ran, bucketed by what it was for and whose code it was.
+
+```python
+rec = hook.Recorder("runtime", label="+ FlashRT structures", color="ours")
+with hook.on_kernels(rec):
+    model(**inputs)
+rec.write("runs/wan22_runtime/attach")
+```
+
+One instrument covers every form, because a profiler records the kernel that
+ran and does not care who launched it: eager PyTorch, an inductor-generated
+Triton kernel, a FlashRT seam, or a native pipeline that never enters torch.
+Drawn side by side, an eager arm spending most of the GPU moving operands and
+a compiled arm that fused that away are visible without a word of commentary.
+
+The pane carries counts and kernel names, which are structural. It carries no
+timing: the profiler perturbs the run it watches, and the demo films are where
+speed belongs. And it does not treat a smaller number as a better one — an arm
+can launch more kernels than its baseline and still finish first, because it
+made each of them cheaper.
 
 ## Recording the architecture
 
@@ -99,12 +124,14 @@ events, with pixels subsampled or truncated only where a file would otherwise
 be too large for a repository (each says so in its own `_example_note`).
 
 ```bash
-demokit check examples/runs/*/*                          # 11/11 ready to draw
+demokit check examples/runs/*/*                          # 14/14 ready to draw
 demokit draw  examples/runs/stream       --out /tmp/a.webm   # a VLM, 3 arms
 demokit draw  examples/runs/video        --out /tmp/b.webm   # Wan2.2, 2 arms
 demokit draw  examples/runs/stream_batch --out /tmp/c.webm   # vLLM at batch 8
 demokit draw  examples/runs/loop         --out /tmp/d.webm   # GR00T, 60 steps
 demokit draw  examples/runs/arch         --out /tmp/e.webm   # the tree inside vLLM
+demokit draw  examples/runs/runtime --arms eager,compiled,attach \
+                                        --out /tmp/f.webm   # 3 runtimes, one call
 ```
 
 They are also the answer to "do I need to run the model?" — usually not. A run

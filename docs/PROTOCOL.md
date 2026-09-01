@@ -64,6 +64,33 @@ Reads `frames.npy` and plays the clip once the arm is done.
 ### `kind: "stream_batch"` — one serving engine under concurrency
 One row per in-flight request; `meta` adds the aggregate and per-request rates.
 
+### `kind: "runtime"` — what the arm asked the GPU to do
+```json
+{"kind": "launch", "t": 0.0041, "k": 12}
+```
+`meta` adds: `launches`, `distinct`, `legend`, `kernels`, `families`,
+`origins`, `precisions`, `stretch`, optional `runtime_note`.
+
+`k` indexes `legend`, which lists every distinct kernel in first-launch
+order with its `origin` (whose code — PyTorch, inductor, cuBLAS/CUTLASS,
+FA2, FlashRT, a memory op), its `family` (what it is for — gemm, attention,
+quantize, norm, elementwise, copy, layout) and the `precision` its own
+symbol names, when it names one.
+
+This is the runtime companion to a demo film: the demo says which arm
+finished first, this says what each spent the GPU on to get there. One
+instrument covers every form, because a profiler records the kernel that
+ran and does not care who launched it — eager PyTorch, an inductor kernel,
+a FlashRT seam, or a native pipeline that never enters torch.
+
+Launch counts and kernel names are structural and go on the canvas.
+Timings do not: the profiler perturbs the run, and the timestamps are there
+to pace the animation.
+
+> **Fewer launches is not the goal**, and a pane must not imply it is. An
+> arm can issue more kernels than its baseline and still finish first,
+> because it made each of them cheaper. Composition, not count.
+
 ### `kind: "arch"` — the model's own module tree
 ```json
 {"kind": "enter", "t": 0.41, "node": "blocks.*", "idx": 12}
