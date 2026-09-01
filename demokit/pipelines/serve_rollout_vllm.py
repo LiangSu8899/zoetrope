@@ -124,15 +124,17 @@ def install_expert_seats(model, oneway, report, variant):
     import torch.nn.functional as F
     import importlib
 
-    impl = importlib.import_module(
-        f"flash_rt.structures.impls.moe_experts.nvfp4_{variant}")
-
     bound, refused, freed, rel = 0, [], 0, []
-    for name, mod in list(model.named_modules()):
-        if not name.endswith("routed_experts"):
-            continue
-        if not (hasattr(mod, "w13_weight") and hasattr(mod, "w2_weight")):
-            continue
+    targets = [(name, mod) for name, mod in model.named_modules()
+               if name.endswith("routed_experts")
+               and hasattr(mod, "w13_weight")
+               and hasattr(mod, "w2_weight")]
+    impl = None
+    if targets:
+        module_variant = "dynamic" if variant == "w4a4" else variant
+        impl = importlib.import_module(
+            f"flash_rt.structures.impls.moe_experts.nvfp4_{module_variant}")
+    for name, mod in targets:
         try:
             seam, quality = impl.bind_experts_seam(
                 {"gate_up_proj": mod.w13_weight.data,
@@ -150,7 +152,9 @@ def install_expert_seats(model, oneway, report, variant):
         _wire_routed(type(mod))
         bound += 1
     torch.cuda.empty_cache()
-    report.update(expert_banks=bound, expert_banks_refused=refused[:3],
+    report.update(expert_banks=bound,
+                  expert_banks_refused_count=len(refused),
+                  expert_banks_refused=refused,
                   expert_variant=variant,
                   expert_freed_gb=round(freed / 1e9, 2),
                   expert_worst_pack_rel_l2=(round(max(rel), 5) if rel
@@ -188,11 +192,18 @@ def install_adapter(report, verbose=True):
             summary = handle.summary()
         except Exception:                                   # noqa: BLE001
             pass
+        notes = getattr(handle, "notes", {})
+        refused = notes.get("refused", [])
         report.update(adapter="flash_rt.structures.adapters.vllm_engine",
                       adapter_report=rep if isinstance(rep, dict)
                       else str(rep)[:400],
                       adapter_summary=summary if isinstance(summary, dict)
-                      else (str(summary)[:400] if summary else None))
+                      else (str(summary)[:400] if summary else None),
+                      adapter_seats=(summary or {}).get("seams", 0)
+                      if isinstance(summary, dict) else None,
+                      adapter_head_slabs=notes.get("head_slabs", 0),
+                      adapter_refused_count=len(refused),
+                      adapter_refused=refused)
         print(f"[adapter] {summary or rep}"[:400], flush=True)
 
     patched = vllm_engine.install_load_hook(on_attached=on_attached,
@@ -268,6 +279,11 @@ def install_fusion(report, verbose=True):
         mods.append(v1)
     except Exception:                                       # noqa: BLE001
         pass
+    try:
+        import vllm.v2.worker.gpu_model_runner as v2_runner
+        mods.append(v2_runner)
+    except Exception:                                       # noqa: BLE001
+        pass
     for m in mods:
         orig = m.GPUModelRunner.capture_model
 
@@ -313,7 +329,14 @@ def install_seats(seats, oneway, scheme, expert_variant=None):
             if not any(name.endswith(s) for s in seats):
                 continue
             try:
-                bound = impl.bind_proj_seam({"w": mod.weight.data})
+                weight = mod.weight.data
+                if weight.dtype not in (torch.bfloat16, torch.float16,
+                                        torch.float32):
+                    raise ValueError(
+                        "refused: prequantized ModelOpt packed storage "
+                        f"({weight.dtype}) is not a dense weight accepted "
+                        f"by linear_proj.{scheme}")
+                bound = impl.bind_proj_seam({"w": weight})
                 seam = bound[0] if isinstance(bound, tuple) else bound
             except Exception as exc:                        # noqa: BLE001
                 refused.append((name, repr(exc)[:70]))
@@ -328,7 +351,8 @@ def install_seats(seats, oneway, scheme, expert_variant=None):
         if swaps:
             swap_mod.attach(model, swaps)
         report.update(scheme=scheme, seats_asked=",".join(seats),
-                      seats=len(swaps), refused=refused[:3],
+                      seats=len(swaps), refused_count=len(refused),
+                      refused=refused,
                       freed_gb=round(freed / 1e9, 2),
                       bind_s=round(time.time() - t0, 1))
         print(f"[attach] {len(swaps)} seats, {len(refused)} refused, "
@@ -342,6 +366,11 @@ def install_seats(seats, oneway, scheme, expert_variant=None):
     try:
         import vllm.v1.worker.gpu_model_runner as v1
         mods.append(v1)
+    except Exception:                                       # noqa: BLE001
+        pass
+    try:
+        import vllm.v2.worker.gpu_model_runner as v2_runner
+        mods.append(v2_runner)
     except Exception:                                       # noqa: BLE001
         pass
     for m in mods:
@@ -361,7 +390,8 @@ def race(engine, sp_cls, n, tokens, tok):
     """N requests at once, every token stamped as the engine emits it."""
     from vllm import SamplingParams
 
-    sp = SamplingParams(max_tokens=tokens, temperature=0.0)
+    sp = SamplingParams(max_tokens=tokens, temperature=0.0,
+                        ignore_eos=True)
     seen = [0] * n
     ids = [[] for _ in range(n)]
     prompt_ids = [None] * n
@@ -533,7 +563,7 @@ def main():
             add_generation_prompt=True, enable_thinking=False)
             for p in PROMPTS]
     out = pathlib.Path(args.out)
-    colour = "stock" if args.arm == "base" else "accent"
+    colour = "stock" if args.arm == "base" else "ours"
     label = args.label or ("the engine, as shipped" if args.arm == "base"
                            else "+ FlashRT structures")
     sub = args.sub or ("vLLM default production form"
@@ -560,7 +590,10 @@ def main():
             if best is None or m["wall_s"] < best[0]["wall_s"]:
                 best = (m, ev, ids, pids)
         m, ev, ids, pids = best
-        d = out / f"c{n}" / args.arm
+        # A one-chapter film uses the protocol's direct arm layout.
+        # Keep the cN level for the existing multi-concurrency films.
+        d = (out / args.arm if len(levels) == 1
+             else out / f"c{n}" / args.arm)
         d.mkdir(parents=True, exist_ok=True)
         meta = {"kind": "stream_batch", "label": label, "sub": sub,
                 "color": colour, "concurrency": n, "arm": args.arm,
@@ -573,6 +606,7 @@ def main():
             meta["kind"] = "stream"
             meta["ttft_ms"] = m["ttft_ms_median"]
             meta["decode_tok_s"] = m["decode_tok_s_per_stream"]
+            meta["n_tokens"] = m["n_tokens_total"]
             ev = [{"i": e["i"], "t": e["t"], "text": e["text"]}
                   for e in ev]
         (d / "events.json").write_text(json.dumps(
