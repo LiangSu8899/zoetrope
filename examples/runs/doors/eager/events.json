@@ -1,0 +1,403 @@
+{
+ "meta": {
+  "kind": "diagram",
+  "label": "Wan2.2 on diffusers, as shipped",
+  "sub": "no FlashRT in the process",
+  "color": "stock",
+  "diagram_note": "An eager host runs its own code end to end. The diagram is the same diagram; none of it is reached.",
+  "model": "Wan2.2 TI2V-5B",
+  "diagram": {
+   "name": "FlashRT",
+   "canvas": [
+    1000,
+    740
+   ],
+   "note": "Two doors into one stack. The layout is authored; what lights up is not.",
+   "nodes": [
+    {
+     "id": "host",
+     "label": "your host",
+     "group": null,
+     "sub": "diffusers  \u00b7  vLLM  \u00b7  LeRobot  \u00b7  llama.cpp  \u00b7  your own loop",
+     "box": [
+      0,
+      0,
+      1000,
+      56
+     ],
+     "outside": true
+    },
+    {
+     "id": "structures",
+     "label": "structures",
+     "sub": "the distribution layer",
+     "box": [
+      0,
+      96,
+      486,
+      162
+     ],
+     "group": null
+    },
+    {
+     "id": "s.discover",
+     "label": "discover",
+     "sub": "the seams",
+     "box": [
+      12,
+      158,
+      110,
+      92
+     ],
+     "group": "structures",
+     "watch": [
+      "flash_rt.structures.discover:discover"
+     ]
+    },
+    {
+     "id": "s.calibrate",
+     "label": "calibrate",
+     "sub": "on real data",
+     "box": [
+      130,
+      158,
+      110,
+      92
+     ],
+     "group": "structures",
+     "watch": [
+      "flash_rt.structures.autobuild:auto_swaps"
+     ]
+    },
+    {
+     "id": "s.qualify",
+     "label": "qualify",
+     "sub": "or refuse",
+     "box": [
+      248,
+      158,
+      110,
+      92
+     ],
+     "group": "structures",
+     "watch": [
+      "flash_rt.structures.autobuild:_race_ms",
+      "flash_rt.structures.gates:passes",
+      "flash_rt.structures.guard:SeamGuard.refuse"
+     ]
+    },
+    {
+     "id": "s.bind",
+     "label": "bind",
+     "sub": "in place, no edit",
+     "box": [
+      366,
+      158,
+      108,
+      92
+     ],
+     "group": "structures",
+     "watch": [
+      "flash_rt.structures.swap:attach"
+     ]
+    },
+    {
+     "id": "native",
+     "label": "frontends + models",
+     "sub": "the native pipeline",
+     "box": [
+      514,
+      96,
+      486,
+      162
+     ],
+     "group": null
+    },
+    {
+     "id": "n.frontend",
+     "label": "frontend",
+     "sub": "weights to pointers",
+     "box": [
+      526,
+      158,
+      150,
+      92
+     ],
+     "group": "native",
+     "watch": [
+      "flash_rt.api:load_model"
+     ]
+    },
+    {
+     "id": "n.pipeline",
+     "label": "pipeline",
+     "sub": "kernel composition",
+     "box": [
+      684,
+      158,
+      150,
+      92
+     ],
+     "group": "native",
+     "watch": [
+      "flash_rt.models.pi05.pipeline_rtx:Pi05Pipeline.run_pipeline"
+     ]
+    },
+    {
+     "id": "n.graph",
+     "label": "graph",
+     "sub": "captured once",
+     "box": [
+      842,
+      158,
+      146,
+      92
+     ],
+     "group": "native",
+     "watch": [
+      "flash_rt.core.cuda_graph:CUDAGraph.begin_capture"
+     ]
+    },
+    {
+     "id": "core",
+     "label": "core",
+     "sub": "what both doors need",
+     "box": [
+      0,
+      304,
+      1000,
+      160
+     ],
+     "group": null
+    },
+    {
+     "id": "c.calib",
+     "label": "calibration",
+     "sub": "percentile scales",
+     "box": [
+      12,
+      366,
+      189,
+      90
+     ],
+     "group": "core",
+     "watch": [
+      "flash_rt.core.calibration:accumulate_amax",
+      "flash_rt.core.calibration_api:implicit_calibrate"
+     ]
+    },
+    {
+     "id": "c.quant",
+     "label": "quantization",
+     "sub": "fp8 \u00b7 nvfp4 \u00b7 int4",
+     "box": [
+      209,
+      366,
+      189,
+      90
+     ],
+     "group": "core",
+     "watch": [
+      "flash_rt.core.quantization:fit_input_channel_balance"
+     ]
+    },
+    {
+     "id": "c.spec",
+     "label": "precision_spec",
+     "sub": "what runs in what",
+     "box": [
+      406,
+      366,
+      189,
+      90
+     ],
+     "group": "core",
+     "watch": [
+      "flash_rt.core.precision_spec:ModelPrecisionSpec"
+     ]
+    },
+    {
+     "id": "c.buffer",
+     "label": "cuda_buffer",
+     "sub": "memory, not tensors",
+     "box": [
+      603,
+      366,
+      189,
+      90
+     ],
+     "group": "core",
+     "watch": [
+      "flash_rt.core.cuda_buffer:CudaBuffer"
+     ]
+    },
+    {
+     "id": "c.graph",
+     "label": "cuda_graph",
+     "sub": "capture and replay",
+     "box": [
+      800,
+      366,
+      188,
+      90
+     ],
+     "group": "core",
+     "watch": [
+      "flash_rt.core.cuda_graph:CUDAGraph.replay"
+     ]
+    },
+    {
+     "id": "kernels",
+     "label": "kernels",
+     "sub": "all of them ours",
+     "box": [
+      0,
+      512,
+      1000,
+      156
+     ],
+     "group": null
+    },
+    {
+     "id": "k.hub",
+     "label": "Hugging Face Kernels",
+     "sub": "FlashRT packages, fetched and pinned",
+     "box": [
+      12,
+      574,
+      486,
+      82
+     ],
+     "group": "kernels",
+     "kernel_origin": [
+      "FlashRT"
+     ],
+     "watch": [
+      "flash_rt.structures.impls:hub_kernel"
+     ]
+    },
+    {
+     "id": "k.csrc",
+     "label": "native extensions",
+     "sub": "flash_rt_kernels \u00b7 fa2 \u00b7 fa4, built here",
+     "box": [
+      506,
+      574,
+      482,
+      82
+     ],
+     "group": "kernels",
+     "watch": [
+      "flash_rt._extensions:require"
+     ],
+     "provider": "extension"
+    },
+    {
+     "id": "hw",
+     "label": "hardware",
+     "sub": "sm120 \u00b7 sm110 Thor \u00b7 sm89 \u00b7 gfx950",
+     "box": [
+      0,
+      686,
+      1000,
+      56
+     ],
+     "group": null,
+     "outside": true
+    }
+   ],
+   "edges": [
+    [
+     "host",
+     "structures",
+     "attach"
+    ],
+    [
+     "host",
+     "native",
+     "load_model"
+    ],
+    [
+     "s.discover",
+     "s.calibrate",
+     ""
+    ],
+    [
+     "s.calibrate",
+     "s.qualify",
+     ""
+    ],
+    [
+     "s.qualify",
+     "s.bind",
+     ""
+    ],
+    [
+     "n.frontend",
+     "n.pipeline",
+     ""
+    ],
+    [
+     "n.pipeline",
+     "n.graph",
+     ""
+    ],
+    [
+     "structures",
+     "core",
+     ""
+    ],
+    [
+     "native",
+     "core",
+     ""
+    ],
+    [
+     "core",
+     "kernels",
+     ""
+    ],
+    [
+     "kernels",
+     "hw",
+     ""
+    ]
+   ],
+   "header": 46
+  },
+  "lit": {
+   "host": {
+    "first_s": -1.0,
+    "calls": 1,
+    "t": 0.0
+   }
+  },
+  "n_lit": 1,
+  "n_nodes": 20,
+  "providers": {
+   "hub": [],
+   "extension": []
+  },
+  "kernel_origins": {
+   "PyTorch": 1556,
+   "cuDNN": 3,
+   "cuBLAS/CUTLASS": 367,
+   "memory op": 1
+  },
+  "unarmed": {},
+  "by_receipt": [],
+  "pace": "order",
+  "wall_s": 0.2298,
+  "_timing_note": "the pane paces by call order, not by the clock. `first_s` is the real first-call time and is wrapper-perturbed; neither is a performance figure.",
+  "done_s": 8.0,
+  "_example_note": "Wan2.2 TI2V-5B on an RTX 5090. The diagram layout is authored; what lights up is not -- each box names the entry point it stands for and turns on when that is called. The eager arm lights one box, which is the honest picture of it."
+ },
+ "events": [
+  {
+   "t": 0.0,
+   "kind": "lit",
+   "node": "host",
+   "calls": 1
+  }
+ ]
+}

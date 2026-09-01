@@ -22,15 +22,18 @@ See docs/PROTOCOL.md for what each `kind` needs in `meta`.
 from __future__ import annotations
 
 import contextlib
+import functools
 import json
 import pathlib
+import sys
 import statistics
 import time
 from typing import Any
 
 __all__ = ["Recorder", "on_tokens", "on_denoiser", "on_calls",
-           "on_tree", "seats", "on_kernels",
-           "kernel_origin", "kernel_family", "kernel_precision"]
+           "on_tree", "seats", "on_kernels", "on_components",
+           "load_diagram", "light", "kernel_origin", "kernel_family",
+           "kernel_precision"]
 
 #: pane accents the compositors know
 COLORS = ("stock", "compiled", "ours", "native", "accent")
@@ -745,3 +748,224 @@ def _collect_kernels(rec, prof, stretch, target_s, top) -> None:
                            "family": k["family"],
                            "precision": k["precision"]} for k in kernels]
     rec.meta["done_s"] = round(span * stretch, 4)
+
+
+# ---------------------------------------------------------------------
+# the framework's own architecture, lit by a run
+# ---------------------------------------------------------------------
+
+DIAGRAMS = pathlib.Path(__file__).resolve().parent / "diagrams"
+
+
+def load_diagram(name_or_path: str) -> dict:
+    """A diagram by name (`flashrt`) or by path."""
+    p = pathlib.Path(name_or_path)
+    if not p.exists():
+        p = DIAGRAMS / f"{name_or_path}.json"
+    return json.loads(p.read_text())
+
+
+def _resolve(target: str):
+    """`pkg.mod:name` or `pkg.mod:Class.method` -> (owner, attr, current)."""
+    import importlib
+
+    mod_name, _, path = target.partition(":")
+    obj = importlib.import_module(mod_name)
+    parts = path.split(".")
+    for name in parts[:-1]:
+        obj = getattr(obj, name)
+    return obj, parts[-1], getattr(obj, parts[-1])
+
+
+@contextlib.contextmanager
+def on_components(rec: Recorder, diagram, *, target_s: float = 8.0,
+                  pace: str = "order", kernels: bool = True):
+    """Light an architecture diagram from a run.
+
+    The layout of a diagram is authored — a picture of a system is a human
+    judgement and pretending otherwise makes a worse picture. What lights up
+    is not: each box names the entry point it stands for, and a box turns on
+    when that entry point is actually called, in the order it is called.
+
+        rec = hook.Recorder("diagram", label="+ FlashRT structures")
+        with hook.on_components(rec, "flashrt"):
+            attach_and_run()
+        rec.write("runs/doors/attach")
+
+    A box with no entry point of its own — the kernel providers, the
+    hardware — is lit by evidence instead: which kernel package is loaded in
+    this process, and whether any of its kernels reached the device.
+
+    The default pacing is **call order**, not the clock. Attaching spends
+    most of its wall time inside calibration, so a stretched clock would put
+    six boxes on top of each other and one at the end. Order is the fact
+    this pane has; a duration is not, and inventing an even one would read
+    as a measurement. `pace="clock"` keeps the real intervals for anyone who
+    wants them; the real seconds are recorded either way.
+
+    Boxes that stay dark are the point. An eager run lights the host and
+    nothing else, and that is the honest picture of it.
+    """
+    if isinstance(diagram, str):
+        diagram = load_diagram(diagram)
+    fired: dict[str, list[float]] = {}
+    patched, missing = [], {}
+
+    def arm(node_id, target):
+        try:
+            owner, attr, current = _resolve(target)
+        except (ImportError, AttributeError) as exc:      # noqa: BLE001
+            missing[target] = f"{type(exc).__name__}: {str(exc)[:80]}"
+            return
+        if isinstance(current, type):
+            inner, hook_attr, holder = current.__init__, "__init__", current
+        else:
+            inner, hook_attr, holder = current, attr, owner
+
+        @functools.wraps(inner)
+        def watched(*a, **k):
+            fired.setdefault(node_id, []).append(rec.elapsed)
+            return inner(*a, **k)
+
+        try:
+            setattr(holder, hook_attr, watched)
+        except (AttributeError, TypeError) as exc:        # noqa: BLE001
+            missing[target] = f"{type(exc).__name__}: {str(exc)[:80]}"
+            return
+        patched.append((holder, hook_attr, inner))
+
+    for node in diagram["nodes"]:
+        for target in node.get("watch", ()):
+            arm(node["id"], target)
+
+    prof = None
+    if kernels:
+        from torch.profiler import ProfilerActivity, profile
+        prof = profile(activities=[ProfilerActivity.CUDA])
+        prof.__enter__()
+    _sync()
+    rec.start()
+    try:
+        yield rec
+    finally:
+        _sync()
+        for holder, attr, inner in reversed(patched):
+            setattr(holder, attr, inner)
+        if prof is not None:
+            prof.__exit__(None, None, None)
+        _light(rec, diagram, fired, missing, prof, pace, target_s)
+
+
+def light(rec: Recorder, node: str, *, calls: int = 0, why: str = "",
+          after: str | None = None) -> None:
+    """Light a box from a receipt instead of from a wrapper.
+
+    Some things a diagram box stands for are not one function call. A
+    qualification that ends in a refusal is recorded in the plan's ledger by
+    whichever site decided it, and wrapping every one of those would be a
+    worse description of the box than the ledger it produced. So the caller
+    hands over the receipt and says where in the authored order it belongs.
+
+    Call inside the `on_components` block, or after it and before `write`.
+    Receipt-lit boxes are named in `meta["by_receipt"]`, because "we watched
+    this happen" and "we read this afterwards" are different claims.
+    """
+    rec.__dict__.setdefault("_receipts", {})[node] = {
+        "calls": int(calls), "why": why, "after": after}
+
+
+def _providers_loaded() -> dict[str, list[str]]:
+    """Which kernel providers are in this process, by where they came from.
+
+    A hub package lives in the kernels cache; a native extension is a
+    compiled module inside `flash_rt`. Both answer to `flash_rt::` on the
+    device, so the symbol cannot tell them apart — the import can.
+    """
+    hub, ext = [], []
+    for name, mod in list(sys.modules.items()):
+        f = getattr(mod, "__file__", None) or ""
+        if "--flashrt--" in f.lower():
+            hub.append(f.lower().split("--flashrt--", 1)[1].split("/")[0])
+        elif name.startswith(("flash_rt.flash_rt_", "flash_rt_")) and f:
+            ext.append(name)
+    return {"hub": sorted(set(hub)), "extension": sorted(set(ext))}
+
+
+def _light(rec, diagram, fired, missing, prof, pace, target_s) -> None:
+    by = {n["id"]: n for n in diagram["nodes"]}
+    kids: dict[str, list[str]] = {}
+    for n in diagram["nodes"]:
+        if n.get("group"):
+            kids.setdefault(n["group"], []).append(n["id"])
+
+    origins: dict[str, int] = {}
+    if prof is not None:
+        for e in prof.events():
+            dt = getattr(e, "device_type", None)
+            if dt is not None and dt.name == "CUDA":
+                o = kernel_origin(e.name)
+                origins[o] = origins.get(o, 0) + 1
+
+    providers = _providers_loaded()
+    span = max((v[0] for v in fired.values()), default=rec.elapsed) or 1e-3
+
+    lit: dict[str, dict[str, Any]] = {}
+    for node in diagram["nodes"]:
+        nid = node["id"]
+        hits = fired.get(nid)
+        if hits:
+            lit[nid] = {"first_s": round(hits[0], 4), "calls": len(hits)}
+        elif node.get("kernel_origin"):
+            got = sum(origins.get(o, 0) for o in node["kernel_origin"])
+            if got and providers["hub"]:
+                lit[nid] = {"first_s": span, "calls": got,
+                            "why": f"{len(providers['hub'])} package(s) loaded"}
+        elif node.get("provider") == "extension" and providers["extension"]:
+            lit[nid] = {"first_s": span, "calls": 0,
+                        "why": ", ".join(providers["extension"][:3])}
+
+    # A group is not a call site; it is lit by its children, a hair ahead
+    # of the first of them so the container opens before what is inside it.
+    for gid, children in kids.items():
+        on = [lit[c]["first_s"] for c in children if c in lit]
+        if on and gid not in lit:
+            lit[gid] = {"first_s": min(on) - 1e-9, "calls": 0}
+    # the host is what ran; it is lit before anything it reached into
+    lit.setdefault("host", {"first_s": -1.0, "calls": 1})
+    if origins.get("FlashRT"):
+        lit.setdefault("hw", {"first_s": span, "calls": origins["FlashRT"]})
+
+    for nid, r in getattr(rec, "_receipts", {}).items():
+        if nid in lit or nid not in by:
+            continue
+        anchor = lit.get(r.get("after") or "", {}).get("first_s")
+        lit[nid] = {"first_s": (anchor + 1e-6) if anchor is not None else span,
+                    "calls": r["calls"], "why": r["why"], "receipt": True}
+    for gid, children in kids.items():                # groups, again
+        on = [lit[c]["first_s"] for c in children if c in lit]
+        if on and gid not in lit:
+            lit[gid] = {"first_s": min(on) - 1e-9, "calls": 0}
+
+    ranked = sorted(lit.items(), key=lambda kv: kv[1]["first_s"])
+    step = target_s / max(len(ranked), 1)
+    for i, (nid, v) in enumerate(ranked):
+        v["t"] = (round(i * step, 4) if pace == "order"
+                  else round(v["first_s"] * target_s / span, 4))
+        rec.events.append({"t": v["t"], "kind": "lit", "node": nid,
+                           "calls": v["calls"]})
+    rec.meta.update({
+        "diagram": diagram,
+        "lit": lit,
+        "n_lit": len(lit),
+        "n_nodes": len(diagram["nodes"]),
+        "providers": providers,
+        "kernel_origins": origins,
+        "unarmed": missing,
+        "by_receipt": sorted(n for n, v in lit.items() if v.get("receipt")),
+        "pace": pace,
+        "wall_s": round(span, 4),
+        "_timing_note": "the pane paces by call order, not by the clock. "
+                        "`first_s` is the real first-call time and is "
+                        "wrapper-perturbed; neither is a performance figure.",
+    })
+    rec.meta["done_s"] = round(target_s, 4)

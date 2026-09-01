@@ -18,6 +18,8 @@ Two pane painters:
             they landed
     runtime every CUDA kernel the arm launched, in the order it launched
             them, bucketed by what it was for and whose code it was
+    diagram the framework's own architecture, authored as a layout and lit
+            by the run: a box turns on when its entry point is called
 
 Both arms record the same shape: `events.json` holding a meta block and a
 list of events carrying the wall time, in seconds from the start of the
@@ -825,9 +827,167 @@ def _kname(sym: str) -> str:
     return (f"{base}  {inner}" if inner else base)[:56]
 
 
+
+class DiagramArm(Arm):
+    """The framework's own architecture, lit by a run.
+
+    The layout is authored, because a picture of a system is a human
+    judgement and pretending otherwise makes a worse picture. What lights up
+    is not: a box turns on when the entry point it stands for is actually
+    called, in the order it is called.
+
+    Boxes that stay dark are half the message. An eager arm lights the host
+    and nothing under it, and that is the honest picture of an eager arm.
+    """
+
+    readout_extra = 36
+
+    def __init__(self, run_dir):
+        super().__init__(run_dir)
+        self.diagram = self.meta["diagram"]
+        self.nodes = self.diagram["nodes"]
+        self.by = {n["id"]: n for n in self.nodes}
+        self.groups = {n["id"] for n in self.nodes
+                       if any(m.get("group") == n["id"] for m in self.nodes)}
+        self.lit = {e["node"]: e for e in self.events if e["kind"] == "lit"}
+        self.order = [e for e in self.events if e["kind"] == "lit"]
+        self.canvas = self.diagram["canvas"]
+
+    def on(self, t):
+        return {n for n, e in self.lit.items() if e["t"] <= t}
+
+    # -- geometry ------------------------------------------------------
+    def _fit(self, x, y, pane):
+        cw, ch = self.canvas
+        s = (pane - 20) / cw
+        return s, x + 10, y + 8
+
+    def _px(self, box, s, ox, oy):
+        bx, by, bw, bh = box
+        return [ox + bx * s, oy + by * s, ox + (bx + bw) * s,
+                oy + (by + bh) * s]
+
+    def paint_pane(self, im, d, x, y, pane, t):
+        d.rectangle([x, y, x + pane - 1, y + pane - 1], fill=BG, outline=LINE)
+        s, ox, oy = self._fit(x, y, pane)
+        live = self.on(t)
+        newest = self._newest(t)
+
+        for a, b, lab in self.diagram["edges"]:
+            ax0, ay0, ax1, ay1 = self._px(self.by[a]["box"], s, ox, oy)
+            bx0, by0, bx1, by1 = self._px(self.by[b]["box"], s, ox, oy)
+            hot = a in live and b in live
+            ink = self.color if hot else LINE
+            if by0 >= ay1 - 1:
+                # the centre of the overlap, so an edge into a full-width
+                # layer leaves from inside the box it starts in
+                cx = (max(ax0, bx0) + min(ax1, bx1)) / 2
+                _arrow(d, cx, ay1, cx, by0, ink)
+                if lab:
+                    d.text((cx + 7, (ay1 + by0) / 2 - 7), lab,
+                           ink if hot else MUTED, font=font(10))
+            else:
+                cy = (ay0 + ay1) / 2
+                _arrow(d, ax1, cy, bx0, cy, ink)
+
+        for n in self.nodes:
+            x0, y0, x1, y1 = self._px(n["box"], s, ox, oy)
+            hot = n["id"] in live
+            fresh = newest is not None and n["id"] == newest["node"]
+            edge = INK if fresh else (self.color if hot else LINE)
+            if n["id"] in self.groups or n.get("outside"):
+                d.rectangle([x0, y0, x1, y1], fill=(20, 28, 26), outline=edge)
+                f = font(max(11, int(15 * s / 0.8)), True)
+            else:
+                d.rectangle([x0, y0, x1, y1],
+                            fill=_warm(self.color) if hot else CARD,
+                            outline=edge)
+                d.rectangle([x0, y0, x0 + 3, y1],
+                            fill=self.color if hot else LINE)
+                f = font(max(10, int(13 * s / 0.8)), True)
+            ink = INK if hot else MUTED
+            d.text((x0 + 10, y0 + 7), n["label"], ink, font=f)
+            fs = font(max(8, int(10 * s / 0.8)))
+            if n.get("sub"):
+                d.text((x0 + 10, y0 + 9 + f.size), n["sub"], MUTED, font=fs)
+            calls = self.lit.get(n["id"], {}).get("calls", 0)
+            if hot and calls and n["id"] not in self.groups:
+                txt = f"\u00d7{calls}"
+                d.text((x1 - 8 - d.textlength(txt, font=fs),
+                        y1 - 6 - fs.size), txt, self.color, font=fs)
+
+        self._ledger(d, x, y, pane, oy + self.canvas[1] * s + 12, t)
+
+    def _ledger(self, d, x, y, pane, top, t):
+        """The boxes in the order they lit, which is the order they ran."""
+        seen = [e for e in self.order if e["t"] <= t]
+        f_h, f_l = font(11), font(12)
+        d.text((x + 12, top), "in the order they were called", MUTED,
+               font=f_h)
+        top += 16
+        rows = max(1, int((y + pane - 8 - top) // 15))
+        seen = [e for e in seen if e["node"] not in self.groups]
+        for i, e in enumerate(seen[-rows:]):
+            n = self.by[e["node"]]
+            ry = top + i * 15
+            d.rectangle([x + 12, ry + 4, x + 18, ry + 10], fill=self.color)
+            d.text((x + 24, ry), n["label"], INK, font=f_l)
+            why = self.lit[n["id"]].get("why") or (
+                f'\u00d7{e["calls"]}' if e["calls"] else "")
+            if why:
+                d.text((x + pane - 12 - d.textlength(why, font=f_l), ry),
+                       why, MUTED, font=f_l)
+
+    def _newest(self, t):
+        seen = [e for e in self.order if e["t"] <= t]
+        return seen[-1] if seen else None
+
+    def paint_readout(self, im, d, x, y, pane, t, fonts):
+        f_hz, f_unit, f_sub, f_small = fonts
+        live = self.on(t)
+        val = str(len(live))
+        d.text((x, y), val, self.color, font=f_hz)
+        w = d.textlength(val, font=f_hz)
+        d.text((x + w + 8, y + 30), "boxes lit", MUTED, font=f_unit)
+        d.text((x + w + 8, y + 6), f'of {self.meta["n_nodes"]} in the diagram',
+               INK, font=f_sub)
+        newest = self._newest(t)
+        if newest:
+            n = self.by[newest["node"]]
+            calls = newest["calls"]
+            d.text((x, y + 62),
+                   f'{n["label"]}' + (f'   x{calls}' if calls else ""),
+                   INK, font=f_small)
+        prov = self.meta.get("providers", {})
+        hub, ext = prov.get("hub") or [], prov.get("extension") or []
+        line = (f"{len(hub)} kernel package(s) loaded" if hub else
+                (f"{len(ext)} native extension(s) loaded" if ext else
+                 "no FlashRT kernel provider in this process"))
+        d.text((x, y + 80), line, MUTED, font=f_small)
+        note = self.meta.get("diagram_note")
+        if note:
+            for j, ln in enumerate(wrap(d, note, f_small, pane)[:2]):
+                d.text((x, y + 98 + j * 16), ln, MUTED, font=f_small)
+
+
+def _warm(color, k=0.22):
+    """The pane accent, dimmed to a fill a label still reads on."""
+    return tuple(int(BG[i] + (color[i] - BG[i]) * k) for i in range(3))
+
+
+def _arrow(d, x0, y0, x1, y1, ink, head=5):
+    d.line([x0, y0, x1, y1], fill=ink, width=2)
+    if y1 > y0:
+        d.polygon([(x1, y1), (x1 - head, y1 - head), (x1 + head, y1 - head)],
+                  fill=ink)
+    elif x1 > x0:
+        d.polygon([(x1, y1), (x1 - head, y1 - head), (x1 - head, y1 + head)],
+                  fill=ink)
+
+
 KINDS = {"video": VideoArm, "stream": StreamArm,
          "stream_batch": StreamBatchArm, "arch": ArchArm,
-         "runtime": RuntimeArm}
+         "runtime": RuntimeArm, "diagram": DiagramArm}
 
 
 def _layout(n_panes, pane, footer, extra=0):

@@ -23,6 +23,7 @@ NEEDS = {
                      "decode_tok_s_per_stream", "ttft_ms_median"),
     "arch":         ("nodes", "depth", "stretch", "model_class"),
     "runtime":      ("launches", "distinct", "legend", "families", "origins"),
+    "diagram":      ("diagram", "lit", "n_nodes", "providers"),
 }
 #: Robot rollouts predate the race contract and carry their own meta. They are
 #: read by compose/sim.py, which derives the wall clock from `infer_ms` and the

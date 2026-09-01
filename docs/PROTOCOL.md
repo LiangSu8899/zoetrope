@@ -64,6 +64,44 @@ Reads `frames.npy` and plays the clip once the arm is done.
 ### `kind: "stream_batch"` — one serving engine under concurrency
 One row per in-flight request; `meta` adds the aggregate and per-request rates.
 
+### `kind: "diagram"` — the framework's own architecture, lit by a run
+```json
+{"kind": "lit", "t": 1.85, "node": "s.discover", "calls": 2}
+```
+`meta` adds: `diagram` (the whole authored layout, carried with the run so a
+film draws years later), `lit`, `n_lit`, `n_nodes`, `providers`,
+`kernel_origins`, `unarmed`, `by_receipt`, `pace`, `wall_s`.
+
+A diagram is a JSON layout — nodes with a box, a label, and the entry point
+each box stands for:
+
+```json
+{"id": "s.bind", "label": "bind", "box": [366, 158, 108, 92],
+ "group": "structures", "watch": ["flash_rt.structures.swap:attach"]}
+```
+
+The layout is **authored**: a picture of a system is a human judgement and
+pretending otherwise makes a worse picture. What lights up is **not**. A box
+turns on when its entry point is actually called, and the order is the order
+they were called. Boxes with no entry point of their own — the kernel
+providers, the hardware — are lit by evidence instead: which kernel package
+is loaded in the process, and whether its kernels reached the device.
+
+`hook.light(rec, node, after=...)` lights a box from a receipt where no
+single function stands for it — a qualification that ends in a refusal is
+recorded by whichever site decided it. Those boxes are named in
+`by_receipt`, because "we watched this happen" and "we read this afterwards"
+are different claims.
+
+**The dark boxes are half the message.** An eager arm lights the host and
+nothing under it, and drawing the rest of the diagram dark beside it is the
+only way that reads as a fact rather than as an omission.
+
+Pacing is by **call order**, not the clock: attaching spends most of its wall
+time inside calibration, and a stretched clock would put six boxes on top of
+each other and one at the end. `wall_s` and each box's `first_s` keep the
+real seconds; neither is a performance figure.
+
 ### `kind: "runtime"` — what the arm asked the GPU to do
 ```json
 {"kind": "launch", "t": 0.0041, "k": 12}

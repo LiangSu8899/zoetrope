@@ -18,7 +18,8 @@ demokit/
   record.py             one arm per process; maps --host to an adapter
   hosts/                8 host adapters (lerobot, openpi, Isaac-GR00T, native)
   pipelines/            4 recorders: Wan2.2, Qwen3-VL, Qwen3.6-35B, vLLM/SGLang
-  compose/race_compose.py   stream / video / stream_batch / arch / runtime
+  compose/race_compose.py   stream / video / stream_batch / arch / runtime / diagram
+  diagrams/                 authored architecture layouts, wired to entry points
   compose/sim_compose.py    robot panes
 adapters/
   diffusers_cli_hook.py attach inside `diffusers-cli run`, no diffusers edit
@@ -45,6 +46,27 @@ demokit check runs/wan22/eager runs/wan22/attach    # names what would fail
 demokit draw  runs/wan22 --arms eager,attach --out wan22.webm \
     --title "Wan2.2 TI2V-5B" --subtitle "480x480 · 33 frames · 20 steps"
 ```
+
+## Lighting an architecture diagram
+
+`hook.on_components` draws the framework itself — not the model — and lights
+it from a run.
+
+```python
+rec = hook.Recorder("diagram", label="the same host, structures attached")
+with hook.on_components(rec, "flashrt"):
+    attach_and_run()
+rec.write("runs/doors/attach")
+```
+
+The layout is authored, in `demokit/diagrams/*.json`: a picture of a system is
+a human judgement and pretending otherwise makes a worse picture. What lights
+up is not. Each box names the entry point it stands for, and turns on when
+that entry point is actually called, in the order it is called.
+
+Drawn beside a baseline, the dark boxes carry as much as the lit ones: an
+eager arm lights the host and nothing under it, which is the honest picture of
+an eager arm and is not something a bar chart can say.
 
 ## Recording what the runtime did
 
@@ -124,7 +146,7 @@ events, with pixels subsampled or truncated only where a file would otherwise
 be too large for a repository (each says so in its own `_example_note`).
 
 ```bash
-demokit check examples/runs/*/*                          # 14/14 ready to draw
+demokit check examples/runs/*/*                          # 16/16 ready to draw
 demokit draw  examples/runs/stream       --out /tmp/a.webm   # a VLM, 3 arms
 demokit draw  examples/runs/video        --out /tmp/b.webm   # Wan2.2, 2 arms
 demokit draw  examples/runs/stream_batch --out /tmp/c.webm   # vLLM at batch 8
@@ -132,6 +154,8 @@ demokit draw  examples/runs/loop         --out /tmp/d.webm   # GR00T, 60 steps
 demokit draw  examples/runs/arch         --out /tmp/e.webm   # the tree inside vLLM
 demokit draw  examples/runs/runtime --arms eager,compiled,attach \
                                         --out /tmp/f.webm   # 3 runtimes, one call
+demokit draw  examples/runs/doors   --arms eager,attach \
+                                        --out /tmp/g.webm   # the diagram, lit
 ```
 
 They are also the answer to "do I need to run the model?" — usually not. A run
