@@ -56,6 +56,16 @@ def reveal(n, t):
     return int(round(n * min(max(t, 0.0), 1.0)))
 
 
+def stage(t, a, b):
+    """Progress within one beat of a panel, so beats can follow each other.
+
+    A counter that states its conclusion while the row it counts is still
+    being drawn is saying something that is not yet true on the page.
+    Gate on `stage(...) >= 1`.
+    """
+    return min(max((t - a) / (b - a), 0.0), 1.0)
+
+
 def _text(d, xy, s, f, fill, center=None):
     x, y = xy
     if center is not None:
@@ -107,7 +117,8 @@ def paged(d, pal, p, t, ink):
     # as reserved: one contiguous run per request, most of it never taken
     x0, y = PAD, BODY_TOP + 40
     _text(d, (PAD, y - 30), p["top"], font(18, True), pal.ink)
-    shown = reveal(len(reqs) * reserve, t)
+    ta, tb = stage(t, 0.0, 0.5), stage(t, 0.5, 1.0)
+    shown = reveal(len(reqs) * reserve, ta)
     for j, r in enumerate(reqs):
         base = j * reserve
         _text(d, (x0 + base * (slot + gap), y - 6), r["label"], font(13),
@@ -119,8 +130,9 @@ def paged(d, pal, p, t, ink):
         x = x0 + i * (slot + gap)
         _chip(d, (x, y + 14, x + slot, y + 14 + hh), pal, ink,
               filled=off < reqs[j]["used"], r=3)
-    held = f"{used_total} of {reserved_total} slots hold a token"
-    _text(d, (PAD, y + 58), held, font(16), pal.muted)
+    if ta >= 1:
+        held = f"{used_total} of {reserved_total} slots hold a token"
+        _text(d, (PAD, y + 58), held, font(16), pal.muted)
 
     # paged: blocks handed out only when a token needs one
     y = BODY_TOP + 216
@@ -130,7 +142,7 @@ def paged(d, pal, p, t, ink):
     seen = 0
     for j, r in enumerate(reqs):
         for b in range(math.ceil(r["used"] / block)):
-            if seen >= reveal(nblocks, t):
+            if seen >= reveal(nblocks, tb):
                 break
             for k in range(block):
                 filled = b * block + k < r["used"]
@@ -139,17 +151,17 @@ def paged(d, pal, p, t, ink):
                       filled=filled, r=3)
             x += block * (slot + gap) + 12
             seen += 1
-    if t > 0.9:
+    if tb >= 1:
         end = PAD + (len(reqs) * reserve) * (slot + gap)
         d.line((x + 6, y + 31, end, y + 31), fill=pal.line)
         _text(d, (x + 18, y + 40), "free for other requests", font(15),
               pal.muted)
-    _text(d, (PAD, y + 58),
-          f"{used_total} of {paged_total} slots hold a token", font(16),
-          pal.muted)
-
-    _text(d, (PAD, BODY_TOP + 350), p["tail"], font(20, True), ink)
-    _text(d, (PAD, BODY_TOP + 384), p["scale"], font(14), pal.muted)
+    if tb >= 1:
+        _text(d, (PAD, y + 58),
+              f"{used_total} of {paged_total} slots hold a token", font(16),
+              pal.muted)
+        _text(d, (PAD, BODY_TOP + 350), p["tail"], font(20, True), ink)
+        _text(d, (PAD, BODY_TOP + 384), p["scale"], font(14), pal.muted)
 
 
 def blocktable(d, pal, p, t, ink):
@@ -193,7 +205,7 @@ def share(d, pal, p, t, ink):
     _text(d, (0, BODY_TOP - 6), p["prompt_label"], font(19, True), pal.ink,
           center=W / 2)
     for i in range(n):
-        if i >= reveal(n, t):
+        if i >= reveal(n, stage(t, 0.0, 0.35)):
             break
         x = x0 + i * (bw + 14)
         d.rounded_rectangle((x, top, x + bw, top + bh), 8, fill=ink)
@@ -205,7 +217,7 @@ def share(d, pal, p, t, ink):
     bx0 = (W - (len(br) * (cw + 20) - 20)) / 2
     by = BODY_TOP + 210
     for i, lab in enumerate(br):
-        if i >= reveal(len(br), t + 0.2):
+        if i >= reveal(len(br), stage(t, 0.3, 0.75)):
             break
         x = bx0 + i * (cw + 20)
         d.rounded_rectangle((x, by, x + cw, by + 54), 8, fill=pal.card,
@@ -291,13 +303,13 @@ def schedule(d, pal, p, t, ink):
             zip(keys, ("ours", "compiled", "native", "stock"))}
     cw, cg, chh = 106, 14, 58
 
-    def row(order, y, head, ):
+    def row(order, y, head, tt):
         _text(d, (PAD, y - 52), head, font(18, True), pal.ink)
         seen = None
         for i, g in enumerate(order):
             hit = g == seen
             seen = g
-            if i >= reveal(len(order), t):
+            if i >= reveal(len(order), tt):
                 continue
             x = PAD + i * (cw + cg)
             d.rounded_rectangle((x, y, x + cw, y + chh), 8, fill=inks[g])
@@ -313,24 +325,28 @@ def schedule(d, pal, p, t, ink):
 
     a = prefix_computes(groups)
     b = prefix_computes(sorted(groups))
-    row(groups, BODY_TOP + 50, p["top"])
-    row(sorted(groups), BODY_TOP + 210, p["bottom"])
-    _text(d, (PAD, BODY_TOP + 122),
-          f"the prefix is computed {a} times", font(17), pal.muted)
-    _text(d, (PAD, BODY_TOP + 282),
-          f"the prefix is computed {b} times, and read {len(groups) - b} "
-          f"times from the tree", font(17), ink)
-    _text(d, (PAD, BODY_TOP + 326), p["tail"], font(19, True), ink)
+    ta, tb = stage(t, 0.0, 0.5), stage(t, 0.5, 1.0)
+    row(groups, BODY_TOP + 50, p["top"], ta)
+    row(sorted(groups), BODY_TOP + 210, p["bottom"], tb)
+    if ta >= 1:
+        _text(d, (PAD, BODY_TOP + 122),
+              f"the prefix is computed {a} times", font(17), pal.muted)
+    if tb >= 1:
+        _text(d, (PAD, BODY_TOP + 282),
+              f"the prefix is computed {b} times, and read "
+              f"{len(groups) - b} times from the tree", font(17), ink)
+        _text(d, (PAD, BODY_TOP + 326), p["tail"], font(19, True), ink)
 
 
 def fsm(d, pal, p, t, ink):
     text, forced = p["text"], p["forced"]
     n, decode_steps = fsm_steps(p)
     tw = (W - 2 * PAD) / n
+    ta, tb = stage(t, 0.0, 0.5), stage(t, 0.5, 1.0)
     y = BODY_TOP + 30
     _text(d, (PAD, y - 30), p["top"], font(18, True), pal.ink)
     for i, s in enumerate(text):
-        if i >= reveal(n, t):
+        if i >= reveal(n, ta):
             break
         x = PAD + i * tw
         d.rounded_rectangle((x + 3, y, x + tw - 3, y + 62), 7, fill=pal.card,
@@ -342,7 +358,7 @@ def fsm(d, pal, p, t, ink):
     y = BODY_TOP + 216
     _text(d, (PAD, y - 30), p["bottom"], font(18, True), pal.ink)
     i, step = 0, 0
-    while i < n:
+    while i < reveal(n, tb):
         j = i
         while j < n and forced[j] == forced[i]:
             j += 1
@@ -361,9 +377,10 @@ def fsm(d, pal, p, t, ink):
             _text(d, (0, y + 38), f"step {step}", font(13), pal.bg,
                   center=(x0 + x1) / 2)
         i = j
-    _text(d, (PAD, y + 100), f"{n} decode steps becomes {decode_steps}",
-          font(20, True), ink)
-    _text(d, (PAD, y + 134), p["tail"], font(16), pal.muted)
+    if tb >= 1:
+        _text(d, (PAD, y + 100), f"{n} decode steps becomes {decode_steps}",
+              font(20, True), ink)
+        _text(d, (PAD, y + 134), p["tail"], font(16), pal.muted)
 
 
 STYLES = {"paged": paged, "blocktable": blocktable, "share": share,
@@ -401,6 +418,22 @@ def frame(spec, panel, pal, t=1.0):
     return im
 
 
+def card(spec, pal, t=1.0):
+    """The opening card: whose idea this is, and where it was published."""
+    im = Image.new("RGB", (W, H), pal.bg)
+    d = ImageDraw.Draw(im)
+    ink = pal.role(spec.get("accent", "ours"))
+    _text(d, (PAD, 232), spec["framework"], font(76, True), ink)
+    y = 336
+    for line in wrap(d, spec["tagline"], font(28), W - 2 * PAD - 120)[:2]:
+        _text(d, (PAD, y), line, font(28), pal.ink)
+        y += 38
+    d.line((PAD, y + 26, PAD + 260 * min(t * 2, 1.0), y + 26), fill=pal.line)
+    _text(d, (PAD, y + 48), spec["paper"], font(19), pal.muted)
+    _text(d, (PAD, 678), spec["source"], font(13), pal.muted)
+    return im
+
+
 def load(name):
     p = pathlib.Path(name)
     if not p.exists():
@@ -417,6 +450,26 @@ def render(spec, panel, out, pal, fps=30, build=3.0, hold=2.5):
     for i in range(total):
         t = min(i / fps / build, 1.0)
         frame(spec, panel, pal, t).save(tmp / f"{i:05d}.png")
+    subprocess.run([_ffmpeg(), "-y", "-v", "error", "-framerate", str(fps),
+                    "-i", str(tmp / "%05d.png"), "-c:v", "libvpx-vp9",
+                    "-b:v", "0", "-crf", "30", "-pix_fmt", "yuv420p",
+                    str(out)], check=True)
+    return out
+
+
+#: a panel is drawn in two beats, so a build of 4 s gives each about 2
+def film(spec, out, pal, fps=30, card_s=2.4, build=4.0, hold=2.4):
+    """Every panel of one spec, in order: the framework's own film."""
+    tmp = pathlib.Path(tempfile.mkdtemp(prefix="explain_film_"))
+    i = 0
+    for _ in range(int(card_s * fps)):
+        card(spec, pal, min(i / fps / card_s, 1.0)).save(tmp / f"{i:05d}.png")
+        i += 1
+    for panel in range(len(spec["panels"])):
+        for k in range(int((build + hold) * fps)):
+            frame(spec, panel, pal, min(k / fps / build, 1.0)).save(
+                tmp / f"{i:05d}.png")
+            i += 1
     subprocess.run([_ffmpeg(), "-y", "-v", "error", "-framerate", str(fps),
                     "-i", str(tmp / "%05d.png"), "-c:v", "libvpx-vp9",
                     "-b:v", "0", "-crf", "30", "-pix_fmt", "yuv420p",
@@ -477,6 +530,7 @@ def main(argv=None):
     ap.add_argument("--fps", type=int, default=30)
     ap.add_argument("--frame"); ap.add_argument("--out")
     ap.add_argument("--menu"); ap.add_argument("--sheet")
+    ap.add_argument("--film", help="every panel in order, one film")
     a = ap.parse_args(argv)
     spec = load(a.spec)
     pal = palette(a.palette)
@@ -489,7 +543,9 @@ def main(argv=None):
         print(a.frame)
     if a.out:
         print(render(spec, a.panel, a.out, pal, fps=a.fps))
-    if not (a.menu or a.sheet or a.frame or a.out):
+    if a.film:
+        print(film(spec, a.film, pal, fps=a.fps))
+    if not (a.menu or a.sheet or a.frame or a.out or a.film):
         ap.error("nothing to write: pass --frame, --out, --menu or --sheet")
 
 

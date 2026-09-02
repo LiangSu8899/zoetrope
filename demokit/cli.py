@@ -184,6 +184,7 @@ def main(argv=None) -> int:
     e.add_argument("--frame"); e.add_argument("--out")
     e.add_argument("--menu", help="every panel of this spec, one PNG")
     e.add_argument("--sheet", help="one panel in every colour system")
+    e.add_argument("--film", help="every panel in order, one film")
 
     L = sub.add_parser("looks", help="draw one stream recording in another "
                                      "visual language, or every one at once")
@@ -216,7 +217,7 @@ def main(argv=None) -> int:
         from demokit.compose import explain_compose as E
         argv2 = [a.spec, "--panel", str(a.panel), "--palette", a.palette,
                  "--fps", str(a.fps)]
-        for flag in ("frame", "out", "menu", "sheet"):
+        for flag in ("frame", "out", "menu", "sheet", "film"):
             if getattr(a, flag, None):
                 argv2 += [f"--{flag}", getattr(a, flag)]
         E.main(argv2)

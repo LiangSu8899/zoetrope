@@ -1,6 +1,7 @@
 {
   "framework": "vLLM",
   "paper": "PagedAttention \u2014 Kwon et al., SOSP 2023",
+  "tagline": "how the KV cache stopped being a contiguous reservation",
   "source": "Mechanism and figures as published in the paper. Nothing on this page was measured here.",
   "accent": "ours",
   "panels": [

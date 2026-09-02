@@ -134,13 +134,19 @@ the source is the paper, and the drawing is the work.
 
 ```bash
 demokit explain vllm_paged   --menu menu.png                 # every panel
-demokit explain sglang_radix --panel 0 --palette blueprint --out radix.webm
+demokit explain vllm_paged   --palette blueprint --film vllm.webm    # the film
+demokit explain sglang_radix --panel 0 --palette ember --out radix.webm
 demokit explain vllm_paged   --panel 0 --sheet paged.png     # six palettes
 ```
 
 ![vLLM explainer panels](docs/explain_vllm.png)
 
 ![SGLang explainer panels](docs/explain_sglang.png)
+
+`--film` puts the panels in order behind a title card, and each panel builds
+in beats: the row first, then the count it comes to. A number never appears
+over a row that is still being drawn, which is the same rule as everywhere
+else in this kit — do not say a thing before it is true on the page.
 
 Two specs ship, drawn from the papers their own authors wrote:
 `vllm_paged` (PagedAttention, SOSP 2023) and `sglang_radix` (RadixAttention,
