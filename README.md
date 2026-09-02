@@ -307,28 +307,6 @@ module tree, and where an optimization's seams landed), `hook.on_components`
 (an authored architecture diagram, lit by the entry points a run actually
 called).
 
-## Rules the recorders follow
-
-These came from getting them wrong first.
-
-- **One arm per process.** Two arms in one process share allocator state and
-  clocks.
-- **Warm before you profile.** The first call carries autotune, lazy init and
-  graph capture; profiling it once reported 29,000 kernel launches where the
-  settled answer was 2,742.
-- **Time and profile in separate passes.** A profiler perturbs the run it
-  watches.
-- **Report TTFT and decode separately.** Never blended into one number.
-- **Two baselines**: the host as shipped, and the host after `torch.compile` +
-  graph capture. The gate is the compiled one.
-- **Headline is a median.** min-of-N is a lower bound, in a footnote.
-- **Score parity against the original baseline**, never an intermediate arm.
-- **Real inputs.** Random tensors hide calibration bugs.
-- **A refusal is a result.** A seam that does not pay is recorded with its
-  reason, not dropped.
-- **Never estimate what a profiler can measure.** Utilisation derived from
-  tensor shapes is off by five to ten times.
-
 ## Layout
 
 ```
