@@ -189,8 +189,10 @@ def _curve(d, arms, box, t, pal, race):
     for a in arms:
         ink = pal.role(a.key)
         n = a.n(t)
-        pts = [pt(0, 0)] + [pt(a.ts[i], i + 1) for i in range(0, n,
-                                                              max(1, n // 90))]
+        # every stamp, not a sample of them: a batched engine delivers a
+        # step's worth of tokens at once and then waits, and decimating that
+        # turns a real staircase into a straight line that says nothing
+        pts = [pt(0, 0)] + [pt(a.ts[i], i + 1) for i in range(n)]
         if n:
             pts.append(pt(min(t, a.done), n))
         if len(pts) > 1:
