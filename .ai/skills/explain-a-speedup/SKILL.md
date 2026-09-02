@@ -74,9 +74,47 @@ The numbers are load-bearing. Every one of these was wrong once:
 | `compose/race_compose.py` `arch` | where did the kernels land in the host's tree |
 | `compose/race_compose.py` `diagram` | which door through the framework did this run take |
 | `compose/race_compose.py` `video`/`stream`/`stream_batch` | the demo film itself |
+| `compose/styles_compose.py` | the same stream recording, drawn four other ways |
 
 Start from `trips_compose`. The others exist because they were built; they
 answer narrower questions and they are charts.
+
+## Choosing the drawing, and the ink
+
+A recording does not imply a picture. The same `events.json` — the wall time
+each token arrived — carries four different arguments depending on how it is
+drawn, and picking one is part of the work rather than a detail after it:
+
+| style | what it argues | reach for it when |
+|---|---|---|
+| `curve` | rate: tokens against time, the slope *is* the speed | the claim is tok/s |
+| `bars` | finishing | the audience should not have to read an axis |
+| `dots` | identity: one cell per token, the same cells in both arms | *the same output* is the claim, and speed is second |
+| `ribbon` | density: the same ticks on the same track | a fixed amount of work fitting into less time |
+
+Try more than one. It costs seconds:
+
+```bash
+demokit looks RUNDIR --sheet looks.png                # 4 styles x 6 palettes
+demokit looks RUNDIR --style dots --palette paper --out a.webm
+```
+
+Then open the sheet and choose, the same way you would choose between two
+sentences.
+
+**Never name a colour in a painter.** Ask `palettes.py` for a role — the
+ground, the rule, the reading text, `stock` / `compiled` / `ours` / `native`.
+One flag then restyles the whole film, and the fix for a light palette needing
+darker arm colours lands in one place. It also stops the failure this kit hit
+once already: two modules disagreeing about whether the accent is called
+`ours` or `accent`, and half a film drawing in the wrong ink.
+
+Palettes carry an argument too. `paper` for slides and print, `phosphor` when
+the subject is a runtime close to the metal, `blueprint` under a diagram,
+`ember` for heat and throughput, `mono` when nothing should compete with the
+one accent, `midnight` as the default. A palette that fights the subject is a
+real cost even when every number on the page is right.
+
 
 ## Work from the assets, not from a GPU
 

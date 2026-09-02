@@ -21,6 +21,8 @@ demokit/
   compose/race_compose.py   stream / video / stream_batch / arch / runtime / diagram
   compose/sim_compose.py    robot panes
   compose/trips_compose.py  the one-idea film: the same work, cut into trips
+  compose/styles_compose.py one recording, four visual languages
+  compose/palettes.py       six colour systems, addressed by role
   diagrams/                 authored architecture layouts, wired to entry points
   stubs.py                  satisfy an import a recording path never calls
 .ai/skills/               record-a-demo, and explain-a-speedup
@@ -89,6 +91,38 @@ Four versions of this film were built and rejected before this one — each
 more accurate than the last, and four of them unreadable. That record is the
 useful part, and it is in
 [`.ai/skills/explain-a-speedup/SKILL.md`](.ai/skills/explain-a-speedup/SKILL.md).
+
+## Four ways to draw the same recording
+
+Which drawing carries the idea is a real decision, and it is cheap to try
+several: the recording is already on disk, so each one costs seconds.
+
+```bash
+demokit looks examples/runs/stream --sheet looks.png     # every look at once
+demokit looks examples/runs/stream --style curve --palette paper --out a.webm
+```
+
+![four styles against six palettes](docs/looks.png)
+
+| style | what it argues |
+|---|---|
+| `curve` | **rate** — tokens against time, so the slope *is* the speed |
+| `bars` | **finishing** — the plainest race there is |
+| `dots` | **identity** — one cell per token, the same cells in every arm |
+| `ribbon` | **density** — the same ticks on the same track, bunched up |
+
+They are not interchangeable. `curve` is the one to reach for when the claim
+is about rate; `dots` when the claim that matters is *the same tokens*, and
+speed is the second thing the viewer notices; `bars` for an audience that
+should not have to read an axis; `ribbon` when the point is that a fixed
+amount of work fits into less time.
+
+Six palettes — `midnight`, `paper`, `phosphor`, `blueprint`, `ember`, `mono`
+— and a painter never names a colour. It asks for a role: the ground, the
+rule, the reading text, `stock` / `compiled` / `ours` / `native`. So one flag
+changes the whole film and no drawing code moves, and a light palette that
+needs darker arm colours is one place to fix rather than thirty.
+
 
 ## Lighting an architecture diagram
 

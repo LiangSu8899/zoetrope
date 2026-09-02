@@ -175,6 +175,17 @@ def main(argv=None) -> int:
                    help="also append a pointer to this AGENTS.md, for agents "
                         "that read that rather than a skills directory")
 
+    L = sub.add_parser("looks", help="draw one stream recording in another "
+                                     "visual language, or every one at once")
+    L.add_argument("runs", help="a directory of arms")
+    L.add_argument("--style", default="curve")
+    L.add_argument("--palette", default="midnight")
+    L.add_argument("--title"); L.add_argument("--sub")
+    L.add_argument("--seconds", type=float, default=7.0)
+    L.add_argument("--fps", type=int, default=30)
+    L.add_argument("--at", type=float, default=0.62)
+    L.add_argument("--out"); L.add_argument("--frame"); L.add_argument("--sheet")
+
     d = sub.add_parser("draw", help="compose runs into a film")
     d.add_argument("runs", nargs="?", help="a directory of arms")
     d.add_argument("--arms", help="comma-separated order; default: sorted")
@@ -190,6 +201,18 @@ def main(argv=None) -> int:
 
     if a.cmd == "skills":
         return _skills(a)
+
+    if a.cmd == "looks":
+        from demokit.compose import styles_compose as S
+        argv2 = ["--run", a.runs, "--style", a.style, "--palette", a.palette,
+                 "--seconds", str(a.seconds), "--fps", str(a.fps),
+                 "--at", str(a.at)]
+        for flag in ("title", "sub", "out", "frame", "sheet"):
+            if getattr(a, flag, None):
+                argv2 += [f"--{flag}", getattr(a, flag)]
+        sys.argv = ["demokit looks"] + argv2
+        S.main()
+        return 0
 
     if a.cmd == "check":
         bad = [b for r in a.runs for b in check(pathlib.Path(r))]
