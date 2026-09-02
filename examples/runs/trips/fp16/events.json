@@ -452,7 +452,7 @@
   "min_ms": 27.35,
   "p90_ms": 28.333,
   "decision_ms": 27.663,
-  "_example_note": "pi0.5 on LIBERO spatial task 0, RTX 5090, each arm driving the simulator with its own actions. The launch count is profiled after eight calls; the time is a median of 50 taken afterwards with the profiler off, so the instrument is not in the number it reports."
+  "_example_note": "pi0.5 on LIBERO spatial task 0, RTX 5090, each arm driving the simulator with its own actions. Launch counts profiled after eight calls; times are medians of 50 taken afterwards with the profiler off. Utilisation from Nsight Compute over one decision, weighted by each kernel's own duration."
  },
  "events": [
   {

@@ -19,10 +19,12 @@ demokit/
   hosts/                8 host adapters (lerobot, openpi, Isaac-GR00T, native)
   pipelines/            4 recorders: Wan2.2, Qwen3-VL, Qwen3.6-35B, vLLM/SGLang
   compose/race_compose.py   stream / video / stream_batch / arch / runtime / diagram
-  compose/trips_compose.py  the one-idea film: trips to memory, on one clock
-  stubs.py                  satisfy an import a recording path never calls
-  diagrams/                 authored architecture layouts, wired to entry points
   compose/sim_compose.py    robot panes
+  compose/trips_compose.py  the one-idea film: the same work, cut into trips
+  diagrams/                 authored architecture layouts, wired to entry points
+  stubs.py                  satisfy an import a recording path never calls
+.ai/skills/               record-a-demo, and explain-a-speedup
+examples/runs/            20 real recordings; a first cut needs no GPU
 adapters/
   diffusers_cli_hook.py attach inside `diffusers-cli run`, no diffusers edit
 docs/PROTOCOL.md        the run-directory contract and the adapter protocols
@@ -51,30 +53,24 @@ demokit draw  runs/wan22 --arms eager,attach --out wan22.webm \
 
 ## One idea, for someone who will not read a chart
 
+A demo film shows one arm finishing first. Everyone reads it, because there
+is nothing to parse. Explaining *why* is much harder, and the rule is
+brutal: **one idea, and everything else is cut.**
+
 Every CUDA kernel reads its operands from device memory and writes its result
-back, so a kernel launch is a trip to memory. That makes the launch count a
-number a person can hold in their head, which a kernel taxonomy is not.
-
-`compose/trips_compose.py` draws exactly that and nothing else: two lanes,
-one shared memory bar, two counters, and a race on the measured wall clock.
-The arms are ordinary `runtime` runs.
-
-Both lanes span the full width, because both do the same job — one decision.
-So **length is the work, the sweep is the clock, and the density of the marks
-is the trips it took**. A lane that stopped a fifth of the way across would
-read as an arm that did less, which is the opposite of the point.
-
-Each trip crosses the gap as it really happened: the recorded launch
-timestamps drive the animation, so the bursts and the gaps are the shape of
-the run and not a loop. Colour says what the trip was for, on the same
-palette both sides, which makes the storms themselves the comparison — the
-shipped host's is grey, operands being moved; the native one's is gold and
-green, arithmetic and the quantizing that feeds it.
+back, so a kernel launch is a trip to memory. Both arms compute the same
+decision, so both rows are drawn the same length — and one of them is cut
+into five times as many pieces.
 
 ```bash
 python -m demokit.compose.trips_compose --runs examples/runs/trips \
     --arms torch,fp8 --gate compiled --out why.webm
 ```
+
+Same work, fewer trips, therefore more work per trip. Three claims from one
+picture, no legend, and the third is a consequence of the first two rather
+than a fourth thing to remember. Colour is measured too — how hard the chip
+was working, from Nsight Compute.
 
 On pi0.5, one decision on LIBERO, an RTX 5090:
 
@@ -85,17 +81,14 @@ On pi0.5, one decision on LIBERO, an RTX 5090:
 | FlashRT native, FP16 | 2,862 | 27.7 ms |
 | FlashRT native, FP8 | **2,742** | **22.3 ms** |
 
-Fewer trips and less time, in step, all the way down the ladder — `compile`
-takes 2.6x off the trips and 2.2x off the clock, and the native pipeline takes
-another 1.9x and 2.8x. That the two columns move together is what makes the
-first one an explanation of the second rather than a coincidence beside it.
+Fewer trips and less time, in step, all the way down the ladder. That the two
+columns move together is what makes the first an explanation of the second
+rather than a coincidence beside it.
 
-The film draws the top and bottom rows and names both baselines at the end,
-because one of them is what a reader recognises and the other is what the
-claim has to survive.
-
-The other panes describe. This one argues, and it is the only one that puts a
-speed figure on the canvas — because that is the one thing everybody reads.
+Four versions of this film were built and rejected before this one — each
+more accurate than the last, and four of them unreadable. That record is the
+useful part, and it is in
+[`.ai/skills/explain-a-speedup/SKILL.md`](.ai/skills/explain-a-speedup/SKILL.md).
 
 ## Lighting an architecture diagram
 
@@ -207,13 +200,30 @@ demokit draw  examples/runs/runtime --arms eager,compiled,attach \
 demokit draw  examples/runs/doors   --arms eager,attach \
                                         --out /tmp/g.webm   # the diagram, lit
 python -m demokit.compose.trips_compose --runs examples/runs/trips \
-    --arms torch,fp8 --out /tmp/h.webm                      # why it is fast
+    --arms torch,fp8 --gate compiled --out /tmp/h.webm      # why it is fast
 ```
 
 They are also the answer to "do I need to run the model?" — usually not. A run
 someone else recorded draws exactly as well as one you made.
 
 `examples/specs/` holds the multi-chapter specs behind the published films.
+
+## Handing this to an agent
+
+```bash
+demokit skills add                      # ~/.claude/skills and ~/.agents/skills
+demokit skills list
+```
+
+Two skills. `record-a-demo` covers making the film that shows an optimization
+worked. `explain-a-speedup` covers the harder one — saying why — and most of
+it is a record of the versions that failed and the reason each was
+unreadable, because that judgement is what a first draft gets wrong.
+
+Both lean on `examples/runs/`: a first cut needs no model and no device, and
+redrawing costs seconds because `events.json` is the whole raw material.
+Ten drafts is normal, and the loop that works is to render one frame, look at
+it, and cut something.
 
 ## Adding a model
 

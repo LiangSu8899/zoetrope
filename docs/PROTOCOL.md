@@ -129,6 +129,14 @@ to pace the animation.
 > arm can issue more kernels than its baseline and still finish first,
 > because it made each of them cheaper. Composition, not count.
 
+`compose/trips_compose.py` reads these runs too, and draws the one thing a
+person takes away: both arms compute the same decision, so both rows are the
+same length, and one is cut into five times as many pieces. It also reads
+`decision_ms`, and — when Nsight Compute measured them — `sm_slices`,
+`sm_pct`, `dram_pct` and `sm_peak_pct`, which colour the pieces by how hard
+the chip was working. Those are optional: without them the film draws in the
+arm's own accent instead of inventing a temperature.
+
 ### `kind: "arch"` — the model's own module tree
 ```json
 {"kind": "enter", "t": 0.41, "node": "blocks.*", "idx": 12}

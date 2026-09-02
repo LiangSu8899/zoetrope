@@ -147,3 +147,10 @@ demokit draw --spec spec.json --out concurrency.webm
 
 See `docs/PROTOCOL.md` for the full run-directory contract and the host-adapter
 protocols.
+
+## After the demo film
+
+A demo film shows that one arm finished first. Explaining *why* is a
+different job with a different rule -- one idea, no legend -- and the
+versions that failed at it are worth reading before starting:
+`.ai/skills/explain-a-speedup/SKILL.md`.
