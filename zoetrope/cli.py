@@ -186,6 +186,14 @@ def main(argv=None) -> int:
     e.add_argument("--sheet", help="one panel in every colour system")
     e.add_argument("--film", help="every panel in order, one film")
 
+    G = sub.add_parser("logo", help="the mark: a drum of frames, read as "
+                                   "motion")
+    G.add_argument("out")
+    G.add_argument("--palette", default="midnight")
+    G.add_argument("--word", action="store_true")
+    G.add_argument("--height", type=int, default=160)
+    G.add_argument("--fps", type=int, default=22)
+
     V = sub.add_parser("live", help="the run demo: the answer arriving, with "
                                    "the rate drawn beside it")
     V.add_argument("runs")
@@ -232,6 +240,13 @@ def main(argv=None) -> int:
             if getattr(a, flag, None):
                 argv2 += [f"--{flag}", getattr(a, flag)]
         E.main(argv2)
+        return 0
+
+    if a.cmd == "logo":
+        from zoetrope.compose import logo as G
+        argv2 = [a.out, "--palette", a.palette, "--height", str(a.height),
+                 "--fps", str(a.fps)] + (["--word"] if a.word else [])
+        G.main(argv2)
         return 0
 
     if a.cmd == "live":

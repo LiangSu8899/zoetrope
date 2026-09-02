@@ -1,20 +1,36 @@
-# zoetrope
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo_dark.gif">
+    <img src="docs/logo_light.gif" alt="zoetrope" width="380">
+  </picture>
+</p>
 
-**Ask an agent for a video that explains a system — a model you just optimized,
-a paper you just read, a framework you have to teach — and get one back where
-every frame is drawn from a measurement or a citation.**
+<p align="center">
+  <b>Ask an agent for a video that explains a system — a model you just
+  optimized, a paper you just read, a framework you have to teach — and get one
+  back where every frame is drawn from a measurement or a citation.</b>
+</p>
 
 Text-to-video makes something plausible. This makes something checkable: the
 numbers on the screen came off a profiler or out of a paper, the picture is
 replayed from timestamps that were really recorded, and a claim with nothing
 behind it is printed as `not measured` rather than drawn as a bar.
 
-<p align="center">
-  <img src="docs/gif/run_demo.gif" width="49%" alt="three arms writing the same answer on one clock">
-  <img src="docs/gif/why_faster.gif" width="49%" alt="the same work, cut into fewer trips to memory">
-  <img src="docs/gif/explain_radix.gif" width="49%" alt="SGLang's radix tree, with the number it produces beside it">
-  <img src="docs/gif/explain_tiling.gif" width="49%" alt="FlashAttention's tiles, and the matrix that is never written">
-</p>
+A zoetrope is a slitted drum with a strip of still drawings inside it. Spin it,
+look through the slits, and the stills become one moving thing. Nothing in the
+drum moves except the order in which you see it — which is exactly the trick
+here: a run writes down *when* each thing happened, and a compositor turns that
+list of timestamps into motion.
+
+## Gallery
+
+| | |
+|:--|:--|
+| <img src="docs/gif/run_demo.gif" width="100%"><br>**One request, three arms.** PyTorch as shipped, the same host compiled, and an optimized build — one wall clock, live tok/s, and the rate drawn underneath. | <img src="docs/gif/serving_paper.gif" width="100%"><br>**A serving engine under load.** vLLM with eight requests in flight, one scrolling line each, real time. |
+| <img src="docs/gif/robot.gif" width="100%"><br>**A robot policy in closed loop.** GR00T on LIBERO — the simulator's own camera, the policy's own control rate, both arms on one clock. | <img src="docs/gif/video.gif" width="100%"><br>**A diffusion model.** Wan2.2 denoising, ms per step as it goes, then each clip played at its own frame rate. |
+| <img src="docs/gif/why_faster.gif" width="100%"><br>**Why it is faster, in one idea.** The same decision, cut into a different number of trips to memory. Everything else cut. | <img src="docs/gif/run_demo_paper.gif" width="100%"><br>**The same recording, in another ink.** Six colour systems, one flag — this one is for slides and print. |
+| <img src="docs/gif/explain_radix.gif" width="100%"><br>**A paper's mechanism.** SGLang's radix tree, with the number it produces derived from the tree beside it. | <img src="docs/gif/explain_tiling.gif" width="100%"><br>**Drawn the way the paper draws it.** FlashAttention's loops, and the N×N matrix that is never written down. |
+| <img src="docs/gif/explain_result.gif" width="100%"><br>**And what it came to.** Meters that fill, bars against a baseline — including the utilisation that did *not* move. | <img src="docs/looks.png" width="100%"><br>**Four visual languages, six palettes.** One contact sheet from one recording, so the look is a choice you make by looking. |
 
 ---
 
@@ -86,10 +102,6 @@ zoetrope live examples/runs/stream_batch --palette phosphor --chart bars  --out 
 zoetrope live examples/runs/stream       --palette mono     --chart none  --out c.webm
 ```
 
-<p align="center">
-  <img src="docs/gif/serving.gif" width="70%" alt="a serving engine with eight requests in flight">
-</p>
-
 One painter covers both shapes: a `stream` arm is one request and its pane is
 the answer; a `stream_batch` arm is a serving engine with several requests in
 flight and its pane is one scrolling line each.
@@ -110,10 +122,6 @@ zoetrope explain sglang_radix   --panel 0 --sheet six.png    # in six palettes
 | `sglang_radix` | what has been computed, kept in a tree | RadixAttention, NeurIPS 2024 |
 | `flashattention` | the N×N matrix that is never written down | FlashAttention 1 and 2 |
 | `flashrt_trips` | fewer, larger kernels — and the utilisation that *did not* move | measured here, RTX 5090 |
-
-<p align="center">
-  <img src="docs/gif/explain_result.gif" width="70%" alt="a results page: meters that fill and bars against a baseline">
-</p>
 
 Every mechanism page can carry a chart in its right-hand column, and that
 chart is **derived from the diagram beside it** — the tokens in the drawn
@@ -148,9 +156,11 @@ cross-fade rather than cut.
 
 ```bash
 zoetrope looks examples/runs/stream --sheet looks.png     # 4 styles x 6 palettes
+zoetrope logo  logo.gif --palette blueprint --word        # the mark, in any of them
 ```
 
-![four styles against six palettes](docs/looks.png)
+The mark at the top of this page is drawn by the same canvas as the films:
+a ring of slits where nothing moves except the order in which each one is lit.
 
 ## Recording your own
 
@@ -211,6 +221,7 @@ zoetrope/
   compose/race_compose.py   stream / video / arch / runtime / diagram panes
   compose/canvas.py         the supersampled surface, and the easing
   compose/palettes.py       six colour systems, addressed by role
+  compose/logo.py           the mark: a drum of frames, read as motion
   explainers/*.json         the paper specs
   diagrams/*.json           authored architecture layouts, wired to entry points
 examples/runs/              20 real recordings; a first cut needs no GPU
