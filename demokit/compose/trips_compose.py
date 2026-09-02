@@ -91,10 +91,14 @@ def _row(d, lane, y, t, slow_ms):
     top = y + 62
     wide = RX - LX
     bw = wide / lane.blocks
-    heat = lane.heat or [0.0]
+    heat = lane.heat
     for k in range(int(lane.blocks * at)):
         x = LX + k * bw
-        ink = _heat(heat[min(int(k * len(heat) / lane.blocks), len(heat) - 1)])
+        # no utilisation measured for this arm: the arm's own accent, not a
+        # temperature. Green would say "measured, and cool", which is a
+        # claim nobody made.
+        ink = (_heat(heat[min(int(k * len(heat) / lane.blocks),
+                              len(heat) - 1)]) if heat else lane.color)
         d.rectangle([x + 1, top, x + bw - 1, top + STRIP_H], fill=ink)
     d.rectangle([LX, top, RX, top + STRIP_H], outline=LINE)
 
