@@ -1,7 +1,7 @@
 # The two protocols
 
 Everything here produces one thing: a **run directory** holding `events.json`
-(plus `frames.npy` or `image.png` when the painter needs pixels). A compositor
+(plus `frames.webp` or `image.png` when the painter needs pixels). A compositor
 reads several of those and draws one film on one shared wall clock.
 
 That is the whole contract. A recorder never draws, and a compositor never runs
@@ -14,7 +14,12 @@ a model.
 ```
 runs/<film>/<arm>/
     events.json      required
-    frames.npy       uint8 [N, H, W, 3] — robot rollouts, and generated clips
+    frames.webp      the pixels — robot rollouts, and generated clips.
+                     An animated WebP: the same LIBERO episode as raw
+                     uint8 is 18 MB and as WebP it is 0.35 MB, which is
+                     the difference between shipping a whole episode and
+                     shipping a truncated one. `frames.npy` is still read
+                     wherever it exists.
     image.png        the VLM's input, when the pane shows one
 ```
 
@@ -59,7 +64,7 @@ Reads `image.png` if present, and shows it above the text.
 {"kind": "step", "t": 0.31}
 ```
 `meta` adds: `steps`, `ms_per_step`, `decode_s`, `clip_fps`.
-Reads `frames.npy` and plays the clip once the arm is done.
+Reads `frames.webp` and plays the clip once the arm is done.
 
 ### `kind: "stream_batch"` — one serving engine under concurrency
 One row per in-flight request; `meta` adds the aggregate and per-request rates.
@@ -167,7 +172,7 @@ the hooks themselves — they are not a measurement of anything.
 ```
 `meta` adds: `arm`, `host`, `suite`, `task`, `task_id`, `trial`, `steps`,
 `median_infer_ms`, `success`, `replan`.
-Reads `frames.npy` — the simulator's own observation, one frame per control
+Reads `frames.webp` — the simulator's own observation, one frame per control
 step.
 
 > **Not yet unified.** `loop` is currently read by `compose/sim.py`, the other

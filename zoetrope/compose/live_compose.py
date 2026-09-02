@@ -252,12 +252,23 @@ def main(argv=None):
     ap.add_argument("--palette", default="midnight", choices=sorted(PALETTES))
     ap.add_argument("--chart", default="curve", choices=sorted(CHARTS))
     ap.add_argument("--title"); ap.add_argument("--sub")
+    ap.add_argument("--label", help="rename the first arm's pane — a film of "
+                                    "one engine should not be labelled as if "
+                                    "it were half of a comparison")
+    ap.add_argument("--pane-sub", help="and its second line")
+    ap.add_argument("--color", help="the role that arm is drawn in")
     ap.add_argument("--seconds", type=float)
     ap.add_argument("--fps", type=int, default=30)
     ap.add_argument("--at", type=float, default=0.6)
     ap.add_argument("--frame"); ap.add_argument("--out")
     a = ap.parse_args(argv)
     arms = load(a.runs, a.arms.split(",") if a.arms else None)
+    if a.label:
+        arms[0].label = a.label
+    if a.pane_sub:
+        arms[0].sub = a.pane_sub
+    if a.color:
+        arms[0].key = a.color
     m = arms[0].meta
     title = a.title or m.get("model") or "one request"
     sub = a.sub if a.sub is not None else m.get("prompt", "")

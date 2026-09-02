@@ -19,6 +19,7 @@ import subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+from ..frames import load_frames
 from .race_compose import wrap
 
 CONTROL_HZ = 20.0                     # LIBERO's control rate
@@ -91,7 +92,7 @@ def hz_trace(events, times):
 class Arm:
     def __init__(self, run_dir, label, sub, color, steps_cap=None):
         d = pathlib.Path(run_dir)
-        self.frames = np.load(d / "frames.npy")
+        self.frames = load_frames(d)
         blob = json.loads((d / "events.json").read_text())
         self.meta, self.events = blob["meta"], blob["events"]
         if steps_cap is not None:            # same robot work in every pane
@@ -230,7 +231,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs", required=True,
                     help="directory holding one sub-directory per arm, "
-                         "each with events.json + frames.npy")
+                         "each with events.json + frames.webp")
     ap.add_argument("--out", required=True)
     ap.add_argument("--seconds", type=float, default=None)
     ap.add_argument("--speed", type=float, default=1.0)

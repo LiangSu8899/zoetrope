@@ -26,12 +26,18 @@ list of timestamps into motion.
 
 ### Inference engines
 
-A serving engine with eight requests in flight, and a single request answered
-three ways. One wall clock, live tok/s, and the rate drawn underneath.
+An engine filmed from its own token stream — eight requests in flight, one
+wall clock, and tokens delivered plotted underneath. One arm, no comparison:
+this is what the engine did.
 
 <p align="center">
-  <img src="docs/gif/serving_paper.gif" width="100%" alt="vLLM with eight requests in flight">
+  <img src="docs/gif/serving.gif" width="100%" alt="vLLM with eight requests in flight">
 </p>
+
+And the same painter with more than one arm, where the arms are a host and
+what that host becomes when you change how it executes: PyTorch as shipped,
+the same host under `torch.compile`, and the same host again with an
+optimization attached.
 
 <p align="center">
   <img src="docs/gif/run_demo.gif" width="100%" alt="one request, three arms">
@@ -62,18 +68,20 @@ that diagram, so the picture and the figure cannot drift apart.
 ### Simulation and robots
 
 A policy in closed loop, drawn from the simulator's own camera and the
-policy's own control rate — not a screen recording. Two arms of pi0.5 on the
-same LIBERO task from the same initial state: 108.0 ms a decision against
-25.6 ms, which is 9.3 Hz against 39.1 Hz.
+policy's own control rate — not a screen recording. Three complete pi0.5
+rollouts of the same LIBERO task from the same initial state, each one running
+to the moment the task is done: 107.5 ms a decision, then 58.9 under
+`torch.compile`, then 25.6 — 9.3 Hz, 17.0 Hz, 39.1 Hz, finishing at 13.7 s,
+10.2 s and 6.7 s.
 
 <p align="center">
-  <img src="docs/gif/robot.gif" width="100%" alt="pi0.5 on LIBERO, two arms on one clock">
+  <img src="docs/gif/robot.gif" width="100%" alt="pi0.5 on LIBERO, three arms on one clock">
 </p>
 
-The recording that ships here is capped at 40 control steps and scaled down to
-fit in a repository, so the pane says `40 steps recorded` rather than claiming
-the task was completed — and the footer carries the closed-loop rate as well,
-because the robot's own 20 Hz control step is most of the wall clock.
+Whole episodes, at the resolution they were recorded at, in about a megabyte:
+frames ship as an animated WebP, because the same three rollouts as raw pixels
+are 54 MB. The footer carries the closed-loop rate too, since the robot's own
+20 Hz control step is a large part of the wall clock.
 
 ### Comparisons
 
@@ -93,12 +101,19 @@ work, cut into a different number of trips to memory.
 
 Every film above is drawn from a recording that ships in this repository, so
 each one redraws on your machine with no GPU. They are all painted on the same
-1280-wide canvas, whatever they are showing, so a page of them lines up. Change
-the ink with one flag, change the visual language with another, and print the
-whole matrix to choose from:
+1280-wide canvas, whatever they are showing, so a page of them lines up.
+
+Change the ink with one flag and the visual language with another. Below is the
+same recording as the first film in this gallery, once in the paper palette and
+once drawn as one cell per token — where the argument is not *rate* but *the
+same tokens*, and speed is the second thing you notice:
 
 <p align="center">
   <img src="docs/gif/run_demo_paper.gif" width="100%" alt="the same recording in the paper palette">
+</p>
+
+<p align="center">
+  <img src="docs/gif/looks_dots.gif" width="100%" alt="the same recording drawn as one cell per token">
 </p>
 
 <p align="center">

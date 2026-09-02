@@ -13,7 +13,7 @@ Protocol (see RECORDING.md in the demo repository):
 Output per run directory:
 
     events.json   {"meta": {...}, "events": [{"step", "infer_ms", "action"}]}
-    frames.npy    uint8 [N, H, W, 3] — one frame per control step
+    frames.webp   the rollout, one frame per control step
 """
 
 from __future__ import annotations
@@ -25,6 +25,8 @@ import pathlib
 import time
 
 import numpy as np
+
+from .frames import save_frames
 
 LIBERO_DUMMY_ACTION = [0.0] * 6 + [-1.0]
 LIBERO_ENV_RESOLUTION = 256
@@ -338,7 +340,7 @@ def rollout(host, *, suite: str, task_id: int, trial: int, seed: int,
     meta.update(extra_meta or {})
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    np.save(out_dir / "frames.npy", np.asarray(frames, dtype=np.uint8))
+    save_frames(out_dir, np.asarray(frames, dtype=np.uint8))
     (out_dir / "events.json").write_text(
         json.dumps({"meta": meta, "events": events}, indent=2))
     print(json.dumps(meta, indent=2, default=str), flush=True)

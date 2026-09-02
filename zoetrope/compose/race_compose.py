@@ -37,6 +37,8 @@ import subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+from ..frames import load_frames
+
 FONT_DIRS = ["/usr/share/fonts/truetype/dejavu",
              "/usr/share/fonts/truetype/liberation"]
 
@@ -137,7 +139,7 @@ class VideoArm(Arm):
 
     def __init__(self, run_dir):
         super().__init__(run_dir)
-        self.frames = np.load(self.dir / "frames.npy")
+        self.frames = load_frames(self.dir)
         self.steps = int(self.meta["steps"])
         self.step_t = [float(e["t"]) for e in self.events
                        if e["kind"] == "step"]
