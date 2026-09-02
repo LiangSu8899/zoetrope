@@ -123,8 +123,11 @@ CANVAS_W = 1280
 
 
 def render(arms, out_path, fps=30, pane=440, seconds=None, speed=1.0,
+           tail=1.6,
            title=None, note=None, footer=None):
-    span = seconds or max(a.times[-1] for a in arms)
+    # hold the finished page: a film that ends on the frame its slowest arm
+    # lands never shows that arm landing
+    span = seconds or max(a.times[-1] for a in arms) + tail
     gap, pad, head, foot = 26, 34, 168, 178
     # every film in this kit is the same width, so a page of them lines up.
     # The panes divide that width rather than setting it.

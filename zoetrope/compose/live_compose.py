@@ -240,14 +240,14 @@ def frame(arms, t, pal, *, title, sub, chart="curve", race=1.0, stretch=None):
     d.line((PAD, 116, W - PAD, 116), fill=pal.line)
 
     draw = CHARTS[chart]
-    pane_bot = 660 if draw is None else 524
+    pane_bot = 660 if draw is None else 508
     gap = 20
     pw = (W - 2 * PAD - gap * (len(arms) - 1)) / len(arms)
     for i, a in enumerate(arms[::-1]):
         x = PAD + i * (pw + gap)
         _pane(d, a, (x, 140, x + pw, pane_bot), t, pal, pal.role(a.key))
     if draw is not None:
-        draw(d, arms, (PAD, 580, W - PAD, 672), t, pal, race)
+        draw(d, arms, (PAD, 556, W - PAD, 684), t, pal, race)
     return d.image()
 
 
