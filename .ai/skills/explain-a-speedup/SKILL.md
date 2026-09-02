@@ -167,6 +167,23 @@ Recording and drawing are separate on purpose: changing the picture costs
 seconds, because `events.json` is the whole raw material and no model has to
 run again. Use that. Ten drafts is normal.
 
+## Motion is part of the argument
+
+A film is not a slideshow of finished pages, and the two failures are
+symmetrical: elements that switch on all at once give the eye nothing to
+follow, and a result that lands and is immediately cut away from does not
+register at all.
+
+- **Everything is eased.** `canvas.ease` on every beat; `appear(i, n, t)` for
+  a list, so it arrives item by item rather than as one switch.
+- **Order the beats.** The mechanism draws, *then* the number beside it —
+  `stage(t, 0.5, 1.0)` for a side chart. A chart that fills while its diagram
+  is still being drawn is stating a conclusion the page has not reached.
+- **Hold the finish.** Three seconds on a completed page, and cross-fade
+  rather than cut.
+- **Draw large, come down.** `canvas.py` renders at 2x and downsamples. There
+  is no cheaper way to make these pages look made rather than emitted.
+
 ## Look at what you drew
 
 You can read images. Render a single frame to a PNG, open it, and ask what a

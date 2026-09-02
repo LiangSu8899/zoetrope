@@ -36,8 +36,9 @@ import tempfile
 
 from PIL import Image, ImageDraw
 
+from .canvas import Canvas, R_SM, appear, ease_out, font, _truetype
 from .palettes import PALETTES, palette
-from .race_compose import _ffmpeg, font
+from .race_compose import _ffmpeg
 
 #: The contact sheet is a print, not a film: it is deliberately neutral so
 #: that six palettes can sit on it without one of them owning the page.
@@ -197,10 +198,11 @@ def draw_bars(d, arms, w, pal):
     y = _center(len(arms) * h + (len(arms) - 1) * gap)
     for a in arms[::-1]:
         ink = pal.role(a.key)
-        d.rectangle((x0, y, x1, y + h), fill=pal.card)
+        d.rounded_rectangle((x0, y, x1, y + h), R_SM, fill=pal.card)
         frac = a.upto(w) / a.n
         if frac:
-            d.rectangle((x0, y, x0 + (x1 - x0) * frac, y + h), fill=ink)
+            d.rounded_rectangle((x0, y, x0 + (x1 - x0) * frac, y + h), R_SM,
+                                fill=ink)
         d.text((x0 + 16, y + h / 2 - 12), a.label, font=font(20, True),
                fill=pal.bg if frac > 0.34 else pal.ink)
         num = f"{a.upto(w)}"
@@ -266,12 +268,11 @@ STYLES = {"curve": draw_curve, "bars": draw_bars, "dots": draw_dots,
 # ---------------------------------------------------------------- render
 
 def frame(arms, w, pal, style, title, sub):
-    im = Image.new("RGB", (W, H), pal.bg)
-    d = ImageDraw.Draw(im)
-    chrome(im, d, arms, w, pal, title, sub, style)
+    d = Canvas(pal.bg)
+    chrome(d, d, arms, w, pal, title, sub, style)
     STYLES[style](d, arms, w, pal)
     payoff(d, arms, w, pal)
-    return im
+    return d.image()
 
 
 def render(arms, out, pal, style, title, sub, fps=30, seconds=7.0):
@@ -284,7 +285,7 @@ def render(arms, out, pal, style, title, sub, fps=30, seconds=7.0):
         frame(arms, w, pal, style, title, sub).save(tmp / f"{i:05d}.png")
     subprocess.run([_ffmpeg(), "-y", "-v", "error", "-framerate", str(fps),
                     "-i", str(tmp / "%05d.png"), "-c:v", "libvpx-vp9",
-                    "-b:v", "0", "-crf", "30", "-pix_fmt", "yuv420p",
+                    "-b:v", "0", "-crf", "24", "-row-mt", "1", "-pix_fmt", "yuv420p",
                     str(out)], check=True)
     return out
 

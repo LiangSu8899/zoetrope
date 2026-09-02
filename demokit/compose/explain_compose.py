@@ -44,13 +44,14 @@ import tempfile
 
 from PIL import Image, ImageDraw
 
+from .canvas import (R_LG, R_MD, R_SM, Canvas, appear, ease, ease_out, font,
+                     _arrow, _truetype)
 from .palettes import PALETTES, palette
-from .race_compose import _arrow, _ffmpeg, font, wrap
+from .race_compose import _ffmpeg, wrap
 
 W, H = 1280, 720
 PAD = 96
 BODY_TOP = 164
-
 
 def reveal(n, t):
     return int(round(n * min(max(t, 0.0), 1.0)))
@@ -63,7 +64,7 @@ def stage(t, a, b):
     being drawn is saying something that is not yet true on the page.
     Gate on `stage(...) >= 1`.
     """
-    return min(max((t - a) / (b - a), 0.0), 1.0)
+    return ease(min(max((t - a) / (b - a), 0.0), 1.0))
 
 
 def _text(d, xy, s, f, fill, center=None):
@@ -89,11 +90,10 @@ def sweep(im, d, xy, s, f, pal, ink, q):
     if q <= 0 or q >= 1:
         return
     lo, hi = (0.0, q * 2) if q < 0.5 else (q * 2 - 1, 1.0)
-    pad, w, h = 10, d.textlength(s, font=f), int(f.size * 1.42)
-    tile = Image.new("RGB", (int(w) + 2 * pad, h), ink)
-    ImageDraw.Draw(tile).text((pad, 0), s, font=f, fill=pal.bg)
-    a, b = int(tile.width * lo), max(1, int(tile.width * hi))
-    im.paste(tile.crop((a, 0, b, h)), (int(x) - pad + a, int(y)))
+    pad, w, h = 10, d.textlength(s, font=f), f.size * 1.42
+    span = w + 2 * pad
+    d.plate_text((x - pad + span * lo, y, x - pad + span * hi, y + h),
+                 (x, y), s, f, ink, pal.bg)
 
 
 def _chip(d, box, pal, ink, *, filled=True, r=6):
@@ -190,14 +190,18 @@ def chart(im, d, pal, p, t, ink, box):
                 pal.dim(ink, 0.68) if k == "mid" else pal.dim(ink, 0.42))
 
     if (y1 - y0) > (x1 - x0):                       # a column beside a diagram
-        _text(d, (x0, y0), c["axis"], font(15), pal.muted)
-        base, headroom = y1 - 46, y0 + 58
+        ay = y0
+        for line in wrap(d, c["axis"], font(15), x1 - x0)[:3]:
+            _text(d, (x0, ay), line, font(15), pal.muted)
+            ay += 19
+        base, headroom = y1 - 46, ay + 44
         w = min(84, (x1 - x0 - 30 * (len(bars) - 1)) / len(bars))
         for i, b in enumerate(bars):
             x = x0 + i * (w + 30)
-            v = b["value"] * min(t, 1.0)
+            v = b["value"] * ease_out(stage(t, i * 0.12, 0.75 + i * 0.12))
             h = (base - headroom) * v / top
-            d.rectangle((x, base - h, x + w, base), fill=ink_for(b))
+            d.rounded_rectangle((x, base - h, x + w, base), R_SM,
+                                fill=ink_for(b))
             if t >= 1:
                 _text(d, (0, base - h - 30), b.get("text") or
                       f"{fmt(b['value'])}{unit}", font(21, True), ink_for(b),
@@ -210,7 +214,7 @@ def chart(im, d, pal, p, t, ink, box):
         if t >= 1 and len(bars) == 2 and c.get("ratio", True):
             a, bb = bars[0]["value"], bars[1]["value"]
             r = max(a, bb) / max(min(a, bb), 1e-9)
-            _text(d, (0, y0 + 26), f"{r:.1f}x {c.get('ratio_word', 'fewer')}",
+            _text(d, (0, ay + 4), f"{r:.1f}x {c.get('ratio_word', 'fewer')}",
                   font(22, True), ink, center=(x0 + x1) / 2)
         return
 
@@ -232,7 +236,8 @@ def chart(im, d, pal, p, t, ink, box):
         for line in lines:
             _text(d, (x0, ly), line, lf, pal.ink)
             ly += 21
-        w = (bx1 - bx0) * (b["value"] * min(t, 1.0)) / top
+        w = (bx1 - bx0) * b["value"] * ease_out(
+            stage(t, i * 0.1, 0.7 + i * 0.1)) / top
         bh = min(rows - 18, 52)
         d.rounded_rectangle((bx0, y + (rows - bh) / 2, bx0 + max(w, 2),
                              y + (rows + bh) / 2), 5, fill=ink_for(b))
@@ -409,25 +414,31 @@ def radix(im, d, pal, p, t, ink):
     gapx = 88 if avail > 900 else 52
     nw, nh = min(208, (avail - (len(levels) - 1) * gapx) / len(levels)), 54
     order = [n for lvl in levels for n in lvl]
-    shown = reveal(len(order), t)
+    live = {}
     for depth, lvl in enumerate(levels):
         for node in lvl:
-            if order.index(node) >= shown:
+            a = appear(order.index(node), len(order), t)
+            live[id(node)] = a
+            if a <= 0:
                 continue
             x = PAD + depth * (nw + gapx)
-            y = node["y"]
+            y = node["y"] + (1 - a) * 12
             new = node.get("new")
-            d.rounded_rectangle((x, y, x + nw, y + nh), 8,
-                                fill=pal.card if new else pal.dim(ink, 0.55),
-                                outline=ink if new else None, width=3)
+            d.rounded_rectangle((x, y, x + nw, y + nh), R_MD,
+                                fill=pal.dim(pal.card if new
+                                             else pal.dim(ink, 0.55), a),
+                                outline=pal.dim(ink, a) if new else None,
+                                width=3)
             _text(d, (x + 14, y + 8), node["label"], font(17, True),
-                  ink if new else pal.ink)
+                  pal.dim(ink if new else pal.ink, a))
             _text(d, (x + 14, y + 30), f"{node['tokens']} tokens", font(14),
-                  pal.muted if new else pal.ink)
+                  pal.dim(pal.muted if new else pal.ink, a))
             for k in node.get("kids", []):
-                if order.index(k) < shown:
+                ka = live.get(id(k), appear(order.index(k), len(order), t))
+                if ka > 0:
                     _arrow(d, x + nw + 6, y + nh / 2,
-                           x + nw + gapx - 6, k["y"] + nh / 2, pal.line)
+                           x + nw + gapx - 6, k["y"] + nh / 2,
+                           pal.dim(pal.line, ka))
 
     y = BODY_TOP + 340
     _chip(d, (PAD, y, PAD + 26, y + 18), pal, pal.dim(ink, 0.55))
@@ -453,14 +464,20 @@ def schedule(im, d, pal, p, t, ink):
         for i, g in enumerate(order):
             hit = g == seen
             seen = g
-            if i >= reveal(len(order), tt):
+            a = appear(i, len(order), tt)
+            if a <= 0:
                 continue
             x = PAD + i * (cw + cg)
-            d.rounded_rectangle((x, y, x + cw, y + chh), 8, fill=inks[g])
-            _text(d, (0, y + 16), f"prefix {g}", font(17, True), pal.bg,
-                  center=x + cw / 2)
+            yy = y + (1 - a) * 10
+            d.rounded_rectangle((x, yy, x + cw, yy + chh), R_MD,
+                                fill=pal.dim(inks[g], a))
+            _text(d, (0, yy + 16), f"prefix {g}", font(17, True),
+                  pal.dim(pal.bg, a * 0.15 + 0.85) if a >= 1 else
+                  pal.dim(pal.bg, a), center=x + cw / 2)
             r = 7
             cx, cy = x + cw / 2, y - 14
+            if a < 1:
+                continue
             if hit:
                 d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=inks[g])
             else:
@@ -618,13 +635,14 @@ def memory(im, d, pal, p, t, ink):
     y = BODY_TOP + 20 + max(0, (400 - (n * h + (n - 1) * gap + 46)) / 2)
     widest = W - 2 * PAD - 300
     for i, lv in enumerate(levels):
-        if i >= reveal(len(levels), t):
+        a = appear(i, len(levels), t)
+        if a <= 0:
             break
-        w = widest * lv["w"]
+        w = widest * lv["w"] * (0.94 + 0.06 * a)
         near = lv.get("near")
-        d.rounded_rectangle((PAD, y, PAD + w, y + h), 8,
-                            fill=ink if near else pal.card,
-                            outline=None if near else pal.line)
+        d.rounded_rectangle((PAD, y, PAD + w, y + h), R_MD,
+                            fill=pal.dim(ink if near else pal.card, a),
+                            outline=None if near else pal.dim(pal.line, a))
         # a level too narrow to hold its own name is labelled beside itself
         nf, sf = font(21, True), font(16)
         wide = max(d.textlength(lv["name"], font=nf),
@@ -638,7 +656,7 @@ def memory(im, d, pal, p, t, ink):
             f = font(28, True)
             _text(d, (PAD + widest + 40, y + 22), lv["bw"], f, ink)
         y += h + gap
-    if reveal(len(levels), t) >= len(levels):
+    if appear(len(levels) - 1, len(levels), t) >= 1:
         _text(d, (PAD, y + 12), p["tail"], font(20, True), ink)
 
 
@@ -750,10 +768,22 @@ STYLES = {"paged": paged, "chart": chart_page, "blocktable": blocktable, "share"
 
 # ---------------------------------------------------------------- page
 
-def frame(spec, panel, pal, t=1.0):
+def _scrub(d, pal, ink, progress):
+    """A hairline along the foot of the page: where the film has got to.
+
+    It costs three pixels and it is the difference between watching a stack
+    of slides and watching something with a length.
+    """
+    if progress is None:
+        return
+    d.rectangle((0, H - 3, W, H), fill=pal.line)
+    d.rectangle((0, H - 3, W * min(max(progress, 0.0), 1.0), H), fill=ink)
+
+
+def frame(spec, panel, pal, t=1.0, progress=None):
     p = spec["panels"][panel] if isinstance(panel, int) else panel
-    im = Image.new("RGB", (W, H), pal.bg)
-    d = ImageDraw.Draw(im)
+    d = Canvas(pal.bg)
+    im = d
     ink = pal.role(spec.get("accent", "ours"))
 
     _text(d, (PAD, 40), p["title"], font(31, True), pal.ink)
@@ -775,7 +805,7 @@ def frame(spec, panel, pal, t=1.0):
         STYLES[p["style"]](im, d, pal, p, t, ink)
         d.line((W - PAD - col + 40, BODY_TOP - 10, W - PAD - col + 40, 560),
                fill=pal.line)
-        chart(im, d, pal, p, t, ink,
+        chart(im, d, pal, p, stage(t, 0.5, 1.0), ink,
               (W - PAD - col + 80, BODY_TOP + 10, W - PAD, 540))
     else:
         STYLES[p["style"]](im, d, pal, p, t, ink)
@@ -786,23 +816,26 @@ def frame(spec, panel, pal, t=1.0):
         _text(d, (PAD, yy), line, font(21, True), ink)
         yy += 26
     _text(d, (PAD, 678), spec["source"], font(13), pal.muted)
-    return im
+    _scrub(d, pal, ink, progress)
+    return d.image()
 
 
-def card(spec, pal, t=1.0):
+def card(spec, pal, t=1.0, progress=None):
     """The opening card: whose idea this is, and where it was published."""
-    im = Image.new("RGB", (W, H), pal.bg)
-    d = ImageDraw.Draw(im)
+    d = Canvas(pal.bg)
     ink = pal.role(spec.get("accent", "ours"))
+    k = ease_out(min(t * 1.6, 1.0))
     _text(d, (PAD, 232), spec["framework"], font(76, True), ink)
     y = 336
     for line in wrap(d, spec["tagline"], font(28), W - 2 * PAD - 120)[:2]:
         _text(d, (PAD, y), line, font(28), pal.ink)
         y += 38
-    d.line((PAD, y + 26, PAD + 260 * min(t * 2, 1.0), y + 26), fill=pal.line)
-    _text(d, (PAD, y + 48), spec["paper"], font(19), pal.muted)
+    d.line((PAD, y + 26, PAD + 260 * k, y + 26), fill=pal.line)
+    if k > 0.4:
+        _text(d, (PAD, y + 48), spec["paper"], font(19), pal.muted)
     _text(d, (PAD, 678), spec["source"], font(13), pal.muted)
-    return im
+    _scrub(d, pal, ink, progress)
+    return d.image()
 
 
 def load(name):
@@ -823,28 +856,50 @@ def render(spec, panel, out, pal, fps=30, build=3.0, hold=2.5):
         frame(spec, panel, pal, t).save(tmp / f"{i:05d}.png")
     subprocess.run([_ffmpeg(), "-y", "-v", "error", "-framerate", str(fps),
                     "-i", str(tmp / "%05d.png"), "-c:v", "libvpx-vp9",
-                    "-b:v", "0", "-crf", "30", "-pix_fmt", "yuv420p",
+                    "-b:v", "0", "-crf", "24", "-row-mt", "1", "-pix_fmt", "yuv420p",
                     str(out)], check=True)
     return out
 
 
-#: a panel is drawn in two beats, so a build of 4 s gives each about 2
-def film(spec, out, pal, fps=30, card_s=2.4, build=4.0, hold=2.4):
+#: A panel is drawn in two beats, so a build of 3.6 s gives each about 1.8,
+#: and then the finished page is held: landing a result and cutting away from
+#: it immediately is the single commonest way one of these films reads badly.
+def film(spec, out, pal, fps=30, card_s=2.8, build=3.6, hold=3.2, fade=0.45):
     """Every panel of one spec, in order: the framework's own film."""
     tmp = pathlib.Path(tempfile.mkdtemp(prefix="explain_film_"))
-    i = 0
-    for _ in range(int(card_s * fps)):
-        card(spec, pal, min(i / fps / card_s, 1.0)).save(tmp / f"{i:05d}.png")
+    n = len(spec["panels"])
+    seg = build + hold
+    total = card_s + n * seg
+    nf = int(fade * fps)
+    i, elapsed, prev = 0, 0.0, None
+
+    def write(im, j, first):
+        """Cross-fade into a segment: a hard cut re-starts the eye."""
+        nonlocal i, prev
+        if prev is not None and not first and j < nf:
+            im = Image.blend(prev, im, ease((j + 1) / nf))
+        im.save(tmp / f"{i:05d}.png")
         i += 1
-    for panel in range(len(spec["panels"])):
-        for k in range(int((build + hold) * fps)):
-            frame(spec, panel, pal, min(k / fps / build, 1.0)).save(
-                tmp / f"{i:05d}.png")
-            i += 1
+
+    for j in range(int(card_s * fps)):
+        write(card(spec, pal, j / fps / card_s,
+                   progress=(elapsed + j / fps) / total), j, True)
+    prev = card(spec, pal, 1.0, progress=card_s / total)
+    elapsed += card_s
+
+    for panel in range(n):
+        for j in range(int(seg * fps)):
+            im = frame(spec, panel, pal, min(j / fps / build, 1.0),
+                       progress=(elapsed + j / fps) / total)
+            write(im, j, False)
+        prev = frame(spec, panel, pal, 1.0,
+                     progress=(elapsed + seg) / total)
+        elapsed += seg
+
     subprocess.run([_ffmpeg(), "-y", "-v", "error", "-framerate", str(fps),
                     "-i", str(tmp / "%05d.png"), "-c:v", "libvpx-vp9",
-                    "-b:v", "0", "-crf", "30", "-pix_fmt", "yuv420p",
-                    str(out)], check=True)
+                    "-b:v", "0", "-crf", "24", "-row-mt", "1",
+                    "-pix_fmt", "yuv420p", str(out)], check=True)
     return out
 
 
@@ -870,7 +925,7 @@ def _tile(panels, cols, head, scale, labels):
         r, c = divmod(i, cols)
         x, y = c * tw, r * (th + head)
         sheet.paste(tile.resize((tw, th), Image.LANCZOS), (x, y + head))
-        f = font(17, True)
+        f = _truetype(17, True)
         d.text((x + 10, y + 9), _clip(d, labels[i], f, tw - 24), font=f,
                fill=SHEET_INK)
     return sheet

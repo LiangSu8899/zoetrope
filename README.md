@@ -215,6 +215,33 @@ A framework is a spec, not a patch. Copy one of the four, keep the painters,
 and the menu redraws.
 
 
+## How the pages are drawn
+
+PIL has no anti-aliasing. A rounded corner, a diagonal arrow and a circle all
+come out stepped, and that alone is the difference between a page that looks
+designed and one that looks like a screenshot of a program. So `canvas.py`
+draws every page at twice the size and brings it back down with a Lanczos
+filter, and painters never see the factor: they pass page coordinates and page
+font sizes, and `textlength` answers in page units so wrapping and centring
+are unchanged.
+
+The same module owns the motion. Nothing physical starts at full speed, and a
+page whose elements switch on reads as a slideshow while one whose elements
+arrive reads as motion:
+
+- `ease` — cubic in and out, for a thing travelling. Every beat runs through
+  it, so a bar that grows starts slowly and settles rather than snapping.
+- `ease_out` — fast, then settling, for a thing landing.
+- `appear(i, n, t)` — one item's own entrance inside a group's beat, so a
+  queue of eight cards arrives as a queue and not as a switch. Items drift up
+  a few pixels and fade in from the ground colour, which is a fade PIL can do
+  without an alpha channel.
+
+Films cross-fade between panels rather than cutting, hold a finished page for
+three seconds before moving on — landing a result and cutting away from it is
+the commonest way one of these reads badly — and carry a hairline along the
+foot of the frame showing how far through the film you are.
+
 ## Lighting an architecture diagram
 
 `hook.on_components` draws the framework itself — not the model — and lights
