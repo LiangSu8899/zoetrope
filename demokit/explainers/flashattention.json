@@ -1,0 +1,89 @@
+{
+  "framework": "FlashAttention",
+  "paper": "FlashAttention - Dao et al., NeurIPS 2022",
+  "tagline": "how attention stopped writing down the thing it was computing",
+  "source": "Mechanism and figures as published in the FlashAttention papers. Nothing on this page was measured here.",
+  "accent": "ours",
+  "panels": [
+    {
+      "style": "tiling",
+      "title": "The N x N matrix that never exists",
+      "sub": "softmax is computed as tiles stream through on-chip memory, so the attention matrix is never written out and never read back",
+      "note": "the softmax is rescaled as it goes, so a tile can be finished before the next one is read",
+      "cells": 8,
+      "left": "S = QK^T, materialised",
+      "left_note": "N x N, and every byte of it crosses the bus twice",
+      "right": "one tile at a time",
+      "right_note": "the same output, exactly - the matrix is never written",
+      "sram": "SRAM",
+      "carried": [
+        "running max",
+        "running sum",
+        "output so far"
+      ]
+    },
+    {
+      "style": "memory",
+      "title": "The ladder the whole idea stands on",
+      "sub": "attention was never short of arithmetic; it was short of bandwidth",
+      "note": "an algorithm that is aware of this ladder beats one that is not, at identical FLOPs",
+      "cite": "FlashAttention - Dao et al., NeurIPS 2022, Fig. 1",
+      "levels": [
+        {
+          "name": "GPU SRAM",
+          "size": "20 MB",
+          "bw": "19 TB/s",
+          "w": 0.16,
+          "near": true
+        },
+        {
+          "name": "GPU HBM",
+          "size": "40 GB",
+          "bw": "1.5 TB/s",
+          "w": 0.52
+        },
+        {
+          "name": "CPU DRAM",
+          "size": "> 1 TB",
+          "bw": "12.8 GB/s",
+          "w": 1.0
+        }
+      ],
+      "tail": "so the work worth removing is the traffic, not the arithmetic"
+    },
+    {
+      "style": "result",
+      "title": "What it came to",
+      "sub": "the same numerics and the same outputs - everything gained was something that never moved",
+      "note": "attention that reaches GEMM-like utilisation, on the same silicon",
+      "meters": [
+        {
+          "label": "share of the GPU's peak FLOPs/s that attention reaches, A100",
+          "before": 40,
+          "before_label": "25-40%",
+          "after": 73,
+          "after_label": "50-73%",
+          "unit": "%",
+          "note": "25-40% for FlashAttention, 50-73% for FlashAttention-2, both as published"
+        }
+      ],
+      "numbers": [
+        {
+          "value": "3x",
+          "caption": "GPT-2 training, end to end",
+          "cite": "FlashAttention, NeurIPS 2022"
+        },
+        {
+          "value": "15%",
+          "caption": "BERT-large, over the MLPerf 1.1 training speed record",
+          "cite": "FlashAttention, NeurIPS 2022"
+        },
+        {
+          "value": "2x",
+          "caption": "FlashAttention-2 over FlashAttention",
+          "cite": "FlashAttention-2, 2023"
+        }
+      ]
+    }
+  ]
+}

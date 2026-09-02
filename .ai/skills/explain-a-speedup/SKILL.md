@@ -130,6 +130,20 @@ authored spec in `demokit/explainers/`, and the discipline transfers exactly:
 - a concrete scenario is labelled an illustration, and every count the panel
   prints is derived from the spec rather than typed into a caption.
 
+Then **say what it came to**. A mechanism page is only half of it: people
+came for the result, and a film that explains without landing the outcome
+feels like a preamble. The `result` painter draws meters that fill from the
+old value to the new, and one to three numbers that land under a highlighter
+and settle — each with its own citation, since on a results page the citation
+is the load-bearing part.
+
+The discipline there is the same one as everywhere: **report the number that
+did not move.** FlashRT's own explainer puts 17.8% against 20.0% utilisation
+on the page and says in as many words that the chip is not being driven
+harder — the win is that far less was asked of it. A results page that
+quietly dropped that would be selling rather than explaining, and the
+audience for these films can tell.
+
 Draw the mechanism its own authors put at the centre of the design, and draw
 it as *their* idea. A page that quietly turns into a comparison with your own
 work is a different genre, and it is the one that makes people defensive

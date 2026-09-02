@@ -133,25 +133,31 @@ idea someone already published — how a system decides, allocates, or caches �
 the source is the paper, and the drawing is the work.
 
 ```bash
-demokit explain vllm_paged   --menu menu.png                 # every panel
-demokit explain vllm_paged   --palette blueprint --film vllm.webm    # the film
-demokit explain sglang_radix --panel 0 --palette ember --out radix.webm
-demokit explain vllm_paged   --panel 0 --sheet paged.png     # six palettes
+demokit explain vllm_paged     --menu menu.png               # every panel
+demokit explain flashattention --palette phosphor --film fa.webm     # the film
+demokit explain sglang_radix   --panel 0 --palette ember --out radix.webm
+demokit explain vllm_paged     --panel 0 --sheet paged.png   # six palettes
 ```
 
 ![vLLM explainer panels](docs/explain_vllm.png)
 
 ![SGLang explainer panels](docs/explain_sglang.png)
 
+![FlashAttention explainer panels](docs/explain_flashattention.png)
+
+![FlashRT explainer panels](docs/explain_flashrt.png)
+
 `--film` puts the panels in order behind a title card, and each panel builds
 in beats: the row first, then the count it comes to. A number never appears
 over a row that is still being drawn, which is the same rule as everywhere
 else in this kit — do not say a thing before it is true on the page.
 
-Two specs ship, drawn from the papers their own authors wrote:
-`vllm_paged` (PagedAttention, SOSP 2023) and `sglang_radix` (RadixAttention,
-NeurIPS 2024). Six painters, and each is a template for a shape that recurs
-well beyond the framework it was drawn for:
+Four specs ship. Three are drawn from papers their own authors wrote —
+`vllm_paged` (PagedAttention, SOSP 2023), `sglang_radix` (RadixAttention,
+NeurIPS 2024), `flashattention` (FlashAttention 1 and 2) — and one,
+`flashrt_trips`, is drawn from a run measured here, which is why its source
+line reads differently. Ten painters, and each is a template for a shape that
+recurs well beyond the framework it was drawn for:
 
 | painter | the shape |
 |---|---|
@@ -161,6 +167,10 @@ well beyond the framework it was drawn for:
 | `radix` | work kept in a tree, so a shared prefix is done once |
 | `schedule` | the same queue in two orders, and what the cache makes of each |
 | `fsm` | steps that had to be taken, versus steps already decided |
+| `tiling` | an intermediate too big to keep, streamed instead of stored |
+| `memory` | the ladder an argument stands on: what is near, and what is far |
+| `pieces` | the same length of work, cut into a different number of pieces |
+| `result` | what it came to: meters that fill, and numbers that land |
 
 Three rules keep an explainer honest, and they are the recording rules pointed
 at a different source:
@@ -176,7 +186,16 @@ at a different source:
   derived from the spec, so a changed scenario cannot leave a stale number
   typed into a caption.
 
-A framework is a spec, not a patch. Copy one of the two, keep the painters,
+**Say what it came to.** A mechanism panel earns attention; a result panel is
+what people came for. `result` draws two things and no more — meters that fill
+from the old value to the new one, and one to three numbers that land under a
+highlighter and then settle. Every number carries its own citation, because on
+a results page the citation is the load-bearing part. Where the honest answer
+is *that a number barely moved* — FlashRT's utilisation is 17.8% against
+20.0%, and the win is elsewhere — the meter says so, because a page that hid
+that would be selling something.
+
+A framework is a spec, not a patch. Copy one of the four, keep the painters,
 and the menu redraws.
 
 

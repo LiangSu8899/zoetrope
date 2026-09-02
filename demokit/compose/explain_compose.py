@@ -73,6 +73,29 @@ def _text(d, xy, s, f, fill, center=None):
     d.text((x, y), s, font=f, fill=fill)
 
 
+def sweep(im, d, xy, s, f, pal, ink, q):
+    """A highlighter pulled across a number as it lands, and then off again.
+
+    `q` runs 0 to 1 over the number's own beat: the plate enters from the
+    left, covers the line, and leaves the same way, so the page settles on
+    the number itself rather than on a permanent block of colour.
+
+    The line is drawn once in ink; the highlighted version is drawn into a
+    tile and pasted back in a window, so the plate and the text under it can
+    never disagree about where the glyphs are.
+    """
+    x, y = xy
+    d.text((x, y), s, font=f, fill=ink)
+    if q <= 0 or q >= 1:
+        return
+    lo, hi = (0.0, q * 2) if q < 0.5 else (q * 2 - 1, 1.0)
+    pad, w, h = 10, d.textlength(s, font=f), int(f.size * 1.42)
+    tile = Image.new("RGB", (int(w) + 2 * pad, h), ink)
+    ImageDraw.Draw(tile).text((pad, 0), s, font=f, fill=pal.bg)
+    a, b = int(tile.width * lo), max(1, int(tile.width * hi))
+    im.paste(tile.crop((a, 0, b, h)), (int(x) - pad + a, int(y)))
+
+
 def _chip(d, box, pal, ink, *, filled=True, r=6):
     if filled:
         d.rounded_rectangle(box, r, fill=ink)
@@ -108,7 +131,7 @@ def prefix_computes(order):
 
 # ---------------------------------------------------------------- painters
 
-def paged(d, pal, p, t, ink):
+def paged(im, d, pal, p, t, ink):
     slot, gap, hh = 20, 2, 34
     reserve, block = p["reserve"], p["block"]
     reqs = p["requests"]
@@ -164,7 +187,7 @@ def paged(d, pal, p, t, ink):
         _text(d, (PAD, BODY_TOP + 384), p["scale"], font(14), pal.muted)
 
 
-def blocktable(d, pal, p, t, ink):
+def blocktable(im, d, pal, p, t, ink):
     lw, lh, lgap = 250, 54, 16
     _text(d, (PAD, BODY_TOP - 4), "one sequence, in order", font(18, True),
           pal.ink)
@@ -197,7 +220,7 @@ def blocktable(d, pal, p, t, ink):
           pal.muted)
 
 
-def share(d, pal, p, t, ink):
+def share(im, d, pal, p, t, ink):
     bw, bh = 190, 62
     n = len(p["prompt"])
     x0 = (W - (n * (bw + 14) - 14)) / 2
@@ -246,7 +269,7 @@ def _tree_rows(node, depth=0, out=None):
     return out
 
 
-def radix(d, pal, p, t, ink):
+def radix(im, d, pal, p, t, ink):
     root = json.loads(json.dumps(p["tree"]))          # do not mutate the spec
     levels, leaves = [], []
 
@@ -296,7 +319,7 @@ def radix(d, pal, p, t, ink):
     _text(d, (PAD, y + 34), p["scale"], font(14), pal.muted)
 
 
-def schedule(d, pal, p, t, ink):
+def schedule(im, d, pal, p, t, ink):
     groups = p["groups"]
     keys = sorted(set(groups))
     inks = {k: pal.role(r) for k, r in
@@ -338,7 +361,7 @@ def schedule(d, pal, p, t, ink):
         _text(d, (PAD, BODY_TOP + 326), p["tail"], font(19, True), ink)
 
 
-def fsm(d, pal, p, t, ink):
+def fsm(im, d, pal, p, t, ink):
     text, forced = p["text"], p["forced"]
     n, decode_steps = fsm_steps(p)
     tw = (W - 2 * PAD) / n
@@ -383,8 +406,170 @@ def fsm(d, pal, p, t, ink):
         _text(d, (PAD, y + 134), p["tail"], font(16), pal.muted)
 
 
+def tiling(im, d, pal, p, t, ink):
+    """The N x N matrix that is never written down."""
+    n = p.get("cells", 8)
+    side = 336
+    cell = side / n
+    ta, tb = stage(t, 0.0, 0.4), stage(t, 0.4, 1.0)
+
+    lx, ly = PAD + 40, BODY_TOP + 20
+    _text(d, (lx, ly - 30), p["left"], font(18, True), pal.ink)
+    for i in range(n * n):
+        if i >= reveal(n * n, ta):
+            break
+        r, c = divmod(i, n)
+        x, y = lx + c * cell, ly + r * cell
+        d.rectangle((x, y, x + cell - 2, y + cell - 2), fill=pal.dim(ink, .45))
+    if ta >= 1:
+        _text(d, (lx, ly + side + 12), p["left_note"], font(15), pal.muted)
+
+    rx = W - PAD - side - 210
+    _text(d, (rx, ly - 30), p["right"], font(18, True), pal.ink)
+    live = min(int(tb * n), n - 1) if tb < 1 else n - 1
+    for i in range(n * n):
+        r, c = divmod(i, n)
+        x, y = rx + c * cell, ly + r * cell
+        if tb <= 0:
+            continue
+        if r < live:
+            d.rectangle((x, y, x + cell - 2, y + cell - 2), fill=pal.card,
+                        outline=pal.line)
+        elif r == live:
+            d.rectangle((x, y, x + cell - 2, y + cell - 2), fill=ink)
+    if tb > 0:
+        bx = rx + side + 34
+        d.rounded_rectangle((bx, ly + 40, bx + 150, ly + 190), 8,
+                            fill=pal.card, outline=ink, width=2)
+        _text(d, (0, ly + 62), p["sram"], font(17, True), ink,
+              center=bx + 75)
+        for j, line in enumerate(p["carried"]):
+            _text(d, (0, ly + 100 + j * 26), line, font(16), pal.ink,
+                  center=bx + 75)
+        _arrow(d, rx + side + 10, ly + live * cell + cell / 2,
+               bx - 6, ly + 115, pal.muted)
+    if tb >= 1:
+        _text(d, (rx, ly + side + 12), p["right_note"], font(15), pal.muted)
+
+
+def memory(im, d, pal, p, t, ink):
+    """The ladder the whole argument stands on: what is near, and what is far."""
+    levels = p["levels"]
+    h, gap = 74, 26
+    n = len(levels)
+    y = BODY_TOP + 20 + max(0, (400 - (n * h + (n - 1) * gap + 46)) / 2)
+    widest = W - 2 * PAD - 300
+    for i, lv in enumerate(levels):
+        if i >= reveal(len(levels), t):
+            break
+        w = widest * lv["w"]
+        near = lv.get("near")
+        d.rounded_rectangle((PAD, y, PAD + w, y + h), 8,
+                            fill=ink if near else pal.card,
+                            outline=None if near else pal.line)
+        # a level too narrow to hold its own name is labelled beside itself
+        nf, sf = font(21, True), font(16)
+        wide = max(d.textlength(lv["name"], font=nf),
+                   d.textlength(lv["size"], font=sf)) + 36 <= w
+        tx = PAD + 18 if wide else PAD + w + 20
+        _text(d, (tx, y + 14), lv["name"], nf,
+              (pal.bg if near else pal.ink) if wide else pal.ink)
+        _text(d, (tx, y + 42), lv["size"], sf,
+              (pal.bg if near else pal.muted) if wide else pal.muted)
+        if lv.get("bw"):
+            f = font(28, True)
+            _text(d, (PAD + widest + 40, y + 22), lv["bw"], f, ink)
+        y += h + gap
+    if reveal(len(levels), t) >= len(levels):
+        _text(d, (PAD, y + 12), p["tail"], font(20, True), ink)
+
+
+def pieces(im, d, pal, p, t, ink):
+    """The same work, cut into a different number of pieces."""
+    rows, per = p["rows"], p.get("per_block", 100)
+    x0, x1 = PAD, W - PAD - 250
+    y = BODY_TOP + 30
+    for i, r in enumerate(rows):
+        tt = stage(t, i * 0.5, i * 0.5 + 0.5) if len(rows) == 2 else t
+        n = max(1, round(r["pieces"] / per))
+        _text(d, (x0, y - 26), r["label"], font(18, True), pal.ink)
+        w = (x1 - x0) / n
+        for k in range(reveal(n, tt)):
+            x = x0 + k * w
+            d.rectangle((x + 1, y, x + w - 1, y + 72),
+                        fill=ink if i else pal.dim(ink, .5))
+        if tt >= 1:
+            f = font(30, True)
+            sweep(im, d, (x1 + 40, y + 8), f"{r['pieces']:,}", f, pal, ink,
+                  1.0 if i else 0.0)
+            _text(d, (x1 + 40, y + 48), r["unit"], font(15), pal.muted)
+        y += 150
+    if t >= 1:
+        _text(d, (PAD, y + 4), p["tail"], font(20, True), ink)
+        _text(d, (PAD, y + 36), p["scale"], font(14), pal.muted)
+
+
+def result(im, d, pal, p, t, ink):
+    """The page the mechanism was for: what it came to, and whose figure it is."""
+    ta, tb = stage(t, 0.0, 0.45), stage(t, 0.45, 1.0)
+    y = BODY_TOP + 6
+    for m in p.get("meters", []):
+        cap = m.get("cap", 100)
+        x0, x1 = PAD, W - PAD - 300
+        _text(d, (x0, y), m["label"], font(18, True), pal.ink)
+        ty = y + 30
+        d.rounded_rectangle((x0, ty, x1, ty + 26), 6, fill=pal.card,
+                            outline=pal.line)
+        b = x0 + (x1 - x0) * m["before"] / cap
+        a = x0 + (x1 - x0) * (m["before"] + (m["after"] - m["before"]) * ta) / cap
+        d.rounded_rectangle((x0, ty, a, ty + 26), 6, fill=ink)
+        d.line((b, ty - 8, b, ty + 34), fill=pal.muted, width=2)
+        _text(d, (0, ty + 34), m.get("before_label",
+                                     f"{m['before']}{m['unit']}"),
+              font(15), pal.muted, center=b)
+        if ta >= 1:
+            _text(d, (x1 + 24, ty - 2),
+                  m.get("after_label", f"{m['after']}{m['unit']}"),
+                  font(26, True), ink)
+            ny_ = ty + 34
+            room = 3 if len(p["meters"]) == 1 else 2
+            for line in wrap(d, m.get("note", ""), font(14),
+                             W - PAD - (x1 + 24))[:room]:
+                _text(d, (x1 + 24, ny_), line, font(14), pal.muted)
+                ny_ += 18
+        y += 108
+
+    nums = p.get("numbers", [])
+    if not nums:
+        return
+    size = 60 if len(p.get("meters", [])) < 2 else 48
+    block = size * 1.4 + 3 * 23 + 24
+    ny = y + 20 + max(0, (586 - (y + 20) - block) / 2)
+    colw = (W - 2 * PAD) / len(nums)
+    for i, num in enumerate(nums):
+        k = stage(tb, i / len(nums), (i + 0.7) / len(nums))
+        if k <= 0:
+            continue
+        x = PAD + i * colw
+        sweep(im, d, (x, ny), num["value"], font(size, True), pal, ink, k)
+        if k > 0.5:
+            yy = ny + size * 1.4
+            for line in wrap(d, num["caption"], font(17), colw - 40)[:3]:
+                _text(d, (x, yy), line, font(17), pal.ink)
+                yy += 23
+            _text(d, (x, yy + 6), num["cite"], font(13), pal.muted)
+    if tb >= 1:
+        by = ny + block + 10
+        for line in p.get("bullets", []):
+            _text(d, (PAD + 4, by), "-", font(18, True), ink)
+            _text(d, (PAD + 24, by), line, font(18), pal.ink)
+            by += 30
+
+
 STYLES = {"paged": paged, "blocktable": blocktable, "share": share,
-          "radix": radix, "schedule": schedule, "fsm": fsm}
+          "radix": radix, "schedule": schedule, "fsm": fsm,
+          "tiling": tiling, "memory": memory, "pieces": pieces,
+          "result": result}
 
 
 # ---------------------------------------------------------------- page
@@ -403,11 +588,12 @@ def frame(spec, panel, pal, t=1.0):
     tag = spec["framework"]
     f = font(17, True)
     _text(d, (W - PAD - d.textlength(tag, font=f), 44), tag, f, ink)
-    _text(d, (W - PAD - d.textlength(spec["paper"], font=font(14)), 70),
-          spec["paper"], font(14), pal.muted)
+    cite = p.get("cite", spec["paper"])
+    _text(d, (W - PAD - d.textlength(cite, font=font(14)), 70), cite,
+          font(14), pal.muted)
     d.line((PAD, 136, W - PAD, 136), fill=pal.line)
 
-    STYLES[p["style"]](d, pal, p, t, ink)
+    STYLES[p["style"]](im, d, pal, p, t, ink)
 
     d.line((PAD, 596, W - PAD, 596), fill=pal.line)
     yy = 612

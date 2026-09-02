@@ -73,6 +73,35 @@
       "cow": "a branch that writes gets its own copy of that one block \u2014 copy on write",
       "tail": "and the paper's headline: 2\u20134x the throughput at the same latency",
       "prompt_label": "one physical copy of the prompt's blocks"
+    },
+    {
+      "style": "result",
+      "title": "What paging came to",
+      "sub": "the memory that stopped being wasted became sequences that could be in flight at the same time",
+      "note": "more memory held means more sequences batched together, and that is where the throughput comes from",
+      "meters": [
+        {
+          "label": "KV cache memory holding actual token state",
+          "before": 38.2,
+          "before_label": "20.4-38.2%",
+          "after": 96,
+          "after_label": "over 96%",
+          "unit": "%",
+          "note": "vLLM confines waste to the last block of a sequence - under 4%, as published"
+        }
+      ],
+      "numbers": [
+        {
+          "value": "2-4x",
+          "caption": "throughput at the same latency, against FasterTransformer and Orca",
+          "cite": "PagedAttention, SOSP 2023"
+        },
+        {
+          "value": "under 4%",
+          "caption": "of KV cache memory wasted, against 60-80% in the systems it was compared to",
+          "cite": "PagedAttention, SOSP 2023"
+        }
+      ]
     }
   ]
 }

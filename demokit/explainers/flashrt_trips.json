@@ -1,0 +1,91 @@
+{
+  "framework": "FlashRT",
+  "paper": "measured here - RTX 5090, pi0.5 on LIBERO",
+  "tagline": "why fewer, larger kernels beat more, smaller ones",
+  "source": "Measured on one machine: RTX 5090, pi0.5 on LIBERO spatial task 0, closed loop, median of 50 decisions after 8 warm calls. Utilisation from Nsight Compute, duration-weighted.",
+  "accent": "ours",
+  "panels": [
+    {
+      "style": "memory",
+      "title": "Why a kernel launch costs what it costs",
+      "sub": "every kernel reads its operands from device memory and writes its result back, so one launch is one round trip",
+      "note": "a fused kernel keeps between its stages what an unfused pair would have sent home and fetched again",
+      "cite": "device specification",
+      "levels": [
+        {
+          "name": "registers and shared memory",
+          "size": "on-chip, and gone when the kernel ends",
+          "w": 0.17,
+          "near": true
+        },
+        {
+          "name": "device memory",
+          "size": "32 GB GDDR7",
+          "bw": "1.79 TB/s",
+          "w": 1.0
+        }
+      ],
+      "tail": "so a count of kernel launches is a count of trips to memory"
+    },
+    {
+      "style": "pieces",
+      "title": "The same decision, cut into fewer pieces",
+      "sub": "both arms compute the same action chunk from the same observation, and one of them asks the GPU for it five times fewer",
+      "note": "same work, fewer trips - so each of ours carries five times as much",
+      "per_block": 100,
+      "rows": [
+        {
+          "label": "PyTorch as shipped, eager bf16",
+          "pieces": 13637,
+          "unit": "trips to memory"
+        },
+        {
+          "label": "FlashRT native, FP8",
+          "pieces": 2742,
+          "unit": "trips to memory"
+        }
+      ],
+      "tail": "the same length of work, cut differently",
+      "scale": "one drawn block is 100 kernel launches"
+    },
+    {
+      "style": "result",
+      "title": "What it came to",
+      "sub": "and the honest part: the chip is not being driven harder",
+      "note": "fewer trips and less time, in step - which is what makes the first an explanation of the second",
+      "meters": [
+        {
+          "label": "SM throughput, share of peak, duration-weighted",
+          "before": 17.8,
+          "after": 20.0,
+          "unit": "%",
+          "note": "Nsight Compute, both arms"
+        },
+        {
+          "label": "DRAM throughput, share of peak, duration-weighted",
+          "before": 15.8,
+          "after": 17.3,
+          "unit": "%",
+          "note": "barely moved: the win is in what was never asked for"
+        }
+      ],
+      "numbers": [
+        {
+          "value": "22.3 ms",
+          "caption": "one decision, median of 50",
+          "cite": "measured, RTX 5090"
+        },
+        {
+          "value": "6.0x",
+          "caption": "over PyTorch as shipped",
+          "cite": "eager bf16, 134.3 ms"
+        },
+        {
+          "value": "2.8x",
+          "caption": "over the same host compiled",
+          "cite": "torch.compile, 62.2 ms"
+        }
+      ]
+    }
+  ]
+}

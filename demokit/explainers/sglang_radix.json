@@ -98,6 +98,24 @@
       "top": "one decode step per token",
       "bottom": "compressed FSM: the forced spans are jumped",
       "tail": "and the paper's headline: up to 6.4x on structured programs"
+    },
+    {
+      "style": "result",
+      "title": "What the tree came to",
+      "sub": "a program that calls a model many times stops paying for the part of the prompt it keeps repeating",
+      "note": "the gain is largest exactly where programs are structured: agents, chains of thought, JSON, batched few-shot",
+      "numbers": [
+        {
+          "value": "up to 6.4x",
+          "caption": "throughput on structured language model programs, against state-of-the-art inference systems",
+          "cite": "SGLang, NeurIPS 2024"
+        }
+      ],
+      "bullets": [
+        "RadixAttention: the shared prefix is computed once and kept in the tree",
+        "cache-aware scheduling: the queue is ordered so that it can be reused",
+        "compressed FSM: the tokens a grammar has already decided are not decoded"
+      ]
     }
   ]
 }
