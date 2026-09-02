@@ -100,7 +100,12 @@ class Arm:
         self.steps_cap = steps_cap
         self.times = timeline(self.events, 1.0 / CONTROL_HZ)
         self.hz = hz_trace(self.events, self.times)
-        self.label, self.sub, self.color = label, sub, color
+        # a recording that named itself wins: the presets below are defaults
+        # for runs made before `label`/`sub` were written into the meta, and
+        # a stale default can describe an arm the recording is not
+        self.label = self.meta.get("label") or label
+        self.sub = self.meta.get("sub") or sub
+        self.color = color
         self.median_ms = self.meta["median_infer_ms"]
         self.final_hz = float(np.median(self.hz[len(self.hz) // 3:]))
 

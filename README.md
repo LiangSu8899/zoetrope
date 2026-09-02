@@ -30,8 +30,11 @@ A serving engine with eight requests in flight, and a single request answered
 three ways. One wall clock, live tok/s, and the rate drawn underneath.
 
 <p align="center">
-  <img src="docs/gif/serving_paper.gif" width="420" alt="vLLM with eight requests in flight">
-  <img src="docs/gif/run_demo.gif" width="420" alt="one request, three arms">
+  <img src="docs/gif/serving_paper.gif" width="100%" alt="vLLM with eight requests in flight">
+</p>
+
+<p align="center">
+  <img src="docs/gif/run_demo.gif" width="100%" alt="one request, three arms">
 </p>
 
 ### Explaining a paper
@@ -41,26 +44,36 @@ same page, the number it produces. The chart beside a diagram is derived from
 that diagram, so the picture and the figure cannot drift apart.
 
 <p align="center">
-  <img src="docs/gif/explain_paged.gif" width="420" alt="vLLM's paged KV cache">
-  <img src="docs/gif/explain_radix.gif" width="420" alt="SGLang's radix tree">
+  <img src="docs/gif/explain_paged.gif" width="100%" alt="vLLM's paged KV cache">
 </p>
 
 <p align="center">
-  <img src="docs/gif/explain_tiling.gif" width="420" alt="FlashAttention's tiling">
-  <img src="docs/gif/explain_result.gif" width="420" alt="a results page: meters that fill, bars against a baseline">
+  <img src="docs/gif/explain_radix.gif" width="100%" alt="SGLang's radix tree">
+</p>
+
+<p align="center">
+  <img src="docs/gif/explain_tiling.gif" width="100%" alt="FlashAttention's tiling">
+</p>
+
+<p align="center">
+  <img src="docs/gif/explain_result.gif" width="100%" alt="a results page: meters that fill, bars against a baseline">
 </p>
 
 ### Simulation and robots
 
 A policy in closed loop, drawn from the simulator's own camera and the
-policy's own control rate — not a screen recording. The recording that ships
-here is the first 60 control steps of a real rollout, scaled down to fit in a
-repository, so the pane says `60 steps recorded` rather than claiming the task
-was completed.
+policy's own control rate — not a screen recording. Two arms of pi0.5 on the
+same LIBERO task from the same initial state: 108.0 ms a decision against
+25.6 ms, which is 9.3 Hz against 39.1 Hz.
 
 <p align="center">
-  <img src="docs/gif/robot.gif" width="420" alt="GR00T on LIBERO, two arms on one clock">
+  <img src="docs/gif/robot.gif" width="100%" alt="pi0.5 on LIBERO, two arms on one clock">
 </p>
+
+The recording that ships here is capped at 40 control steps and scaled down to
+fit in a repository, so the pane says `40 steps recorded` rather than claiming
+the task was completed — and the footer carries the closed-loop rate as well,
+because the robot's own 20 Hz control step is most of the wall clock.
 
 ### Comparisons
 
@@ -69,26 +82,27 @@ one of them faster. That second film is one idea and nothing else — the same
 work, cut into a different number of trips to memory.
 
 <p align="center">
-  <img src="docs/gif/video.gif" width="420" alt="Wan2.2, two arms">
-  <img src="docs/gif/why_faster.gif" width="420" alt="the same work, cut into fewer trips to memory">
+  <img src="docs/gif/video.gif" width="100%" alt="Wan2.2, two arms">
 </p>
 
-Every film is drawn on the same 1280-wide canvas, whatever it is showing, so a
-page of them lines up instead of stepping in and out.
+<p align="center">
+  <img src="docs/gif/why_faster.gif" width="100%" alt="the same work, cut into fewer trips to memory">
+</p>
 
 ### Explore more
 
 Every film above is drawn from a recording that ships in this repository, so
-each one redraws on your machine with no GPU. Change the ink with one flag,
-change the visual language with another, and print the whole matrix to choose
-from:
+each one redraws on your machine with no GPU. They are all painted on the same
+1280-wide canvas, whatever they are showing, so a page of them lines up. Change
+the ink with one flag, change the visual language with another, and print the
+whole matrix to choose from:
 
 <p align="center">
-  <img src="docs/gif/run_demo_paper.gif" width="420" alt="the same recording in the paper palette">
+  <img src="docs/gif/run_demo_paper.gif" width="100%" alt="the same recording in the paper palette">
 </p>
 
 <p align="center">
-  <img src="docs/looks.png" width="880" alt="four visual languages against six palettes">
+  <img src="docs/looks.png" width="100%" alt="four visual languages against six palettes">
 </p>
 
 ```bash
