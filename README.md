@@ -237,6 +237,14 @@ arrive reads as motion:
   a few pixels and fade in from the ground colour, which is a fade PIL can do
   without an alpha channel.
 
+Connectors come from the same place. `canvas.link` leaves and arrives along
+one axis and curves between — the shape a node graph uses for an edge —
+because a straight diagonal between two boxes crosses whatever lies between
+them at an arbitrary angle. Heads lie along the line they end and the shaft
+stops where the head begins; an axis-aligned head on a diagonal, with the
+shaft running under it, is most of why a drawn arrow looks worse than a
+designed one.
+
 Films cross-fade between panels rather than cutting, hold a finished page for
 three seconds before moving on — landing a result and cutting away from it is
 the commonest way one of these reads badly — and carry a hairline along the

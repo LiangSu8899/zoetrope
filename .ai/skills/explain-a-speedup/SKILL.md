@@ -183,6 +183,13 @@ register at all.
   rather than cut.
 - **Draw large, come down.** `canvas.py` renders at 2x and downsamples. There
   is no cheaper way to make these pages look made rather than emitted.
+- **Connectors, not arrows.** An axis-aligned arrowhead on a diagonal is the
+  cheapest-looking thing a diagram can do: the head points one way and the
+  shaft arrives from another. `canvas.link` leaves and arrives along one
+  axis and curves between, the way a node graph draws an edge, and its head
+  lies along the line and lands where the shaft stops. A tree wants no heads
+  at all; a pointer into memory wants one, and it should touch what it
+  points at.
 
 ## Look at what you drew
 

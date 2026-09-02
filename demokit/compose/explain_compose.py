@@ -44,8 +44,8 @@ import tempfile
 
 from PIL import Image, ImageDraw
 
-from .canvas import (R_LG, R_MD, R_SM, Canvas, appear, ease, ease_out, font,
-                     _arrow, _truetype)
+from .canvas import (R_LG, R_MD, R_SM, Canvas, appear, arrow, ease, ease_out,
+                     font, link, _truetype)
 from .palettes import PALETTES, palette
 from .race_compose import _ffmpeg, wrap
 
@@ -337,8 +337,9 @@ def blocktable(im, d, pal, p, t, ink):
         _text(d, (PAD + 16, y + 17), lab, font(17), pal.ink)
         j = p["physical"][i]
         r, c = divmod(j, cols)
-        _arrow(d, PAD + lw + 10, y + lh / 2,
-               gx + c * (cw + cg) - 6, gy + r * (ch + cg) + ch / 2, pal.muted)
+        link(d, PAD + lw + 10, y + lh / 2,
+             gx + c * (cw + cg) - 4, gy + r * (ch + cg) + ch / 2, pal.muted,
+             width=2, head=13, half=5)
     _text(d, (gx, gy + rows * (ch + cg) + 14), p["free_note"], font(15),
           pal.muted)
 
@@ -369,11 +370,17 @@ def share(im, d, pal, p, t, ink):
         d.rounded_rectangle((x, by, x + cw, by + 54), 8, fill=pal.card,
                             outline=pal.line)
         _text(d, (0, by + 16), lab, font(17), pal.ink, center=x + cw / 2)
-        # every branch points at the same blocks: that is the whole idea
-        _arrow(d, x + cw / 2, by - 8, W / 2, top + bh + 10, pal.muted)
+        # every branch points at the same blocks: that is the whole idea.
+        # They arrive fanned across one block rather than stacked on a
+        # point, which would pile four heads into a blot.
+        link(d, x + cw / 2, by - 8,
+             W / 2 + (i - (len(br) - 1) / 2) * 26, top + bh + 11, pal.muted,
+             axis="y", width=2, head=10, half=4)
         if i == len(br) - 1 and t > 0.85:
-            d.rounded_rectangle((x + 18, by + 74, x + cw + 18, by + 128), 8,
-                                fill=pal.card, outline=ink)
+            link(d, x + cw / 2, by + 58, x + 18 + cw / 2, by + 72, ink,
+                 axis="y", width=2, head=0)
+            d.rounded_rectangle((x + 18, by + 74, x + cw + 18, by + 128),
+                                R_MD, fill=pal.card, outline=ink)
             _text(d, (0, by + 92), "its own block", font(16), ink,
                   center=x + 18 + cw / 2)
     if t > 0.85:
@@ -436,9 +443,9 @@ def radix(im, d, pal, p, t, ink):
             for k in node.get("kids", []):
                 ka = live.get(id(k), appear(order.index(k), len(order), t))
                 if ka > 0:
-                    _arrow(d, x + nw + 6, y + nh / 2,
-                           x + nw + gapx - 6, k["y"] + nh / 2,
-                           pal.dim(pal.line, ka))
+                    link(d, x + nw + 4, y + nh / 2,
+                         x + nw + gapx - 4, k["y"] + nh / 2,
+                         pal.dim(pal.muted, ka * 0.55), width=2)
 
     y = BODY_TOP + 340
     _chip(d, (PAD, y, PAD + 26, y + 18), pal, pal.dim(ink, 0.55))

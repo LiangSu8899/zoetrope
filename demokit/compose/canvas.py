@@ -15,6 +15,8 @@ for a thing landing, `appear` for a list that should arrive as a list.
 
 from __future__ import annotations
 
+import math
+
 from PIL import Image, ImageDraw
 
 from .race_compose import font as _truetype
@@ -123,14 +125,73 @@ def ease_out(t):
     return 1 - (1 - t) ** 3
 
 
+def _head(d, x, y, ux, uy, ink, length, half):
+    """A head lying along the line it ends.
+
+    An axis-aligned triangle on a diagonal is the single cheapest-looking
+    thing a diagram can do: the head points one way and the shaft arrives
+    from another, and the join reads as a mistake.
+    """
+    px, py = -uy, ux
+    d.polygon([(x, y),
+               (x - ux * length + px * half, y - uy * length + py * half),
+               (x - ux * length - px * half, y - uy * length - py * half)],
+              fill=ink)
+
+
+def arrow(d, x0, y0, x1, y1, ink, *, width=1.6, head=9, half=3.4):
+    """A straight arrow: aligned head, and a shaft that stops where it begins.
+
+    Running the shaft under the head thickens the tip and blunts it, which
+    is the other half of why a drawn arrow looks worse than a designed one.
+    """
+    dx, dy = x1 - x0, y1 - y0
+    dist = math.hypot(dx, dy) or 1.0
+    ux, uy = dx / dist, dy / dist
+    if head:
+        d.line([x0, y0, x1 - ux * head * 0.9, y1 - uy * head * 0.9],
+               fill=ink, width=width)
+        _head(d, x1, y1, ux, uy, ink, head, half)
+    else:
+        d.line([x0, y0, x1, y1], fill=ink, width=width)
+
+
+def link(d, x0, y0, x1, y1, ink, *, axis="x", width=1.6, head=0, half=3.4,
+         bend=0.55, steps=26):
+    """A connector that leaves and arrives along one axis, curving between.
+
+    This is the shape a node graph or an org chart uses, and the reason is
+    not decoration: a straight diagonal between two boxes crosses whatever
+    lies between them at an arbitrary angle, while a curve that leaves
+    horizontally and arrives horizontally reads as a route.
+    """
+    if axis == "x":
+        c0, c1 = (x0 + (x1 - x0) * bend, y0), (x1 - (x1 - x0) * bend, y1)
+    else:
+        c0, c1 = (x0, y0 + (y1 - y0) * bend), (x1, y1 - (y1 - y0) * bend)
+    pts = []
+    for i in range(steps + 1):
+        t = i / steps
+        u = 1 - t
+        pts.append((u ** 3 * x0 + 3 * u * u * t * c0[0] + 3 * u * t * t * c1[0]
+                    + t ** 3 * x1,
+                    u ** 3 * y0 + 3 * u * u * t * c0[1] + 3 * u * t * t * c1[1]
+                    + t ** 3 * y1))
+    if head:
+        pts = pts[:-1]
+        ex, ey = pts[-1]
+        dx, dy = x1 - ex, y1 - ey
+        dist = math.hypot(dx, dy) or 1.0
+        ux, uy = dx / dist, dy / dist
+        d.line(pts, fill=ink, width=width, joint="curve")
+        _head(d, x1, y1, ux, uy, ink, head, half)
+    else:
+        d.line(pts, fill=ink, width=width, joint="curve")
+
+
+#: kept for callers that predate `arrow`
 def _arrow(d, x0, y0, x1, y1, ink, head=5):
-    d.line([x0, y0, x1, y1], fill=ink, width=2)
-    if y1 > y0:
-        d.polygon([(x1, y1), (x1 - head, y1 - head), (x1 + head, y1 - head)],
-                  fill=ink)
-    elif x1 > x0:
-        d.polygon([(x1, y1), (x1 - head, y1 - head), (x1 - head, y1 + head)],
-                  fill=ink)
+    arrow(d, x0, y0, x1, y1, ink, head=head + 4)
 
 
 
