@@ -108,6 +108,13 @@ class Canvas:
                                   font=self._f(face), fill=glyph)
         self.im.paste(tile, (x0, y0))
 
+    def image_at(self, img, xy, size):
+        """Paste a picture in page units; it is resized at device scale."""
+        k = self.k
+        w, h = int(size[0] * k), int(size[1] * k)
+        self.im.paste(img.resize((w, h), Image.LANCZOS),
+                      (int(xy[0] * k), int(xy[1] * k)))
+
     def image(self):
         return self.im.resize((W, H), Image.LANCZOS)
 

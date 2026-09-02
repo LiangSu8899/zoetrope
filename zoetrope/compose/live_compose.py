@@ -29,6 +29,8 @@ import pathlib
 import subprocess
 import tempfile
 
+from PIL import Image
+
 from .canvas import Canvas, R_MD, R_SM, ease, ease_out, font
 from .palettes import PALETTES, palette
 from .race_compose import _ffmpeg, wrap
@@ -62,6 +64,9 @@ class Arm:
         self.total = len(self.events)
         self.ttft_ms = self.meta.get("ttft_ms")
         self.final_rate = self.meta.get("decode_tok_s")
+        self.note = self.meta.get("stream_note")
+        img = d / "image.png"
+        self.image = Image.open(img).convert("RGB") if img.exists() else None
 
     def n(self, t):
         return bisect.bisect_right(self.ts, t)
@@ -105,6 +110,15 @@ def _pane(d, a, box, t, pal, ink):
     d.text((x0 + 18, y0 + 36), a.sub, font=font(13), fill=pal.muted)
 
     body_top, fb = y0 + 66, font(15)
+    if a.image is not None:
+        # a vision model's pane has to show what it was looking at
+        ih = 104
+        iw = round(a.image.width * ih / a.image.height)
+        d.image_at(a.image, (x0 + (x1 - x0 - iw) / 2, body_top), (iw, ih))
+        d.rounded_rectangle((x0 + (x1 - x0 - iw) / 2, body_top,
+                             x0 + (x1 - x0 + iw) / 2, body_top + ih), R_SM,
+                            outline=pal.line)
+        body_top += ih + 12
     n = a.n(t)
     if not n:
         d.text((x0 + 18, body_top + 6), "prefill...", font=font(14),
@@ -114,7 +128,7 @@ def _pane(d, a, box, t, pal, ink):
         rh = 22
         for i, s in enumerate(rows):
             y = body_top + i * rh
-            if y + rh > y1 - 96:
+            if y + rh > y1 - 112:
                 break
             line = a.text(s, t).replace("\n", " ").strip()
             while line and d.textlength(line, font=font(13)) > x1 - x0 - 66:
@@ -125,7 +139,7 @@ def _pane(d, a, box, t, pal, ink):
         text = a.text(a.streams[0], t).lstrip()
         lines = wrap(d, text, fb, x1 - x0 - 36)
         lh = 21
-        room = max(1, int((y1 - 104 - body_top) // lh))
+        room = max(1, int((y1 - 116 - body_top) // lh))
         shown = lines[-room:]
         for j, ln in enumerate(shown):
             d.text((x0 + 18, body_top + j * lh), ln, font=fb, fill=pal.ink)
@@ -136,17 +150,26 @@ def _pane(d, a, box, t, pal, ink):
 
     live = a.rate(t)
     val = "--" if live is None else f"{live:.0f}"
-    d.text((x0 + 18, y1 - 78), val, font=font(38, True), fill=ink)
+    foot = y1 - (38 if a.note else 14)
+    d.text((x0 + 18, foot - 58), val, font=font(38, True), fill=ink)
     vw = d.textlength(val, font=font(38, True))
-    d.text((x0 + 26 + vw, y1 - 48), "tok/s", font=font(15), fill=pal.muted)
+    d.text((x0 + 26 + vw, foot - 28), "tok/s", font=font(15), fill=pal.muted)
     if a.ttft_ms and n:
-        d.text((x0 + 26 + vw, y1 - 72), f"TTFT {float(a.ttft_ms):.0f} ms",
+        d.text((x0 + 26 + vw, foot - 52), f"TTFT {float(a.ttft_ms):.0f} ms",
                font=font(14), fill=pal.muted)
     right = (f"{n} of {a.total}" if t < a.done
              else f"done at {a.done:.2f} s")
     rf = font(15, True)
-    d.text((x1 - 18 - d.textlength(right, font=rf), y1 - 40), right, font=rf,
-           fill=pal.muted if t < a.done else ink)
+    d.text((x1 - 18 - d.textlength(right, font=rf), foot - 20), right,
+           font=rf, fill=pal.muted if t < a.done else ink)
+    # whether this arm wrote the same answer as the reference, and how far it
+    # agreed: a page showing two different texts side by side owes the reader
+    # that, and it is exactly the line a demo is tempted to leave out
+    if a.note:
+        ny = foot + 4
+        for line in wrap(d, a.note, font(12), x1 - x0 - 36)[:2]:
+            d.text((x0 + 18, ny), line, font=font(12), fill=pal.muted)
+            ny += 15
 
 
 def _curve(d, arms, box, t, pal, race):

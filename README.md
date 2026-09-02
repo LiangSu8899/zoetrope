@@ -24,23 +24,24 @@ list of timestamps into motion.
 
 ## Gallery
 
-### Inference engines
+### Language and vision models
 
-An engine filmed from its own token stream — eight requests in flight, one
-wall clock, and tokens delivered plotted underneath. One arm, no comparison:
-this is what the engine did.
+The answer arriving, at the timestamps it really arrived at, with tokens
+delivered plotted underneath. The arms are a host and what that host becomes
+when you change how it executes it — so the baseline is always the framework
+you started from.
 
 <p align="center">
-  <img src="docs/gif/serving.gif" width="100%" alt="vLLM with eight requests in flight">
+  <img src="docs/gif/llm.gif" width="100%" alt="Qwen3.6-35B answering one request, two arms">
 </p>
 
-And the same painter with more than one arm, where the arms are a host and
-what that host becomes when you change how it executes: PyTorch as shipped,
-the same host under `torch.compile`, and the same host again with an
-optimization attached.
+A vision model gets the picture it was looking at in its own pane. Each pane
+also carries how far its answer agreed with the reference stream — two panes
+showing different text owe the reader that, and it is exactly the line a demo
+is tempted to leave out.
 
 <p align="center">
-  <img src="docs/gif/run_demo.gif" width="100%" alt="one request, three arms">
+  <img src="docs/gif/vlm.gif" width="100%" alt="Qwen3-VL-8B describing a scene, three arms">
 </p>
 
 ### Explaining a paper
@@ -107,6 +108,17 @@ Change the ink with one flag and the visual language with another. Below is the
 same recording as the first film in this gallery, once in the paper palette and
 once drawn as one cell per token — where the argument is not *rate* but *the
 same tokens*, and speed is the second thing you notice:
+
+<p align="center">
+  <img src="docs/gif/serving.gif" width="100%" alt="vLLM with eight requests in flight">
+</p>
+
+An engine filmed from its own token stream — eight requests in flight, one
+wall clock. One arm, no comparison: this is what the engine did.
+
+<p align="center">
+  <img src="docs/gif/run_demo.gif" width="100%" alt="one request, three arms">
+</p>
 
 <p align="center">
   <img src="docs/gif/run_demo_paper.gif" width="100%" alt="the same recording in the paper palette">
