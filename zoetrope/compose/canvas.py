@@ -17,11 +17,29 @@ from __future__ import annotations
 
 import math
 
-from PIL import Image, ImageDraw
+import functools
+import pathlib
 
-from .race_compose import font as _truetype
+from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1280, 720
+
+FONT_DIRS = ["/usr/share/fonts/truetype/dejavu",
+             "/usr/share/fonts/truetype/liberation"]
+
+
+@functools.lru_cache(maxsize=256)
+def _truetype(size, bold=False):
+    """The loaded face at a device size. Cached: a film asks thousands of
+    times for the same handful of sizes."""
+    names = (["DejaVuSans-Bold.ttf", "LiberationSans-Bold.ttf"] if bold
+             else ["DejaVuSans.ttf", "LiberationSans-Regular.ttf"])
+    for d in FONT_DIRS:
+        for n in names:
+            p = pathlib.Path(d) / n
+            if p.exists():
+                return ImageFont.truetype(str(p), size)
+    return ImageFont.load_default()
 
 #: Every page is drawn this many times larger and brought back down.  PIL has
 #: no anti-aliasing: a rounded corner, a diagonal arrow and a circle are all
@@ -53,9 +71,10 @@ class Canvas:
     centring are unaffected by the factor.
     """
 
-    def __init__(self, bg, k=SS):
+    def __init__(self, bg, k=SS, size=None):
         self.k = k
-        self.im = Image.new("RGB", (W * k, H * k), bg)
+        self.w, self.h = size or (W, H)
+        self.im = Image.new("RGB", (self.w * k, self.h * k), bg)
         self.d = ImageDraw.Draw(self.im)
 
     def _b(self, box):
@@ -86,7 +105,9 @@ class Canvas:
     def polygon(self, points, fill=None):
         self.d.polygon([(x * self.k, y * self.k) for x, y in points], fill=fill)
 
-    def text(self, xy, s, font=None, fill=None):
+    # PIL's own order, so a painter written against ImageDraw drops straight
+    # in: d.text(xy, s, COLOUR, font=f) as well as d.text(xy, s, font=f, ...)
+    def text(self, xy, s, fill=None, font=None):
         self.d.text(self._b(xy), s, font=self._f(font), fill=fill)
 
     def textlength(self, s, font=None):
@@ -116,7 +137,7 @@ class Canvas:
                       (int(xy[0] * k), int(xy[1] * k)))
 
     def image(self):
-        return self.im.resize((W, H), Image.LANCZOS)
+        return self.im.resize((self.w, self.h), Image.LANCZOS)
 
 
 def ease(t):

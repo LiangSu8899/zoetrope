@@ -22,6 +22,7 @@ import subprocess
 
 from PIL import Image, ImageDraw
 
+from zoetrope.compose.canvas import Canvas
 from zoetrope.compose.race_compose import (BG, INK, LINE, MUTED, COLORS,
                                           STOCK, _ffmpeg, font, wrap)
 
@@ -115,8 +116,8 @@ def _row(d, lane, y, t, slow_ms):
 
 
 def paint(lanes, t, slow_ms, peak=None, note=None, gate=None):
-    im = Image.new("RGB", (W, H), BG)
-    d = ImageDraw.Draw(im)
+    cv = Canvas(BG, size=(W, H))
+    im = d = cv
     slow = max(lanes, key=lambda a: a.ms)
     fast = min(lanes, key=lambda a: a.ms)
 
@@ -152,7 +153,7 @@ def paint(lanes, t, slow_ms, peak=None, note=None, gate=None):
     if note:
         for j, ln in enumerate(wrap(d, note, font(14), RX - LX)[:2]):
             d.text((LX, H - 46 + j * 18), ln, MUTED, font=font(14))
-    return im
+    return im.image()
 
 
 def render(runs, out_path, *, fps=30, note=None, gate=None):

@@ -26,23 +26,33 @@ list of timestamps into motion.
 
 ### Language and vision models
 
-The answer arriving, at the timestamps it really arrived at, with tokens
-delivered plotted underneath. The arms are a host and what that host becomes
-when you change how it executes it — so the baseline is always the framework
-you started from.
+The answer arriving, at the timestamps it really arrived at. Two chapters in
+one film: a 35B mixture-of-experts writing a CUDA kernel three ways, and then
+*the same model on prose, where the draft stops paying* — because the
+speculative arm that wins on code loses on an explanation, and a film that
+showed only the first half would be selling.
 
 <p align="center">
-  <img src="docs/gif/llm.gif" width="100%" alt="Qwen3.6-35B answering one request, two arms">
+  <img src="docs/gif/llm.gif" width="100%" alt="Qwen3.6-35B writing a CUDA kernel, then the same model on prose">
 </p>
 
-A vision model gets the picture it was looking at in its own pane. Each pane
-also carries how far its answer agreed with the reference stream — two panes
+A vision model gets the picture it was looking at in its own pane. Every pane
+carries how far its answer agreed with the reference stream — `agrees with the
+host for 291 of 296`, `agrees for 77 tokens, then a synonym`. Two panes
 showing different text owe the reader that, and it is exactly the line a demo
 is tempted to leave out.
 
 <p align="center">
-  <img src="docs/gif/vlm.gif" width="100%" alt="Qwen3-VL-8B describing a scene, three arms">
+  <img src="docs/gif/vlm.gif" width="100%" alt="Qwen3-VL-8B described a scene, three arms">
 </p>
+
+Both are multi-chapter specs that ship in `examples/specs/`, so they redraw
+with no GPU:
+
+```bash
+zoetrope draw --spec examples/specs/q35_spec.json --out llm.webm
+zoetrope draw --spec examples/specs/vl_spec.json  --out vlm.webm
+```
 
 ### Explaining a paper
 
@@ -115,10 +125,6 @@ same tokens*, and speed is the second thing you notice:
 
 An engine filmed from its own token stream — eight requests in flight, one
 wall clock. One arm, no comparison: this is what the engine did.
-
-<p align="center">
-  <img src="docs/gif/run_demo.gif" width="100%" alt="one request, three arms">
-</p>
 
 <p align="center">
   <img src="docs/gif/run_demo_paper.gif" width="100%" alt="the same recording in the paper palette">

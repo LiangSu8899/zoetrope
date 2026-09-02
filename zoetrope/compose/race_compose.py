@@ -38,6 +38,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from ..frames import load_frames
+from .canvas import Canvas, font, _truetype
 
 FONT_DIRS = ["/usr/share/fonts/truetype/dejavu",
              "/usr/share/fonts/truetype/liberation"]
@@ -74,17 +75,6 @@ def _ffmpeg() -> str:
             "no ffmpeg: install it, pip install imageio-ffmpeg, or set "
             "$FFMPEG"
         ) from exc
-
-
-def font(size, bold=False):
-    names = (["DejaVuSans-Bold.ttf", "LiberationSans-Bold.ttf"] if bold
-             else ["DejaVuSans.ttf", "LiberationSans-Regular.ttf"])
-    for d in FONT_DIRS:
-        for n in names:
-            p = pathlib.Path(d) / n
-            if p.exists():
-                return ImageFont.truetype(str(p), size)
-    return ImageFont.load_default()
 
 
 def wrap(draw, text, f, width):
@@ -179,7 +169,8 @@ class VideoArm(Arm):
         if ch > pane:
             ch, cw = pane, max(1, int(round(pane * w / h)))
         img = Image.fromarray(fr).resize((cw, ch), Image.BILINEAR)
-        im.paste(img, (x + (pane - cw) // 2, y + (pane - ch) // 2))
+        im.image_at(img, (x + (pane - cw) // 2, y + (pane - ch) // 2),
+                    (cw, ch))
         d.rectangle([x, y, x + pane - 1, y + pane - 1], outline=LINE)
 
     def step_ms(self, t):
@@ -251,8 +242,7 @@ class StreamArm(Arm):
             ih = int(pane * 0.42)
             iw = int(self.image.width * ih / self.image.height)
             iw = min(iw, pane - 2)
-            im.paste(self.image.resize((iw, ih), Image.BILINEAR),
-                     (x + (pane - iw) // 2, y + 1))
+            im.image_at(self.image, (x + (pane - iw) // 2, y + 1), (iw, ih))
             d.rectangle([x + (pane - iw) // 2, y + 1,
                          x + (pane - iw) // 2 + iw - 1, y + ih],
                         outline=LINE)
@@ -996,6 +986,10 @@ KINDS = {"video": VideoArm, "stream": StreamArm,
 CANVAS_W = 1280
 
 
+def pane_width(n_panes, gap=26, pad=34):
+    return (CANVAS_W - pad * 2 - gap * (n_panes - 1)) // n_panes
+
+
 def _layout(n_panes, pane, footer, extra=0):
     """Canvas size for one chapter, and its wrapped footer lines.
 
@@ -1005,8 +999,8 @@ def _layout(n_panes, pane, footer, extra=0):
     gap, pad, head = 26, 34, 168
     # one canvas width for the whole kit, so a page of these films lines up
     W = CANVAS_W
-    pane = (W - pad * 2 - gap * (n_panes - 1)) // n_panes
-    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    pane = pane or pane_width(n_panes)
+    probe = Canvas(BG, k=1)
     lines = []
     for para in (footer or "").split("\n"):
         if para:
@@ -1023,7 +1017,7 @@ def paint(chapter, t, W, H, pane, foot_lines, extra=0):
     fonts = (font(52, True), font(15, True), f_sub, f_small)
     title, note = chapter.get("title"), chapter.get("note")
 
-    probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
+    probe = Canvas(BG, k=1)
     f_title = font(27, True)
     while (title and probe.textlength(title, font=f_title)
            > W - pad * 2 - 150 and f_title.size > 15):
@@ -1036,8 +1030,8 @@ def paint(chapter, t, W, H, pane, foot_lines, extra=0):
     row = pad * 2 + pane * len(arms) + gap * (len(arms) - 1)
     x0 = pad + (W - row) // 2          # narrower chapters stay centred
 
-    im = Image.new("RGB", (W, H), BG)
-    d = ImageDraw.Draw(im)
+    cv = Canvas(BG, size=(W, H))
+    im = d = cv
     if title:
         d.text((pad, 26), title, INK, font=f_title)
     if chapter.get("subtitle"):
@@ -1060,15 +1054,19 @@ def paint(chapter, t, W, H, pane, foot_lines, extra=0):
     for j, ln in enumerate(foot_lines):
         d.text((pad, H - 14 - 17 * (len(foot_lines) - j)), ln, MUTED,
                font=f_small)
-    return im
+    return im.image()
 
 
 def render(chapters, out_path, fps=30, pane=400, speed=1.0):
     """Render every chapter onto one canvas and encode them as one film."""
+    # every chapter of a film shares one pane size — the one the busiest
+    # chapter can afford — or a two-arm chapter would tower over a three-arm
+    # one and leave the shorter chapters standing in a hole
+    shared = pane_width(max(len(c["arms"]) for c in chapters))
     sized = []
     for c in chapters:
         room = max((a.readout_extra for a in c["arms"]), default=0)
-        W, H, wide, lines = _layout(len(c["arms"]), pane, c.get("footer"),
+        W, H, wide, lines = _layout(len(c["arms"]), shared, c.get("footer"),
                                     room)
         sized.append((W, H, wide, lines, room))
     W = max(w for w, _, _, _, _ in sized)
