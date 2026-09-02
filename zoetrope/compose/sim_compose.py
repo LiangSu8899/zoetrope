@@ -19,6 +19,9 @@ import subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+from ..frames import load_frames
+from .race_compose import wrap
+
 CONTROL_HZ = 20.0                     # LIBERO's control rate
 FONT_DIRS = ["/usr/share/fonts/truetype/dejavu",
              "/usr/share/fonts/truetype/liberation"]
@@ -89,7 +92,7 @@ def hz_trace(events, times):
 class Arm:
     def __init__(self, run_dir, label, sub, color, steps_cap=None):
         d = pathlib.Path(run_dir)
-        self.frames = np.load(d / "frames.npy")
+        self.frames = load_frames(d)
         blob = json.loads((d / "events.json").read_text())
         self.meta, self.events = blob["meta"], blob["events"]
         if steps_cap is not None:            # same robot work in every pane
@@ -98,7 +101,12 @@ class Arm:
         self.steps_cap = steps_cap
         self.times = timeline(self.events, 1.0 / CONTROL_HZ)
         self.hz = hz_trace(self.events, self.times)
-        self.label, self.sub, self.color = label, sub, color
+        # a recording that named itself wins: the presets below are defaults
+        # for runs made before `label`/`sub` were written into the meta, and
+        # a stale default can describe an arm the recording is not
+        self.label = self.meta.get("label") or label
+        self.sub = self.meta.get("sub") or sub
+        self.color = color
         self.median_ms = self.meta["median_infer_ms"]
         self.final_hz = float(np.median(self.hz[len(self.hz) // 3:]))
 
@@ -110,11 +118,21 @@ class Arm:
         return t > self.times[-1]
 
 
+#: One canvas width for the whole kit; the panes fill it.
+CANVAS_W = 1280
+
+
 def render(arms, out_path, fps=30, pane=440, seconds=None, speed=1.0,
+           tail=1.6,
            title=None, note=None, footer=None):
-    span = seconds or max(a.times[-1] for a in arms)
+    # hold the finished page: a film that ends on the frame its slowest arm
+    # lands never shows that arm landing
+    span = seconds or max(a.times[-1] for a in arms) + tail
     gap, pad, head, foot = 26, 34, 168, 178
-    W = pad * 2 + pane * len(arms) + gap * (len(arms) - 1)
+    # every film in this kit is the same width, so a page of them lines up.
+    # The panes divide that width rather than setting it.
+    W = CANVAS_W
+    pane = (W - pad * 2 - gap * (len(arms) - 1)) // len(arms)
     H = head + pane + foot
     f_title, f_lab, f_sub = font(27, True), font(19, True), font(14)
     f_hz, f_unit, f_small = font(52, True), font(15, True), font(13)
@@ -132,11 +150,16 @@ def render(arms, out_path, fps=30, pane=440, seconds=None, speed=1.0,
         d.text((pad, 26), title or "pi0.5 · LIBERO closed loop", INK,
                font=f_title)
         d.text((pad, 62), arms[0].meta["task"], MUTED, font=f_sub)
-        d.text((pad, 84), note or (
-            "same checkpoint · same task · same initial state · parity "
-            f"0.99995 · control {CONTROL_HZ:.0f} Hz · re-plans every "
-            f"{arms[0].meta['replan']} step(s) — each arm waits for its own "
-            "policy"), MUTED, font=f_small)
+        # the note is long and the canvas is only as wide as the panes:
+        # wrap it rather than letting it run off the right edge
+        ny = 84
+        for line in wrap(d, note or (
+                "same checkpoint · same task · same initial state · parity "
+                f"0.99995 · control {CONTROL_HZ:.0f} Hz · re-plans every "
+                f"{arms[0].meta['replan']} step(s) — each arm waits for its "
+                "own policy"), f_small, W - 2 * pad)[:2]:
+            d.text((pad, ny), line, MUTED, font=f_small)
+            ny += 16
 
         for idx, a in enumerate(arms):
             x = pad + idx * (pane + gap)
@@ -163,9 +186,18 @@ def render(arms, out_path, fps=30, pane=440, seconds=None, speed=1.0,
                    f"{min(a.at(t) + 1, len(a.frames))} control steps",
                    MUTED, font=f_small)
             if a.finished(t):
-                done_txt = (f"{len(a.events)} steps done at {a.times[-1]:.1f} s"
-                            if a.steps_cap
-                            else f"task complete at {a.times[-1]:.1f} s")
+                # A rollout only "completes" if the recording says the episode
+                # succeeded.  Running out of recorded steps — because the arms
+                # were capped, or because the run was truncated to ship — is a
+                # different fact, and the pane says which one it is.
+                ok = a.meta.get("success")
+                if a.steps_cap or ok is None:
+                    done_txt = (f"{len(a.events)} steps recorded, "
+                                f"to {a.times[-1]:.1f} s")
+                elif ok:
+                    done_txt = f"task complete at {a.times[-1]:.1f} s"
+                else:
+                    done_txt = f"episode ended at {a.times[-1]:.1f} s"
                 d.text((x, y + 80), done_txt, a.color, font=f_small)
 
             bar_y = y + 102
@@ -202,7 +234,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs", required=True,
                     help="directory holding one sub-directory per arm, "
-                         "each with events.json + frames.npy")
+                         "each with events.json + frames.webp")
     ap.add_argument("--out", required=True)
     ap.add_argument("--seconds", type=float, default=None)
     ap.add_argument("--speed", type=float, default=1.0)

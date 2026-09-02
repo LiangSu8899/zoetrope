@@ -24,13 +24,135 @@ list of timestamps into motion.
 
 ## Gallery
 
-| | |
-|:--|:--|
-| <img src="docs/gif/run_demo.gif" width="100%"><br>**One request, three arms.** PyTorch as shipped, the same host compiled, and an optimized build — one wall clock, live tok/s, and the rate drawn underneath. | <img src="docs/gif/serving_paper.gif" width="100%"><br>**A serving engine under load.** vLLM with eight requests in flight, one scrolling line each, real time. |
-| <img src="docs/gif/robot.gif" width="100%"><br>**A robot policy in closed loop.** GR00T on LIBERO — the simulator's own camera, the policy's own control rate, both arms on one clock. | <img src="docs/gif/video.gif" width="100%"><br>**A diffusion model.** Wan2.2 denoising, ms per step as it goes, then each clip played at its own frame rate. |
-| <img src="docs/gif/why_faster.gif" width="100%"><br>**Why it is faster, in one idea.** The same decision, cut into a different number of trips to memory. Everything else cut. | <img src="docs/gif/run_demo_paper.gif" width="100%"><br>**The same recording, in another ink.** Six colour systems, one flag — this one is for slides and print. |
-| <img src="docs/gif/explain_radix.gif" width="100%"><br>**A paper's mechanism.** SGLang's radix tree, with the number it produces derived from the tree beside it. | <img src="docs/gif/explain_tiling.gif" width="100%"><br>**Drawn the way the paper draws it.** FlashAttention's loops, and the N×N matrix that is never written down. |
-| <img src="docs/gif/explain_result.gif" width="100%"><br>**And what it came to.** Meters that fill, bars against a baseline — including the utilisation that did *not* move. | <img src="docs/looks.png" width="100%"><br>**Four visual languages, six palettes.** One contact sheet from one recording, so the look is a choice you make by looking. |
+### Language and vision models
+
+The answer arriving, at the timestamps it really arrived at. Two chapters in
+one film: a 35B mixture-of-experts writing a CUDA kernel three ways, and then
+*the same model on prose, where the draft stops paying* — because the
+speculative arm that wins on code loses on an explanation, and a film that
+showed only the first half would be selling.
+
+<p align="center">
+  <img src="docs/gif/llm.gif" width="100%" alt="Qwen3.6-35B writing a CUDA kernel, then the same model on prose">
+</p>
+
+A vision model gets the picture it was looking at in its own pane. Every pane
+carries how far its answer agreed with the reference stream — `agrees with the
+host for 291 of 296`, `agrees for 77 tokens, then a synonym`. Two panes
+showing different text owe the reader that, and it is exactly the line a demo
+is tempted to leave out.
+
+<p align="center">
+  <img src="docs/gif/vlm.gif" width="100%" alt="Qwen3-VL-8B described a scene, three arms">
+</p>
+
+Both films above are played at half rate, and say so in their own headers —
+the fast arm finishes in 0.6 s of model time, which at model rate is a blink.
+The clock always reads model time; a film that quietly ran fast or slow
+without saying so would be a number nobody can trust.
+
+Both are multi-chapter specs that ship in `examples/specs/`, so they redraw
+with no GPU:
+
+```bash
+zoetrope draw --spec examples/specs/q35_spec.json --speed 0.5 --out llm.webm
+zoetrope draw --spec examples/specs/vl_spec.json  --speed 0.5 --out vlm.webm
+```
+
+### Explaining a paper
+
+The mechanism its own authors put at the centre of the design — and, on the
+same page, the number it produces. The chart beside a diagram is derived from
+that diagram, so the picture and the figure cannot drift apart.
+
+<p align="center">
+  <img src="docs/gif/explain_paged.gif" width="100%" alt="vLLM's paged KV cache">
+</p>
+
+<p align="center">
+  <img src="docs/gif/explain_radix.gif" width="100%" alt="SGLang's radix tree">
+</p>
+
+<p align="center">
+  <img src="docs/gif/explain_tiling.gif" width="100%" alt="FlashAttention's tiling">
+</p>
+
+<p align="center">
+  <img src="docs/gif/explain_result.gif" width="100%" alt="a results page: meters that fill, bars against a baseline">
+</p>
+
+### Simulation and robots
+
+A policy in closed loop, drawn from the simulator's own camera and the
+policy's own control rate — not a screen recording. Three complete pi0.5
+rollouts of the same LIBERO task from the same initial state, each one running
+to the moment the task is done: 107.5 ms a decision, then 58.9 under
+`torch.compile`, then 25.6 — 9.3 Hz, 17.0 Hz, 39.1 Hz, finishing at 13.7 s,
+10.2 s and 6.7 s.
+
+<p align="center">
+  <img src="docs/gif/robot.gif" width="100%" alt="pi0.5 on LIBERO, three arms on one clock">
+</p>
+
+Whole episodes, at the resolution they were recorded at, in about a megabyte:
+frames ship as an animated WebP, because the same three rollouts as raw pixels
+are 54 MB. The footer carries the closed-loop rate too, since the robot's own
+20 Hz control step is a large part of the wall clock.
+
+### Comparisons
+
+A diffusion model against itself, and the harder question underneath: *why* is
+one of them faster. That second film is one idea and nothing else — the same
+work, cut into a different number of trips to memory.
+
+<p align="center">
+  <img src="docs/gif/video.gif" width="100%" alt="Wan2.2, two arms">
+</p>
+
+<p align="center">
+  <img src="docs/gif/why_faster.gif" width="100%" alt="the same work, cut into fewer trips to memory">
+</p>
+
+### Explore more
+
+Every film above is drawn from a recording that ships in this repository, so
+each one redraws on your machine with no GPU. They are all painted on the same
+1280-wide canvas, whatever they are showing, so a page of them lines up.
+
+Change the ink with one flag and the visual language with another. Below is the
+same recording as the first film in this gallery, once in the paper palette and
+once drawn as one cell per token — where the argument is not *rate* but *the
+same tokens*, and speed is the second thing you notice:
+
+<p align="center">
+  <img src="docs/gif/serving.gif" width="100%" alt="vLLM with eight requests in flight">
+</p>
+
+An engine filmed from its own token stream — eight requests in flight, one
+wall clock. One arm, no comparison: this is what the engine did. The strip
+underneath plots tok/s rather than tokens delivered, because the cumulative
+curve is the integral of the rate and integration hides exactly what a reader
+is looking at. It holds near 107, dips when a scheduler step runs long, and
+steps down near the end as requests finish and there are fewer streams to
+serve.
+
+<p align="center">
+  <img src="docs/gif/run_demo_paper.gif" width="100%" alt="the same recording in the paper palette">
+</p>
+
+<p align="center">
+  <img src="docs/gif/looks_dots.gif" width="100%" alt="the same recording drawn as one cell per token">
+</p>
+
+<p align="center">
+  <img src="docs/looks.png" width="100%" alt="four visual languages against six palettes">
+</p>
+
+```bash
+zoetrope live  examples/runs/stream       --palette paper --chart curve --out a.webm
+zoetrope live  examples/runs/stream_batch --palette ember --chart rate  --out b.webm
+zoetrope looks examples/runs/stream --sheet looks.png
+```
 
 ---
 

@@ -64,7 +64,7 @@ the shortest way to see how chapters, arms, notes and footers fit together.
 One arm per process. Never two — they would share allocator state and clocks.
 
 ```
-run each arm  →  runs/<film>/<arm>/events.json   (+ frames.npy if it has pixels)
+run each arm  →  runs/<film>/<arm>/events.json   (+ frames.webp if it has pixels)
                  zoetrope check runs/<film>/*
                  zoetrope draw  runs/<film> --out film.webm
 ```

@@ -1,323 +1,465 @@
 {
  "meta": {
   "arm": "attach",
-  "host": "Isaac-GR00T N1.7 (official)",
-  "task": "put the black bowl in the bottom drawer of the cabinet and close it",
-  "suite": "libero_10",
-  "task_id": 3,
+  "task": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+  "suite": "libero_spatial",
+  "task_id": 0,
   "trial": 0,
   "replan": 1,
   "device": "NVIDIA GeForce RTX 5090",
-  "swaps": 313,
-  "refused": 185,
+  "swaps": 317,
+  "refused": 0,
   "ledger_clean": true,
-  "captured": true,
-  "steps": 60,
-  "success": null,
-  "calls": 302,
-  "median_infer_ms": 17.774,
-  "mean_infer_ms": 17.804,
-  "_example_note": "the first 60 control steps of a real rollout, scaled to 96px, so this example fits in the repository. Frames and events are truncated together and every frame is kept: a loop pane indexes frames by control step. `success` is cleared because a truncated rollout has no outcome."
+  "steps": 88,
+  "success": true,
+  "calls": 88,
+  "median_infer_ms": 25.587308569811285,
+  "mean_infer_ms": 25.590199104044586,
+  "label": "pi0.5 + FlashRT structures",
+  "sub": "auto_swaps, seats bound at load",
+  "color": "ours",
+  "host": "lerobot PI05Policy",
+  "_example_note": "a complete LIBERO rollout: every control step the policy actually ran, at the resolution it was recorded at. Frames are stored as an animated WebP because the same episode as raw pixels is 18 MB. `host` was not a field when this was recorded and was filled in when the example was prepared; every measured value is as recorded."
  },
  "events": [
   {
    "step": 0,
-   "infer_ms": 19.420180935412645,
+   "infer_ms": 25.62878793105483,
    "fresh": true
   },
   {
    "step": 1,
-   "infer_ms": 17.7882791031152,
+   "infer_ms": 25.576428044587374,
    "fresh": true
   },
   {
    "step": 2,
-   "infer_ms": 17.763291019946337,
+   "infer_ms": 25.59665311127901,
    "fresh": true
   },
   {
    "step": 3,
-   "infer_ms": 17.765864031389356,
+   "infer_ms": 25.56559885852039,
    "fresh": true
   },
   {
    "step": 4,
-   "infer_ms": 17.773132072761655,
+   "infer_ms": 25.55770194157958,
    "fresh": true
   },
   {
    "step": 5,
-   "infer_ms": 17.765888012945652,
+   "infer_ms": 25.596894090995193,
    "fresh": true
   },
   {
    "step": 6,
-   "infer_ms": 17.759142909199,
+   "infer_ms": 25.59850295074284,
    "fresh": true
   },
   {
    "step": 7,
-   "infer_ms": 17.764959950000048,
+   "infer_ms": 25.561013026162982,
    "fresh": true
   },
   {
    "step": 8,
-   "infer_ms": 17.77332602068782,
+   "infer_ms": 25.57887206785381,
    "fresh": true
   },
   {
    "step": 9,
-   "infer_ms": 17.769783036783338,
+   "infer_ms": 25.62249405309558,
    "fresh": true
   },
   {
    "step": 10,
-   "infer_ms": 17.770109931007028,
+   "infer_ms": 25.625172071158886,
    "fresh": true
   },
   {
    "step": 11,
-   "infer_ms": 17.766176955774426,
+   "infer_ms": 25.568243116140366,
    "fresh": true
   },
   {
    "step": 12,
-   "infer_ms": 17.777849920094013,
+   "infer_ms": 25.5763151217252,
    "fresh": true
   },
   {
    "step": 13,
-   "infer_ms": 17.757368041202426,
+   "infer_ms": 25.608220836147666,
    "fresh": true
   },
   {
    "step": 14,
-   "infer_ms": 17.795111052691936,
+   "infer_ms": 25.602027075365186,
    "fresh": true
   },
   {
    "step": 15,
-   "infer_ms": 17.814890015870333,
+   "infer_ms": 25.585846975445747,
    "fresh": true
   },
   {
    "step": 16,
-   "infer_ms": 17.828339943662286,
+   "infer_ms": 25.597995845600963,
    "fresh": true
   },
   {
    "step": 17,
-   "infer_ms": 17.775598913431168,
+   "infer_ms": 25.59807780198753,
    "fresh": true
   },
   {
    "step": 18,
-   "infer_ms": 17.79570197686553,
+   "infer_ms": 25.57991398498416,
    "fresh": true
   },
   {
    "step": 19,
-   "infer_ms": 17.790196929126978,
+   "infer_ms": 25.569929042831063,
    "fresh": true
   },
   {
    "step": 20,
-   "infer_ms": 17.76926196180284,
+   "infer_ms": 25.616027181968093,
    "fresh": true
   },
   {
    "step": 21,
-   "infer_ms": 17.7767900750041,
+   "infer_ms": 25.59358603321016,
    "fresh": true
   },
   {
    "step": 22,
-   "infer_ms": 17.774851992726326,
+   "infer_ms": 25.57555609382689,
    "fresh": true
   },
   {
    "step": 23,
-   "infer_ms": 17.802795860916376,
+   "infer_ms": 25.614836951717734,
    "fresh": true
   },
   {
    "step": 24,
-   "infer_ms": 17.774929059669375,
+   "infer_ms": 25.586572010070086,
    "fresh": true
   },
   {
    "step": 25,
-   "infer_ms": 17.7788189612329,
+   "infer_ms": 25.57688904926181,
    "fresh": true
   },
   {
    "step": 26,
-   "infer_ms": 17.770976992323995,
+   "infer_ms": 25.574548868462443,
    "fresh": true
   },
   {
    "step": 27,
-   "infer_ms": 17.770634032785892,
+   "infer_ms": 25.57801897637546,
    "fresh": true
   },
   {
    "step": 28,
-   "infer_ms": 17.77837797999382,
+   "infer_ms": 25.593516882508993,
    "fresh": true
   },
   {
    "step": 29,
-   "infer_ms": 17.77510205283761,
+   "infer_ms": 25.624088943004608,
    "fresh": true
   },
   {
    "step": 30,
-   "infer_ms": 17.77845504693687,
+   "infer_ms": 25.588287971913815,
    "fresh": true
   },
   {
    "step": 31,
-   "infer_ms": 17.76895998045802,
+   "infer_ms": 25.587517069652677,
    "fresh": true
   },
   {
    "step": 32,
-   "infer_ms": 17.810783814638853,
+   "infer_ms": 25.593166006729007,
    "fresh": true
   },
   {
    "step": 33,
-   "infer_ms": 17.773756990209222,
+   "infer_ms": 25.593710131943226,
    "fresh": true
   },
   {
    "step": 34,
-   "infer_ms": 17.780038993805647,
+   "infer_ms": 25.586296105757356,
    "fresh": true
   },
   {
    "step": 35,
-   "infer_ms": 17.77869393117726,
+   "infer_ms": 25.58380295522511,
    "fresh": true
   },
   {
    "step": 36,
-   "infer_ms": 17.76459184475243,
+   "infer_ms": 25.581787107512355,
    "fresh": true
   },
   {
    "step": 37,
-   "infer_ms": 17.773550003767014,
+   "infer_ms": 25.61094588600099,
    "fresh": true
   },
   {
    "step": 38,
-   "infer_ms": 17.76447193697095,
+   "infer_ms": 25.58525907807052,
    "fresh": true
   },
   {
    "step": 39,
-   "infer_ms": 17.77445897459984,
+   "infer_ms": 25.592740857973695,
    "fresh": true
   },
   {
    "step": 40,
-   "infer_ms": 17.77812303043902,
+   "infer_ms": 25.580533081665635,
    "fresh": true
   },
   {
    "step": 41,
-   "infer_ms": 17.76651688851416,
+   "infer_ms": 25.585273979231715,
    "fresh": true
   },
   {
    "step": 42,
-   "infer_ms": 17.78459595516324,
+   "infer_ms": 25.630679912865162,
    "fresh": true
   },
   {
    "step": 43,
-   "infer_ms": 17.764616990461946,
+   "infer_ms": 25.58722603134811,
    "fresh": true
   },
   {
    "step": 44,
-   "infer_ms": 17.7650791592896,
+   "infer_ms": 25.60237515717745,
    "fresh": true
   },
   {
    "step": 45,
-   "infer_ms": 17.786677926778793,
+   "infer_ms": 25.584940100088716,
    "fresh": true
   },
   {
    "step": 46,
-   "infer_ms": 17.75887981057167,
+   "infer_ms": 25.582713074982166,
    "fresh": true
   },
   {
    "step": 47,
-   "infer_ms": 17.775183077901602,
+   "infer_ms": 25.563211180269718,
    "fresh": true
   },
   {
    "step": 48,
-   "infer_ms": 17.775248968973756,
+   "infer_ms": 25.595708983018994,
    "fresh": true
   },
   {
    "step": 49,
-   "infer_ms": 17.769271042197943,
+   "infer_ms": 25.59307008050382,
    "fresh": true
   },
   {
    "step": 50,
-   "infer_ms": 17.766735050827265,
+   "infer_ms": 25.61584091745317,
    "fresh": true
   },
   {
    "step": 51,
-   "infer_ms": 17.76160905137658,
+   "infer_ms": 25.60074394568801,
    "fresh": true
   },
   {
    "step": 52,
-   "infer_ms": 17.77416211552918,
+   "infer_ms": 25.579126086086035,
    "fresh": true
   },
   {
    "step": 53,
-   "infer_ms": 17.780140042304993,
+   "infer_ms": 25.586988078430295,
    "fresh": true
   },
   {
    "step": 54,
-   "infer_ms": 17.7880572155118,
+   "infer_ms": 25.595503160730004,
    "fresh": true
   },
   {
    "step": 55,
-   "infer_ms": 17.784789903089404,
+   "infer_ms": 25.57339402846992,
    "fresh": true
   },
   {
    "step": 56,
-   "infer_ms": 17.76996487751603,
+   "infer_ms": 25.59517091140151,
    "fresh": true
   },
   {
    "step": 57,
-   "infer_ms": 17.762752948328853,
+   "infer_ms": 25.610239943489432,
    "fresh": true
   },
   {
    "step": 58,
-   "infer_ms": 17.77793001383543,
+   "infer_ms": 25.582914939150214,
    "fresh": true
   },
   {
    "step": 59,
-   "infer_ms": 17.772733932361007,
+   "infer_ms": 25.602529989555478,
+   "fresh": true
+  },
+  {
+   "step": 60,
+   "infer_ms": 25.58235707692802,
+   "fresh": true
+  },
+  {
+   "step": 61,
+   "infer_ms": 25.57430020533502,
+   "fresh": true
+  },
+  {
+   "step": 62,
+   "infer_ms": 25.589391123503447,
+   "fresh": true
+  },
+  {
+   "step": 63,
+   "infer_ms": 25.586541974917054,
+   "fresh": true
+  },
+  {
+   "step": 64,
+   "infer_ms": 25.594701059162617,
+   "fresh": true
+  },
+  {
+   "step": 65,
+   "infer_ms": 25.614190846681595,
+   "fresh": true
+  },
+  {
+   "step": 66,
+   "infer_ms": 25.561773916706443,
+   "fresh": true
+  },
+  {
+   "step": 67,
+   "infer_ms": 25.57393116876483,
+   "fresh": true
+  },
+  {
+   "step": 68,
+   "infer_ms": 25.58739110827446,
+   "fresh": true
+  },
+  {
+   "step": 69,
+   "infer_ms": 25.60285897925496,
+   "fresh": true
+  },
+  {
+   "step": 70,
+   "infer_ms": 25.590721052139997,
+   "fresh": true
+  },
+  {
+   "step": 71,
+   "infer_ms": 25.602118112146854,
+   "fresh": true
+  },
+  {
+   "step": 72,
+   "infer_ms": 25.569037068635225,
+   "fresh": true
+  },
+  {
+   "step": 73,
+   "infer_ms": 25.577008025720716,
+   "fresh": true
+  },
+  {
+   "step": 74,
+   "infer_ms": 25.577862979844213,
+   "fresh": true
+  },
+  {
+   "step": 75,
+   "infer_ms": 25.5844141356647,
+   "fresh": true
+  },
+  {
+   "step": 76,
+   "infer_ms": 25.584426941350102,
+   "fresh": true
+  },
+  {
+   "step": 77,
+   "infer_ms": 25.59530222788453,
+   "fresh": true
+  },
+  {
+   "step": 78,
+   "infer_ms": 25.583771988749504,
+   "fresh": true
+  },
+  {
+   "step": 79,
+   "infer_ms": 25.590534089133143,
+   "fresh": true
+  },
+  {
+   "step": 80,
+   "infer_ms": 25.586055126041174,
+   "fresh": true
+  },
+  {
+   "step": 81,
+   "infer_ms": 25.571830105036497,
+   "fresh": true
+  },
+  {
+   "step": 82,
+   "infer_ms": 25.59868711978197,
+   "fresh": true
+  },
+  {
+   "step": 83,
+   "infer_ms": 25.59668105095625,
+   "fresh": true
+  },
+  {
+   "step": 84,
+   "infer_ms": 25.60273907147348,
+   "fresh": true
+  },
+  {
+   "step": 85,
+   "infer_ms": 25.581880006939173,
+   "fresh": true
+  },
+  {
+   "step": 86,
+   "infer_ms": 25.616257917135954,
+   "fresh": true
+  },
+  {
+   "step": 87,
+   "infer_ms": 25.58073098771274,
    "fresh": true
   }
  ]

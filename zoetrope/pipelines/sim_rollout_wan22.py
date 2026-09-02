@@ -13,7 +13,7 @@ qualification receipts use — 480x480, 33 frames, seed 7 — so the numbers
 here sit next to the recorded gate without a change of units.
 
 Each arm writes `events.json` (a step-by-step wall clock) and
-`frames.npy` (the clip it actually produced) for `race_compose.py`.
+`frames.webp` (the clip it actually produced) for `race_compose.py`.
 """
 
 from __future__ import annotations
@@ -28,6 +28,8 @@ import sys
 import time
 
 import numpy as np
+
+from ..frames import save_frames
 import torch
 
 #: point $FRT_WORKTREE at a FlashRT checkout to run against it in place;
@@ -206,7 +208,7 @@ def write_arm(out_dir, name, label, sub, color, cfg, total, stamps,
               paired_call_ms=None):
     d = pathlib.Path(out_dir) / name
     d.mkdir(parents=True, exist_ok=True)
-    np.save(d / "frames.npy", clip)
+    save_frames(d, clip)
     events = [{"kind": "step", "i": i, "t": round(s, 4)}
               for i, s in enumerate(stamps)]
     meta = {

@@ -15,6 +15,8 @@ import json
 import pathlib
 import sys
 
+from zoetrope.frames import has_frames
+
 REQUIRED = ("kind", "label", "sub", "color", "done_s")
 NEEDS = {
     "stream":       ("ttft_ms", "decode_tok_s", "n_tokens"),
@@ -56,8 +58,8 @@ def check(path: pathlib.Path) -> list[str]:
         for k in SIM_NEEDS:
             if k not in meta:
                 bad.append(f"{path}: a robot rollout needs meta[{k!r}]")
-        if not (path / "frames.npy").exists():
-            bad.append(f"{path}: a robot rollout needs frames.npy")
+        if not has_frames(path):
+            bad.append(f"{path}: a robot rollout needs frames.webp")
         if events and "infer_ms" not in events[0]:
             bad.append(f"{path}: a robot rollout event needs 'infer_ms'")
         return bad
@@ -72,8 +74,8 @@ def check(path: pathlib.Path) -> list[str]:
         for k in NEEDS[kind]:
             if k not in meta:
                 bad.append(f"{path}: a {kind} pane needs meta[{k!r}]")
-        if kind == "video" and not (path / "frames.npy").exists():
-            bad.append(f"{path}: a video pane needs frames.npy")
+        if kind == "video" and not has_frames(path):
+            bad.append(f"{path}: a video pane needs frames.webp")
         if kind == "arch":
             nodes = meta.get("nodes") or []
             names = {n.get("node") for n in nodes}
@@ -200,6 +202,8 @@ def main(argv=None) -> int:
     V.add_argument("--arms"); V.add_argument("--palette", default="midnight")
     V.add_argument("--chart", default="curve")
     V.add_argument("--title"); V.add_argument("--sub")
+    V.add_argument("--label"); V.add_argument("--pane-sub")
+    V.add_argument("--color")
     V.add_argument("--seconds", type=float); V.add_argument("--fps", type=int,
                                                             default=30)
     V.add_argument("--at", type=float, default=0.6)
@@ -253,7 +257,9 @@ def main(argv=None) -> int:
         from zoetrope.compose import live_compose as V
         argv2 = [a.runs, "--palette", a.palette, "--chart", a.chart,
                  "--fps", str(a.fps), "--at", str(a.at)]
-        for flag in ("arms", "title", "sub", "frame", "out"):
+        if a.pane_sub:
+            argv2 += ["--pane-sub", a.pane_sub]
+        for flag in ("arms", "title", "sub", "label", "color", "frame", "out"):
             if getattr(a, flag, None):
                 argv2 += [f"--{flag}", getattr(a, flag)]
         if a.seconds:
@@ -288,9 +294,9 @@ def main(argv=None) -> int:
             meta = json.loads((first / "events.json").read_text())["meta"]
             if shape_of(meta) == "sim":
                 import subprocess
-                cmd = [sys.executable,
-                       str(pathlib.Path(__file__).parent / "compose"
-                           / "sim_compose.py"),
+                # as a module, not a path: the compositor imports its
+                # siblings, and a file run directly has no package
+                cmd = [sys.executable, "-m", "zoetrope.compose.sim_compose",
                        "--runs", a.runs, "--out", a.out,
                        "--pane", str(a.pane), "--fps", str(a.fps),
                        "--speed", str(a.speed)]
