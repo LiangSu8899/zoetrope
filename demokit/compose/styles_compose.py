@@ -305,8 +305,9 @@ def sheet(arms, out, title, sub, at=0.62, scale=0.34):
             tile = frame(arms, race * at, pal, style, title, sub)
             x, y = c * tw, r * (th + head)
             im.paste(tile.resize((tw, th), Image.LANCZOS), (x, y + head))
-            d.text((x + 10, y + 9), f"{style} · {name}", font=font(17, True),
-                   fill=SHEET_INK)
+            # the sheet itself is a plain image, so it needs a real font
+            d.text((x + 10, y + 9), f"{style} · {name}",
+                   font=_truetype(17, True), fill=SHEET_INK)
     im.save(out)
     return out
 
