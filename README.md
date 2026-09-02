@@ -24,13 +24,70 @@ list of timestamps into motion.
 
 ## Gallery
 
-| | |
-|:--|:--|
-| <img src="docs/gif/run_demo.gif" width="100%"><br>**One request, three arms.** PyTorch as shipped, the same host compiled, and an optimized build — one wall clock, live tok/s, and the rate drawn underneath. | <img src="docs/gif/serving_paper.gif" width="100%"><br>**A serving engine under load.** vLLM with eight requests in flight, one scrolling line each, real time. |
-| <img src="docs/gif/robot.gif" width="100%"><br>**A robot policy in closed loop.** GR00T on LIBERO — the simulator's own camera, the policy's own control rate, both arms on one clock. | <img src="docs/gif/video.gif" width="100%"><br>**A diffusion model.** Wan2.2 denoising, ms per step as it goes, then each clip played at its own frame rate. |
-| <img src="docs/gif/why_faster.gif" width="100%"><br>**Why it is faster, in one idea.** The same decision, cut into a different number of trips to memory. Everything else cut. | <img src="docs/gif/run_demo_paper.gif" width="100%"><br>**The same recording, in another ink.** Six colour systems, one flag — this one is for slides and print. |
-| <img src="docs/gif/explain_radix.gif" width="100%"><br>**A paper's mechanism.** SGLang's radix tree, with the number it produces derived from the tree beside it. | <img src="docs/gif/explain_tiling.gif" width="100%"><br>**Drawn the way the paper draws it.** FlashAttention's loops, and the N×N matrix that is never written down. |
-| <img src="docs/gif/explain_result.gif" width="100%"><br>**And what it came to.** Meters that fill, bars against a baseline — including the utilisation that did *not* move. | <img src="docs/looks.png" width="100%"><br>**Four visual languages, six palettes.** One contact sheet from one recording, so the look is a choice you make by looking. |
+### Inference engines
+
+A serving engine with eight requests in flight, and a single request answered
+three ways. One wall clock, live tok/s, and the rate drawn underneath.
+
+<p align="center">
+  <img src="docs/gif/serving_paper.gif" width="420" alt="vLLM with eight requests in flight">
+  <img src="docs/gif/run_demo.gif" width="420" alt="one request, three arms">
+</p>
+
+### Explaining a paper
+
+The mechanism its own authors put at the centre of the design — and, on the
+same page, the number it produces. The chart beside a diagram is derived from
+that diagram, so the picture and the figure cannot drift apart.
+
+<p align="center">
+  <img src="docs/gif/explain_radix.gif" width="420" alt="SGLang's radix tree">
+  <img src="docs/gif/explain_tiling.gif" width="420" alt="FlashAttention's tiling">
+</p>
+
+<p align="center">
+  <img src="docs/gif/explain_result.gif" width="520" alt="a results page: meters that fill, bars against a baseline">
+</p>
+
+### Simulation and robots
+
+A policy in closed loop, drawn from the simulator's own camera and the
+policy's own control rate — not a screen recording.
+
+<p align="center">
+  <img src="docs/gif/robot.gif" width="520" alt="GR00T on LIBERO, two arms on one clock">
+</p>
+
+### Comparisons
+
+A diffusion model against itself, and the harder question underneath: *why* is
+one of them faster. That second film is one idea and nothing else — the same
+work, cut into a different number of trips to memory.
+
+<p align="center">
+  <img src="docs/gif/video.gif" width="420" alt="Wan2.2, two arms">
+  <img src="docs/gif/why_faster.gif" width="420" alt="the same work, cut into fewer trips to memory">
+</p>
+
+### Explore more
+
+Every film above is drawn from a recording that ships in this repository, so
+each one redraws on your machine with no GPU. Change the ink with one flag,
+change the visual language with another, and print the whole matrix to choose
+from:
+
+<p align="center">
+  <img src="docs/gif/run_demo_paper.gif" width="520" alt="the same recording in the paper palette">
+</p>
+
+<p align="center">
+  <img src="docs/looks.png" width="880" alt="four visual languages against six palettes">
+</p>
+
+```bash
+zoetrope live  examples/runs/stream --palette paper --chart curve --out a.webm
+zoetrope looks examples/runs/stream --sheet looks.png
+```
 
 ---
 
