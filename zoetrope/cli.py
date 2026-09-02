@@ -288,9 +288,9 @@ def main(argv=None) -> int:
             meta = json.loads((first / "events.json").read_text())["meta"]
             if shape_of(meta) == "sim":
                 import subprocess
-                cmd = [sys.executable,
-                       str(pathlib.Path(__file__).parent / "compose"
-                           / "sim_compose.py"),
+                # as a module, not a path: the compositor imports its
+                # siblings, and a file run directly has no package
+                cmd = [sys.executable, "-m", "zoetrope.compose.sim_compose",
                        "--runs", a.runs, "--out", a.out,
                        "--pane", str(a.pane), "--fps", str(a.fps),
                        "--speed", str(a.speed)]

@@ -990,6 +990,10 @@ KINDS = {"video": VideoArm, "stream": StreamArm,
          "runtime": RuntimeArm, "diagram": DiagramArm}
 
 
+#: One canvas width for the whole kit; the panes divide it.
+CANVAS_W = 1280
+
+
 def _layout(n_panes, pane, footer, extra=0):
     """Canvas size for one chapter, and its wrapped footer lines.
 
@@ -997,14 +1001,16 @@ def _layout(n_panes, pane, footer, extra=0):
     prints the ledger's refusal reason there.
     """
     gap, pad, head = 26, 34, 168
-    W = pad * 2 + pane * n_panes + gap * (n_panes - 1)
+    # one canvas width for the whole kit, so a page of these films lines up
+    W = CANVAS_W
+    pane = (W - pad * 2 - gap * (n_panes - 1)) // n_panes
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
     lines = []
     for para in (footer or "").split("\n"):
         if para:
             lines.extend(wrap(probe, para, font(13), W - pad * 2))
     H = head + pane + 145 + extra + 17 * len(lines) + 18
-    return W, H, lines
+    return W, H, pane, lines
 
 
 def paint(chapter, t, W, H, pane, foot_lines, extra=0):
@@ -1060,10 +1066,11 @@ def render(chapters, out_path, fps=30, pane=400, speed=1.0):
     sized = []
     for c in chapters:
         room = max((a.readout_extra for a in c["arms"]), default=0)
-        W, H, lines = _layout(len(c["arms"]), pane, c.get("footer"), room)
-        sized.append((W, H, lines, room))
-    W = max(w for w, _, _, _ in sized)
-    H = max(h for _, h, _, _ in sized)
+        W, H, wide, lines = _layout(len(c["arms"]), pane, c.get("footer"),
+                                    room)
+        sized.append((W, H, wide, lines, room))
+    W = max(w for w, _, _, _, _ in sized)
+    H = max(h for _, h, _, _, _ in sized)
 
     frames_dir = pathlib.Path(out_path).parent / "_race_frames"
     frames_dir.mkdir(parents=True, exist_ok=True)
@@ -1071,11 +1078,11 @@ def render(chapters, out_path, fps=30, pane=400, speed=1.0):
         old.unlink()
 
     k = 0
-    for c, (_, _, lines, room) in zip(chapters, sized):
+    for c, (_, _, wide, lines, room) in zip(chapters, sized):
         span = (c["seconds"] if c.get("seconds") is not None
                 else max(a.done_t for a in c["arms"]) + c.get("tail", 2.0))
         for i in range(int(span / speed * fps)):
-            paint(c, i / fps * speed, W, H, pane, lines, room).save(
+            paint(c, i / fps * speed, W, H, wide, lines, room).save(
                 frames_dir / f"{k:05d}.jpg", quality=88)
             k += 1
 

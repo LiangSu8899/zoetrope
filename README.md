@@ -41,21 +41,25 @@ same page, the number it produces. The chart beside a diagram is derived from
 that diagram, so the picture and the figure cannot drift apart.
 
 <p align="center">
+  <img src="docs/gif/explain_paged.gif" width="420" alt="vLLM's paged KV cache">
   <img src="docs/gif/explain_radix.gif" width="420" alt="SGLang's radix tree">
-  <img src="docs/gif/explain_tiling.gif" width="420" alt="FlashAttention's tiling">
 </p>
 
 <p align="center">
-  <img src="docs/gif/explain_result.gif" width="520" alt="a results page: meters that fill, bars against a baseline">
+  <img src="docs/gif/explain_tiling.gif" width="420" alt="FlashAttention's tiling">
+  <img src="docs/gif/explain_result.gif" width="420" alt="a results page: meters that fill, bars against a baseline">
 </p>
 
 ### Simulation and robots
 
 A policy in closed loop, drawn from the simulator's own camera and the
-policy's own control rate — not a screen recording.
+policy's own control rate — not a screen recording. The recording that ships
+here is the first 60 control steps of a real rollout, scaled down to fit in a
+repository, so the pane says `60 steps recorded` rather than claiming the task
+was completed.
 
 <p align="center">
-  <img src="docs/gif/robot.gif" width="520" alt="GR00T on LIBERO, two arms on one clock">
+  <img src="docs/gif/robot.gif" width="420" alt="GR00T on LIBERO, two arms on one clock">
 </p>
 
 ### Comparisons
@@ -69,6 +73,9 @@ work, cut into a different number of trips to memory.
   <img src="docs/gif/why_faster.gif" width="420" alt="the same work, cut into fewer trips to memory">
 </p>
 
+Every film is drawn on the same 1280-wide canvas, whatever it is showing, so a
+page of them lines up instead of stepping in and out.
+
 ### Explore more
 
 Every film above is drawn from a recording that ships in this repository, so
@@ -77,7 +84,7 @@ change the visual language with another, and print the whole matrix to choose
 from:
 
 <p align="center">
-  <img src="docs/gif/run_demo_paper.gif" width="520" alt="the same recording in the paper palette">
+  <img src="docs/gif/run_demo_paper.gif" width="420" alt="the same recording in the paper palette">
 </p>
 
 <p align="center">
