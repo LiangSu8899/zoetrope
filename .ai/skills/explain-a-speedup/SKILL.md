@@ -75,6 +75,7 @@ The numbers are load-bearing. Every one of these was wrong once:
 | `compose/race_compose.py` `diagram` | which door through the framework did this run take |
 | `compose/race_compose.py` `video`/`stream`/`stream_batch` | the demo film itself |
 | `compose/styles_compose.py` | the same stream recording, drawn four other ways |
+| `compose/explain_compose.py` | a mechanism from a paper, when there is nothing to record |
 
 Start from `trips_compose`. The others exist because they were built; they
 answer narrower questions and they are charts.
@@ -114,6 +115,25 @@ the subject is a runtime close to the metal, `blueprint` under a diagram,
 `ember` for heat and throughput, `mono` when nothing should compete with the
 one accent, `midnight` as the default. A palette that fights the subject is a
 real cost even when every number on the page is right.
+
+
+## When the source is a paper, not a run
+
+Some things worth explaining were never yours to measure: how a system
+allocates, decides, or caches. `explain_compose.py` draws those from an
+authored spec in `demokit/explainers/`, and the discipline transfers exactly:
+
+- the spec's `source` line prints on every panel, so a reader always knows
+  the numbers are the paper's and not yours;
+- nothing on the page is measured — if a claim needs a measurement, it needed
+  a recording instead;
+- a concrete scenario is labelled an illustration, and every count the panel
+  prints is derived from the spec rather than typed into a caption.
+
+Draw the mechanism its own authors put at the centre of the design, and draw
+it as *their* idea. A page that quietly turns into a comparison with your own
+work is a different genre, and it is the one that makes people defensive
+instead of interested.
 
 
 ## Work from the assets, not from a GPU

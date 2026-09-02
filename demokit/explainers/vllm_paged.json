@@ -1,0 +1,77 @@
+{
+  "framework": "vLLM",
+  "paper": "PagedAttention \u2014 Kwon et al., SOSP 2023",
+  "source": "Mechanism and figures as published in the paper. Nothing on this page was measured here.",
+  "accent": "ours",
+  "panels": [
+    {
+      "style": "paged",
+      "title": "The KV cache, before it was paged",
+      "sub": "a request reserves room for the longest answer it might give, and then does not give it",
+      "note": "in the paper's measurements, 20.4%\u201338.2% of KV cache memory held actual token state",
+      "reserve": 16,
+      "block": 4,
+      "requests": [
+        {
+          "label": "request 1",
+          "used": 6
+        },
+        {
+          "label": "request 2",
+          "used": 3
+        },
+        {
+          "label": "request 3",
+          "used": 9
+        }
+      ],
+      "top": "reserved ahead of time, contiguous",
+      "bottom": "paged: fixed-size blocks, allocated when a token needs one",
+      "tail": "waste is confined to the last block of each sequence",
+      "scale": "slots, illustrative \u2014 vLLM's default block is 16 tokens"
+    },
+    {
+      "style": "blocktable",
+      "title": "Contiguous in the table, scattered in memory",
+      "sub": "the attention kernel is taught to gather its blocks, so they no longer have to be neighbours",
+      "note": "the block table is the whole trick: virtual memory, for the KV cache",
+      "logical": [
+        "tokens 0\u201315",
+        "tokens 16\u201331",
+        "tokens 32\u201347",
+        "tokens 48\u201355"
+      ],
+      "grid": [
+        8,
+        4
+      ],
+      "physical": [
+        11,
+        3,
+        26,
+        17
+      ],
+      "free_note": "every other block stays free for someone else"
+    },
+    {
+      "style": "share",
+      "title": "One prompt, four answers, one copy of the prompt",
+      "sub": "blocks are reference-counted, so branches of the same request read the same physical blocks",
+      "note": "as published: 6.1%\u20139.8% less KV memory on parallel sampling, 37.6%\u201355.2% on beam search",
+      "prompt": [
+        "",
+        "",
+        ""
+      ],
+      "branches": [
+        "sample 1",
+        "sample 2",
+        "sample 3",
+        "sample 4"
+      ],
+      "cow": "a branch that writes gets its own copy of that one block \u2014 copy on write",
+      "tail": "and the paper's headline: 2\u20134x the throughput at the same latency",
+      "prompt_label": "one physical copy of the prompt's blocks"
+    }
+  ]
+}

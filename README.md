@@ -22,7 +22,9 @@ demokit/
   compose/sim_compose.py    robot panes
   compose/trips_compose.py  the one-idea film: the same work, cut into trips
   compose/styles_compose.py one recording, four visual languages
+  compose/explain_compose.py a published mechanism, drawn from a spec
   compose/palettes.py       six colour systems, addressed by role
+  explainers/               authored explainer specs, one per framework
   diagrams/                 authored architecture layouts, wired to entry points
   stubs.py                  satisfy an import a recording path never calls
 .ai/skills/               record-a-demo, and explain-a-speedup
@@ -122,6 +124,54 @@ Six palettes — `midnight`, `paper`, `phosphor`, `blueprint`, `ember`, `mono`
 rule, the reading text, `stock` / `compiled` / `ours` / `native`. So one flag
 changes the whole film and no drawing code moves, and a light palette that
 needs darker arm colours is one place to fix rather than thirty.
+
+
+## Explaining a mechanism, from a paper
+
+Not every explanation needs a recording. When the thing worth showing is an
+idea someone already published — how a system decides, allocates, or caches —
+the source is the paper, and the drawing is the work.
+
+```bash
+demokit explain vllm_paged   --menu menu.png                 # every panel
+demokit explain sglang_radix --panel 0 --palette blueprint --out radix.webm
+demokit explain vllm_paged   --panel 0 --sheet paged.png     # six palettes
+```
+
+![vLLM explainer panels](docs/explain_vllm.png)
+
+![SGLang explainer panels](docs/explain_sglang.png)
+
+Two specs ship, drawn from the papers their own authors wrote:
+`vllm_paged` (PagedAttention, SOSP 2023) and `sglang_radix` (RadixAttention,
+NeurIPS 2024). Six painters, and each is a template for a shape that recurs
+well beyond the framework it was drawn for:
+
+| painter | the shape |
+|---|---|
+| `paged` | a resource reserved for a worst case, versus handed out in fixed pieces |
+| `blocktable` | an indirection table: contiguous to the reader, scattered underneath |
+| `share` | one copy read by many, and what happens when one of them writes |
+| `radix` | work kept in a tree, so a shared prefix is done once |
+| `schedule` | the same queue in two orders, and what the cache makes of each |
+| `fsm` | steps that had to be taken, versus steps already decided |
+
+Three rules keep an explainer honest, and they are the recording rules pointed
+at a different source:
+
+- **Every number is the paper's, and the page says so.** The spec carries a
+  `source` line; it is printed on every panel and there is no way to draw one
+  without it.
+- **Nothing here is measured.** A claim that would need a measurement is a
+  claim that should have been a recording.
+- **An illustration says it is one.** Where a picture needs a concrete
+  scenario, the panel labels it, so it is never mistaken for data. And every
+  count a panel prints — slots held, decode steps, prefix computations — is
+  derived from the spec, so a changed scenario cannot leave a stale number
+  typed into a caption.
+
+A framework is a spec, not a patch. Copy one of the two, keep the painters,
+and the menu redraws.
 
 
 ## Lighting an architecture diagram

@@ -175,6 +175,16 @@ def main(argv=None) -> int:
                    help="also append a pointer to this AGENTS.md, for agents "
                         "that read that rather than a skills directory")
 
+    e = sub.add_parser("explain", help="draw a published mechanism: the "
+                                      "explainer panels, or the whole menu")
+    e.add_argument("spec", help="an explainer name, or a path to one")
+    e.add_argument("--panel", type=int, default=0)
+    e.add_argument("--palette", default="midnight")
+    e.add_argument("--fps", type=int, default=30)
+    e.add_argument("--frame"); e.add_argument("--out")
+    e.add_argument("--menu", help="every panel of this spec, one PNG")
+    e.add_argument("--sheet", help="one panel in every colour system")
+
     L = sub.add_parser("looks", help="draw one stream recording in another "
                                      "visual language, or every one at once")
     L.add_argument("runs", help="a directory of arms")
@@ -201,6 +211,16 @@ def main(argv=None) -> int:
 
     if a.cmd == "skills":
         return _skills(a)
+
+    if a.cmd == "explain":
+        from demokit.compose import explain_compose as E
+        argv2 = [a.spec, "--panel", str(a.panel), "--palette", a.palette,
+                 "--fps", str(a.fps)]
+        for flag in ("frame", "out", "menu", "sheet"):
+            if getattr(a, flag, None):
+                argv2 += [f"--{flag}", getattr(a, flag)]
+        E.main(argv2)
+        return 0
 
     if a.cmd == "looks":
         from demokit.compose import styles_compose as S

@@ -1,0 +1,50 @@
+{
+  "framework": "SGLang",
+  "paper": "RadixAttention — Zheng et al., NeurIPS 2024",
+  "source": "Mechanism and figures as published in the paper. Nothing on this page was measured here.",
+  "accent": "ours",
+  "panels": [
+    {
+      "style": "radix",
+      "title": "What has already been computed, kept as a tree",
+      "sub": "the KV cache is indexed by a radix tree over token sequences, so a shared prefix is computed once and stays computed",
+      "note": "an arriving request walks the tree as far as it matches, and only pays for the rest",
+      "tree": {
+        "label": "system prompt",
+        "tokens": 312,
+        "kids": [
+          {"label": "few-shot set A", "tokens": 480,
+           "kids": [{"label": "request 1", "tokens": 46},
+                    {"label": "request 2", "tokens": 51}]},
+          {"label": "few-shot set B", "tokens": 390,
+           "kids": [{"label": "request 3", "tokens": 44},
+                    {"label": "arriving now", "tokens": 39, "new": true}]}
+        ]
+      },
+      "tail": "cached, in the tree",
+      "new_tail": "actually computed",
+      "scale": "an illustrative program, not a measurement"
+    },
+    {
+      "style": "schedule",
+      "title": "The order requests run in is a cache decision",
+      "sub": "the scheduler runs the request that shares the longest prefix with what is already in the tree",
+      "note": "cache-aware scheduling turns a prefix that would be recomputed per request into one that is computed once",
+      "groups": ["A", "B", "A", "C", "B", "A", "C", "B"],
+      "top": "in arrival order",
+      "bottom": "longest shared prefix first",
+      "tail": "same requests, same answers, a different order"
+    },
+    {
+      "style": "fsm",
+      "title": "When the grammar already knows the next tokens",
+      "sub": "constrained decoding against a compressed finite state machine: a span the schema forces can be filled in one step",
+      "note": "the model is only asked for the tokens the constraint has not already decided",
+      "text": ["{", "\"", "name", "\"", ":", " \"", "Alice", "\"", "}"],
+      "forced": [1, 1, 1, 1, 1, 1, 0, 1, 1],
+      "top": "one decode step per token",
+      "bottom": "compressed FSM: the forced spans are jumped",
+      "tail": "and the paper's headline: up to 6.4x on structured programs"
+    }
+  ]
+}
