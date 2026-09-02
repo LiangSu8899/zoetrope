@@ -490,6 +490,11 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--concurrency", default="1,4,8,16")
     ap.add_argument("--tokens", type=int, default=128)
+    ap.add_argument("--prompt", default=None,
+                    help="one prompt for every request, instead of the "
+                         "built-in set. A film shows the answer for its "
+                         "whole length, so it needs one that sustains "
+                         "--tokens without the model padding.")
     ap.add_argument("--repeats", type=int, default=3,
                     help="timed passes; the last one is the one stamped")
     ap.add_argument("--seats", default="qkv_proj,o_proj,gate_up_proj,"
@@ -558,6 +563,8 @@ def main():
     tok = llm.get_tokenizer()
     if not args.raw:
         global PROMPTS
+        if args.prompt:
+            PROMPTS = [args.prompt]
         PROMPTS = [tok.apply_chat_template(
             [{"role": "user", "content": p}], tokenize=False,
             add_generation_prompt=True, enable_thinking=False)
@@ -582,14 +589,18 @@ def main():
 
     for n in levels:
         race(engine, SamplingParams, n, 8, tok)            # warm
-        best = None
+        # the median repeat, not the fastest: min-of-N is a lower bound and
+        # belongs in a footnote, never on the face of a film
+        runs = []
         for _ in range(args.repeats):
             ev, ids, wall, pids = race(engine, SamplingParams, n,
                                        args.tokens, tok)
-            m = summarise(ev, ids, wall, n)
-            if best is None or m["wall_s"] < best[0]["wall_s"]:
-                best = (m, ev, ids, pids)
-        m, ev, ids, pids = best
+            runs.append((summarise(ev, ids, wall, n), ev, ids, pids))
+        runs.sort(key=lambda r: r[0]["wall_s"])
+        m, ev, ids, pids = runs[len(runs) // 2]
+        m["wall_s_min"] = round(runs[0][0]["wall_s"], 4)
+        m["wall_s_max"] = round(runs[-1][0]["wall_s"], 4)
+        m["repeats"] = len(runs)
         # A one-chapter film uses the protocol's direct arm layout.
         # Keep the cN level for the existing multi-concurrency films.
         d = (out / args.arm if len(levels) == 1

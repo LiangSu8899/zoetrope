@@ -122,6 +122,10 @@ def main():
     ap.add_argument("--arm", choices=("base", "attach"), required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--tokens", type=int, default=160)
+    ap.add_argument("--prompt", default=None,
+                    help="replaces the built-in prompt. A film shows the "
+                         "answer for its whole length, so it needs one that "
+                         "sustains --tokens without the model padding.")
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--seats", default="qkv_proj,o_proj,gate_up_proj,"
                                        "down_proj")
@@ -145,6 +149,9 @@ def main():
                            mem_fraction_static=args.mem_fraction,
                            disable_radix_cache=True,
                            log_level="error")
+    global PROMPT
+    if args.prompt:
+        PROMPT = args.prompt
     prompt = PROMPT
     if not args.raw:
         from transformers import AutoTokenizer
@@ -156,18 +163,19 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
 
     stream_once(engine, prompt, 8)                          # warm
-    best = None
-    for _ in range(args.repeats):
-        ev, wall, chunk = stream_once(engine, prompt, args.tokens)
-        if best is None or wall < best[1]:
-            best = (ev, wall, chunk)
-    ev, wall, chunk = best
+    # the median repeat, not the fastest: min-of-N is a lower bound and
+    # belongs in a footnote, never on the face of a film
+    runs = sorted((stream_once(engine, prompt, args.tokens)
+                   for _ in range(args.repeats)), key=lambda r: r[1])
+    ev, wall, chunk = runs[len(runs) // 2]
     ttft = ev[0]["t"] * 1e3
     rate = (len(ev) - 1) / (ev[-1]["t"] - ev[0]["t"])
     meta_info = chunk["meta_info"]
 
     d = out / args.arm
     d.mkdir(parents=True, exist_ok=True)
+    spread = {"repeats": len(runs), "wall_s_min": round(runs[0][1], 4),
+              "wall_s_max": round(runs[-1][1], 4)}
     meta = {
         "kind": "stream", "color": "stock" if args.arm == "base"
         else "accent",
@@ -182,6 +190,7 @@ def main():
         "done_s": round(ev[-1]["t"], 4), "wall_s": round(wall, 4),
         "n_tokens": len(ev),
         "completion_tokens": meta_info.get("completion_tokens"),
+        **spread,
     }
     if report_path and report_path.exists():
         meta.update(json.loads(report_path.read_text()))
