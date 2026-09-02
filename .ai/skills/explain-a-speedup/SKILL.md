@@ -130,12 +130,18 @@ authored spec in `demokit/explainers/`, and the discipline transfers exactly:
 - a concrete scenario is labelled an illustration, and every count the panel
   prints is derived from the spec rather than typed into a caption.
 
-Then **say what it came to**. A mechanism page is only half of it: people
-came for the result, and a film that explains without landing the outcome
-feels like a preamble. The `result` painter draws meters that fill from the
-old value to the new, and one to three numbers that land under a highlighter
-and settle — each with its own citation, since on a results page the citation
-is the load-bearing part.
+Then **say what it came to, and say it where the mechanism is**. A film that
+explains without landing the outcome feels like a preamble — but an outcome
+on its own page is worse, because the reader has to carry the diagram in
+their head to make sense of it. A big number is a token to read; a bar is a
+length to see. So put a small chart in the mechanism panel's own column, and
+give the results page bars with a baseline at 1x rather than three lonely
+numbers.
+
+Charts beside a diagram are **derived from that diagram** (`derive` in the
+spec) — the tokens in the drawn tree, the queue in the drawn cards. A number
+typed in beside a picture will eventually contradict it; one computed from it
+cannot.
 
 The discipline there is the same one as everywhere: **report the number that
 did not move.** FlashRT's own explainer puts 17.8% against 20.0% utilisation

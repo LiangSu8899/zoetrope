@@ -29,7 +29,18 @@
       "top": "reserved ahead of time, contiguous",
       "bottom": "paged: fixed-size blocks, allocated when a token needs one",
       "tail": "waste is confined to the last block of each sequence",
-      "scale": "slots, illustrative \u2014 vLLM's default block is 16 tokens"
+      "scale": "slots, illustrative \u2014 vLLM's default block is 16 tokens",
+      "chart": {
+        "side": true,
+        "derive": "paged_held",
+        "unit": "%",
+        "labels": [
+          "reserved ahead of time",
+          "paged"
+        ],
+        "axis": "share of the slots above that hold a token",
+        "ratio_word": "more"
+      }
     },
     {
       "style": "blocktable",
@@ -90,18 +101,25 @@
           "note": "vLLM confines waste to the last block of a sequence - under 4%, as published"
         }
       ],
-      "numbers": [
-        {
-          "value": "2-4x",
-          "caption": "throughput at the same latency, against FasterTransformer and Orca",
-          "cite": "PagedAttention, SOSP 2023"
-        },
-        {
-          "value": "under 4%",
-          "caption": "of KV cache memory wasted, against 60-80% in the systems it was compared to",
-          "cite": "PagedAttention, SOSP 2023"
-        }
-      ]
+      "chart": {
+        "axis": "throughput at the same latency, relative to the systems the paper compares against; the bar spans the published range",
+        "baseline": 1,
+        "bars": [
+          {
+            "label": "FasterTransformer, Orca",
+            "value": 1,
+            "kind": "base",
+            "text": "1x"
+          },
+          {
+            "label": "vLLM",
+            "value": 4,
+            "low": 2,
+            "kind": "ours",
+            "text": "2-4x"
+          }
+        ]
+      }
     }
   ]
 }

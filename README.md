@@ -170,7 +170,8 @@ recurs well beyond the framework it was drawn for:
 | `tiling` | an intermediate too big to keep, streamed instead of stored |
 | `memory` | the ladder an argument stands on: what is near, and what is far |
 | `pieces` | the same length of work, cut into a different number of pieces |
-| `result` | what it came to: meters that fill, and numbers that land |
+| `result` | what it came to: meters that fill, and the chart under them |
+| `chart` | bars, ranges and a baseline line — the payoff, as a chart |
 
 Three rules keep an explainer honest, and they are the recording rules pointed
 at a different source:
@@ -186,14 +187,29 @@ at a different source:
   derived from the spec, so a changed scenario cannot leave a stale number
   typed into a caption.
 
-**Say what it came to.** A mechanism panel earns attention; a result panel is
-what people came for. `result` draws two things and no more — meters that fill
-from the old value to the new one, and one to three numbers that land under a
-highlighter and then settle. Every number carries its own citation, because on
-a results page the citation is the load-bearing part. Where the honest answer
-is *that a number barely moved* — FlashRT's utilisation is 17.8% against
-20.0%, and the win is elsewhere — the meter says so, because a page that hid
-that would be selling something.
+**Say what it came to, on the page that says what was done.** A number on its
+own page is a number nobody connects to anything; "6.4x" in 60-point type is a
+token to read, not a length to see. So every mechanism panel can carry a bar
+chart in its right-hand column, and the diagram shrinks to make room:
+
+```json
+"chart": {"side": true, "derive": "radix_tokens",
+          "labels": ["every request pays for its own prefix",
+                     "the tree keeps it"],
+          "axis": "tokens computed, in the illustration beside"}
+```
+
+`derive` is the important word. The chart beside a diagram is **computed from
+that diagram** — the tokens in the drawn tree, the queue in the drawn cards,
+the slots in the drawn strip — so the picture and the number cannot drift
+apart, and editing the scenario moves both. Charts on a results page carry the
+paper's figures instead, each with a baseline bar at 1x so a multiple is a
+length rather than a claim; a published *range* is drawn to its upper end with
+the lower end marked, because a range is not a point.
+
+Where the honest answer is *that a number barely moved* — FlashRT's
+utilisation is 17.8% against 20.0%, and the win is elsewhere — the meter says
+so, because a page that hid that would be selling something.
 
 A framework is a spec, not a patch. Copy one of the four, keep the painters,
 and the menu redraws.

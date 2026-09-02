@@ -47,7 +47,18 @@
       },
       "tail": "cached, in the tree",
       "new_tail": "actually computed",
-      "scale": "an illustrative program, not a measurement"
+      "scale": "an illustrative program, not a measurement",
+      "chart": {
+        "side": true,
+        "derive": "radix_tokens",
+        "unit": " tok",
+        "labels": [
+          "every request pays for its own prefix",
+          "the tree keeps it"
+        ],
+        "axis": "tokens computed, in the illustration beside",
+        "ratio_word": "fewer"
+      }
     },
     {
       "style": "schedule",
@@ -66,7 +77,17 @@
       ],
       "top": "in arrival order",
       "bottom": "longest shared prefix first",
-      "tail": "same requests, same answers, a different order"
+      "tail": "same requests, same answers, a different order",
+      "chart": {
+        "side": true,
+        "derive": "prefix_computes",
+        "labels": [
+          "arrival order",
+          "prefix-first order"
+        ],
+        "axis": "times the prefix is computed, for the queue beside",
+        "ratio_word": "fewer"
+      }
     },
     {
       "style": "fsm",
@@ -97,25 +118,46 @@
       ],
       "top": "one decode step per token",
       "bottom": "compressed FSM: the forced spans are jumped",
-      "tail": "and the paper's headline: up to 6.4x on structured programs"
+      "tail": "and the paper's headline: up to 6.4x on structured programs",
+      "chart": {
+        "side": true,
+        "derive": "fsm_steps",
+        "labels": [
+          "one step per token",
+          "compressed FSM"
+        ],
+        "axis": "decode steps for the span beside",
+        "ratio_word": "fewer"
+      }
     },
     {
       "style": "result",
       "title": "What the tree came to",
       "sub": "a program that calls a model many times stops paying for the part of the prompt it keeps repeating",
       "note": "the gain is largest exactly where programs are structured: agents, chains of thought, JSON, batched few-shot",
-      "numbers": [
-        {
-          "value": "up to 6.4x",
-          "caption": "throughput on structured language model programs, against state-of-the-art inference systems",
-          "cite": "SGLang, NeurIPS 2024"
-        }
-      ],
       "bullets": [
         "RadixAttention: the shared prefix is computed once and kept in the tree",
         "cache-aware scheduling: the queue is ordered so that it can be reused",
         "compressed FSM: the tokens a grammar has already decided are not decoded"
-      ]
+      ],
+      "chart": {
+        "axis": "throughput on structured language model programs, relative to the systems the paper compares against",
+        "baseline": 1,
+        "bars": [
+          {
+            "label": "state-of-the-art inference systems",
+            "value": 1,
+            "kind": "base",
+            "text": "1x"
+          },
+          {
+            "label": "SGLang",
+            "value": 6.4,
+            "kind": "ours",
+            "text": "up to 6.4x"
+          }
+        ]
+      }
     }
   ]
 }

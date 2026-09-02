@@ -69,23 +69,36 @@
           "note": "barely moved: the win is in what was never asked for"
         }
       ],
-      "numbers": [
-        {
-          "value": "22.3 ms",
-          "caption": "one decision, median of 50",
-          "cite": "measured, RTX 5090"
-        },
-        {
-          "value": "6.0x",
-          "caption": "over PyTorch as shipped",
-          "cite": "eager bf16, 134.3 ms"
-        },
-        {
-          "value": "2.8x",
-          "caption": "over the same host compiled",
-          "cite": "torch.compile, 62.2 ms"
-        }
-      ]
+      "chart": {
+        "axis": "one decision, median of 50, lower is better",
+        "unit": " ms",
+        "bars": [
+          {
+            "label": "PyTorch as shipped, eager bf16",
+            "value": 134.3,
+            "kind": "base",
+            "text": "134.3 ms"
+          },
+          {
+            "label": "the same host, torch.compile",
+            "value": 62.2,
+            "kind": "base",
+            "text": "62.2 ms"
+          },
+          {
+            "label": "FlashRT native, FP16",
+            "value": 27.7,
+            "kind": "mid",
+            "text": "27.7 ms"
+          },
+          {
+            "label": "FlashRT native, FP8",
+            "value": 22.3,
+            "kind": "ours",
+            "text": "22.3 ms"
+          }
+        ]
+      }
     }
   ]
 }

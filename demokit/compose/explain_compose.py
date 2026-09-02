@@ -120,6 +120,25 @@ def fsm_steps(p):
     return len(p["text"]), sum(1 for f in p["forced"] if not f)
 
 
+def radix_tokens(tree):
+    """(tokens computed if every request pays for its own prefix, tokens
+    computed if the tree is kept) — read off the illustration itself."""
+    total_nodes, per_request = 0, []
+
+    def walk(node, carried):
+        nonlocal total_nodes
+        total_nodes += node["tokens"]
+        run = carried + node["tokens"]
+        kids = node.get("kids", [])
+        if not kids:
+            per_request.append(run)
+        for k in kids:
+            walk(k, run)
+
+    walk(tree, 0)
+    return sum(per_request), total_nodes
+
+
 def prefix_computes(order):
     """How often a prefix has to be computed if the queue runs in this order."""
     seen, n = None, 0
@@ -129,11 +148,110 @@ def prefix_computes(order):
     return n
 
 
+DERIVE = {
+    "radix_tokens": lambda p: radix_tokens(p["tree"]),
+    "prefix_computes": lambda p: (prefix_computes(p["groups"]),
+                                  prefix_computes(sorted(p["groups"]))),
+    "fsm_steps": lambda p: fsm_steps(p),
+    "paged_held": lambda p: tuple(
+        round(100 * paged_counts(p)[0] / v, 1) for v in paged_counts(p)[1:]),
+}
+
+
+def chart_bars(p):
+    """The bars a chart draws: given outright, or derived from the panel it
+    sits beside, so a diagram and the number under it cannot drift apart."""
+    c = p["chart"]
+    if "bars" in c:
+        return c["bars"]
+    values = DERIVE[c["derive"]](p)
+    kinds = c.get("kinds", ["base", "ours"])
+    return [{"label": lab, "value": v, "kind": k}
+            for lab, v, k in zip(c["labels"], values, kinds)]
+
+
+def chart(im, d, pal, p, t, ink, box):
+    """A bar chart: the payoff, beside the mechanism rather than a page away.
+
+    Tall boxes get vertical bars (a side column), wide boxes horizontal ones
+    (a results page). A bar may carry a range, which is drawn to its upper
+    end with the lower end marked, because a published range is not a point.
+    """
+    c, bars = p["chart"], chart_bars(p)
+    x0, y0, x1, y1 = box
+    unit = c.get("unit", "")
+    hi = max(b.get("high", b["value"]) for b in bars)
+    top = c.get("cap", hi * 1.18)
+    fmt = (lambda v: f"{v:,.0f}") if hi >= 100 else (lambda v: f"{v:g}")
+
+    def ink_for(b):
+        k = b.get("kind", "ours")
+        return (ink if k == "ours" else
+                pal.dim(ink, 0.68) if k == "mid" else pal.dim(ink, 0.42))
+
+    if (y1 - y0) > (x1 - x0):                       # a column beside a diagram
+        _text(d, (x0, y0), c["axis"], font(15), pal.muted)
+        base, headroom = y1 - 46, y0 + 58
+        w = min(84, (x1 - x0 - 30 * (len(bars) - 1)) / len(bars))
+        for i, b in enumerate(bars):
+            x = x0 + i * (w + 30)
+            v = b["value"] * min(t, 1.0)
+            h = (base - headroom) * v / top
+            d.rectangle((x, base - h, x + w, base), fill=ink_for(b))
+            if t >= 1:
+                _text(d, (0, base - h - 30), b.get("text") or
+                      f"{fmt(b['value'])}{unit}", font(21, True), ink_for(b),
+                      center=x + w / 2)
+                yy = base + 10
+                for line in wrap(d, b["label"], font(14), w + 26)[:3]:
+                    _text(d, (0, yy), line, font(14), pal.muted,
+                          center=x + w / 2)
+                    yy += 17
+        if t >= 1 and len(bars) == 2 and c.get("ratio", True):
+            a, bb = bars[0]["value"], bars[1]["value"]
+            r = max(a, bb) / max(min(a, bb), 1e-9)
+            _text(d, (0, y0 + 26), f"{r:.1f}x {c.get('ratio_word', 'fewer')}",
+                  font(22, True), ink, center=(x0 + x1) / 2)
+        return
+
+    rows = min((y1 - y0 - 26) / len(bars), 78)      # a results page
+    y1 = y0 + rows * len(bars) + 26
+    _text(d, (x0, y1 - 16), c["axis"], font(15), pal.muted)
+    lf = font(17)
+    lw = min(max(d.textlength(b["label"], font=lf) for b in bars) + 24,
+             (x1 - x0) * 0.42)
+    vf = font(int(min(28, rows * 0.62)), True)
+    bx0, bx1 = x0 + lw, x1 - 170
+    if c.get("baseline"):
+        rx = bx0 + (bx1 - bx0) * c["baseline"] / top
+        d.line((rx, y0, rx, y0 + len(bars) * rows), fill=pal.line)
+    for i, b in enumerate(bars):
+        y = y0 + i * rows
+        lines = wrap(d, b["label"], lf, lw - 24)[:2]
+        ly = y + rows / 2 - 10 * len(lines)
+        for line in lines:
+            _text(d, (x0, ly), line, lf, pal.ink)
+            ly += 21
+        w = (bx1 - bx0) * (b["value"] * min(t, 1.0)) / top
+        bh = min(rows - 18, 52)
+        d.rounded_rectangle((bx0, y + (rows - bh) / 2, bx0 + max(w, 2),
+                             y + (rows + bh) / 2), 5, fill=ink_for(b))
+        if b.get("low") is not None and t >= 1:
+            lx = bx0 + (bx1 - bx0) * b["low"] / top
+            d.line((lx, y + (rows - bh) / 2 - 4, lx, y + (rows + bh) / 2 + 4),
+                   fill=pal.bg, width=3)
+        if t >= 1:
+            _text(d, (bx1 + 20, y + rows / 2 - vf.size * 0.7),
+                  b.get("text") or f"{fmt(b['value'])}{unit}", vf, ink_for(b))
+
+
 # ---------------------------------------------------------------- painters
 
 def paged(im, d, pal, p, t, ink):
-    slot, gap, hh = 20, 2, 34
+    right = p.get("_right", W - PAD)
+    gap, hh = 2, 34
     reserve, block = p["reserve"], p["block"]
+    slot = (right - PAD) / (len(p["requests"]) * reserve) - gap
     reqs = p["requests"]
     used_total, reserved_total, paged_total = paged_counts(p)
 
@@ -175,7 +293,7 @@ def paged(im, d, pal, p, t, ink):
             x += block * (slot + gap) + 12
             seen += 1
     if tb >= 1:
-        end = PAD + (len(reqs) * reserve) * (slot + gap)
+        end = right
         d.line((x + 6, y + 31, end, y + 31), fill=pal.line)
         _text(d, (x + 18, y + 40), "free for other requests", font(15),
               pal.muted)
@@ -287,14 +405,16 @@ def radix(im, d, pal, p, t, ink):
             leaves.append(node)
 
     walk(root, 0)
-    nw, nh = 208, 54
+    avail = p.get("_right", W - PAD) - PAD
+    gapx = 88 if avail > 900 else 52
+    nw, nh = min(208, (avail - (len(levels) - 1) * gapx) / len(levels)), 54
     order = [n for lvl in levels for n in lvl]
     shown = reveal(len(order), t)
     for depth, lvl in enumerate(levels):
         for node in lvl:
             if order.index(node) >= shown:
                 continue
-            x = PAD + depth * (nw + 88)
+            x = PAD + depth * (nw + gapx)
             y = node["y"]
             new = node.get("new")
             d.rounded_rectangle((x, y, x + nw, y + nh), 8,
@@ -307,7 +427,7 @@ def radix(im, d, pal, p, t, ink):
             for k in node.get("kids", []):
                 if order.index(k) < shown:
                     _arrow(d, x + nw + 6, y + nh / 2,
-                           x + nw + 82, k["y"] + nh / 2, pal.line)
+                           x + nw + gapx - 6, k["y"] + nh / 2, pal.line)
 
     y = BODY_TOP + 340
     _chip(d, (PAD, y, PAD + 26, y + 18), pal, pal.dim(ink, 0.55))
@@ -324,7 +444,8 @@ def schedule(im, d, pal, p, t, ink):
     keys = sorted(set(groups))
     inks = {k: pal.role(r) for k, r in
             zip(keys, ("ours", "compiled", "native", "stock"))}
-    cw, cg, chh = 106, 14, 58
+    cg, chh = 14, 58
+    cw = (p.get("_right", W - PAD) - PAD - (len(groups) - 1) * cg) / len(groups)
 
     def row(order, y, head, tt):
         _text(d, (PAD, y - 52), head, font(18, True), pal.ink)
@@ -364,7 +485,7 @@ def schedule(im, d, pal, p, t, ink):
 def fsm(im, d, pal, p, t, ink):
     text, forced = p["text"], p["forced"]
     n, decode_steps = fsm_steps(p)
-    tw = (W - 2 * PAD) / n
+    tw = (p.get("_right", W - PAD) - PAD) / n
     ta, tb = stage(t, 0.0, 0.5), stage(t, 0.5, 1.0)
     y = BODY_TOP + 30
     _text(d, (PAD, y - 30), p["top"], font(18, True), pal.ink)
@@ -388,8 +509,11 @@ def fsm(im, d, pal, p, t, ink):
         x0, x1 = PAD + i * tw + 3, PAD + j * tw - 3
         if forced[i]:
             d.rounded_rectangle((x0, y, x1, y + 62), 7, fill=pal.dim(ink, .4))
-            _text(d, (0, y + 12), "forced by the schema", font(16), pal.ink,
-                  center=(x0 + x1) / 2)
+            # a short span cannot hold the long label; it keeps the short one
+            lab, lf = "forced by the schema", font(16)
+            if d.textlength(lab, font=lf) > x1 - x0 - 16:
+                lab, lf = "forced", font(15)
+            _text(d, (0, y + 12), lab, lf, pal.ink, center=(x0 + x1) / 2)
             _text(d, (0, y + 36), "jumped", font(14), pal.muted,
                   center=(x0 + x1) / 2)
         else:
@@ -407,49 +531,83 @@ def fsm(im, d, pal, p, t, ink):
 
 
 def tiling(im, d, pal, p, t, ink):
-    """The N x N matrix that is never written down."""
-    n = p.get("cells", 8)
-    side = 336
-    cell = side / n
-    ta, tb = stage(t, 0.0, 0.4), stage(t, 0.4, 1.0)
+    """The loops the paper draws: K and V outside, Q inside, SRAM in the
+    middle, and the N x N matrix that is formed a tile at a time and thrown
+    away before the next one."""
+    n, dm, cell = p.get("blocks", 8), p.get("dblocks", 3), 32
+    sy = 292
+    qx = PAD
+    sx = qx + dm * cell + 26
+    vx = sx + n * cell + 24
+    ox = vx + dm * cell + 26
+    bx, bx1 = ox + dm * cell + 44, W - PAD - 84
+    ky = sy - dm * cell - 26
 
-    lx, ly = PAD + 40, BODY_TOP + 20
-    _text(d, (lx, ly - 30), p["left"], font(18, True), pal.ink)
-    for i in range(n * n):
-        if i >= reveal(n * n, ta):
-            break
-        r, c = divmod(i, n)
-        x, y = lx + c * cell, ly + r * cell
-        d.rectangle((x, y, x + cell - 2, y + cell - 2), fill=pal.dim(ink, .45))
-    if ta >= 1:
-        _text(d, (lx, ly + side + 12), p["left_note"], font(15), pal.muted)
+    step = min(int(t * n * n), n * n - 1)
+    j, i = divmod(step, n)                     # outer over K/V, inner over Q
 
-    rx = W - PAD - side - 210
-    _text(d, (rx, ly - 30), p["right"], font(18, True), pal.ink)
-    live = min(int(tb * n), n - 1) if tb < 1 else n - 1
-    for i in range(n * n):
-        r, c = divmod(i, n)
-        x, y = rx + c * cell, ly + r * cell
-        if tb <= 0:
-            continue
-        if r < live:
-            d.rectangle((x, y, x + cell - 2, y + cell - 2), fill=pal.card,
-                        outline=pal.line)
-        elif r == live:
-            d.rectangle((x, y, x + cell - 2, y + cell - 2), fill=ink)
-    if tb > 0:
-        bx = rx + side + 34
-        d.rounded_rectangle((bx, ly + 40, bx + 150, ly + 190), 8,
-                            fill=pal.card, outline=ink, width=2)
-        _text(d, (0, ly + 62), p["sram"], font(17, True), ink,
-              center=bx + 75)
-        for j, line in enumerate(p["carried"]):
-            _text(d, (0, ly + 100 + j * 26), line, font(16), pal.ink,
-                  center=bx + 75)
-        _arrow(d, rx + side + 10, ly + live * cell + cell / 2,
-               bx - 6, ly + 115, pal.muted)
-    if tb >= 1:
-        _text(d, (rx, ly + side + 12), p["right_note"], font(15), pal.muted)
+    def block(x, y, w, h, fill, outline=None):
+        d.rectangle((x, y, x + w - 2, y + h - 2), fill=fill, outline=outline)
+
+    _text(d, (qx, sy - 26), p["q"], font(17, True), pal.ink)
+    for r in range(n):
+        for c in range(dm):
+            hot = r == i
+            block(qx + c * cell, sy + r * cell, cell, cell,
+                  ink if hot else pal.dim(ink, .3))
+    _text(d, (qx, sy + n * cell + 10), p["inner"], font(14), pal.muted)
+
+    _text(d, (sx, ky - 26), p["k"], font(17, True), pal.ink)
+    for r in range(dm):
+        for c in range(n):
+            hot = c == j
+            block(sx + c * cell, ky + r * cell, cell, cell,
+                  ink if hot else pal.dim(ink, .3))
+    oy = ky + 20
+    for line in p["outer"].split("\n"):
+        _text(d, (vx, oy), line, font(14), pal.muted)
+        oy += 18
+
+    _text(d, (vx, sy - 26), p["v"], font(17, True), pal.ink)
+    for r in range(n):
+        for c in range(dm):
+            hot = r == j
+            block(vx + c * cell, sy + r * cell, cell, cell,
+                  ink if hot else pal.dim(ink, .3))
+
+    for r in range(n):                          # S, formed a tile at a time
+        for c in range(n):
+            done = c < j or (c == j and r < i)
+            if c == j and r == i:
+                block(sx + c * cell, sy + r * cell, cell, cell, ink)
+            else:
+                block(sx + c * cell, sy + r * cell, cell, cell,
+                      pal.card if done else pal.bg, pal.line)
+    _text(d, (sx, sy + n * cell + 10), p["s"], font(15), pal.muted)
+
+    _text(d, (ox, sy - 26), p["o"], font(17, True), pal.ink)
+    for r in range(n):
+        for c in range(dm):
+            if r == i:
+                fill = ink                       # the block being added to
+            elif r < i or j:
+                fill = pal.dim(ink, .5)          # carried from earlier passes
+            else:
+                fill = pal.card
+            block(ox + c * cell, sy + r * cell, cell, cell, fill, pal.line)
+
+    boxh = 92 + len(p["carried"]) * 27 + 62
+    d.rounded_rectangle((bx, ky, bx1, ky + boxh), 10, fill=pal.card,
+                        outline=ink, width=2)
+    _text(d, (bx + 20, ky + 16), p["sram"], font(18, True), ink)
+    yy = ky + 52
+    for line in p["carried"]:
+        _text(d, (bx + 20, yy), line, font(16), pal.ink)
+        yy += 27
+    d.line((bx + 20, yy + 6, bx1 - 20, yy + 6), fill=pal.line)
+    for line in wrap(d, p["discard"], font(15), bx1 - bx - 40)[:3]:
+        _text(d, (bx + 20, yy + 18), line, font(15), ink)
+        yy += 20
 
 
 def memory(im, d, pal, p, t, ink):
@@ -537,7 +695,21 @@ def result(im, d, pal, p, t, ink):
                              W - PAD - (x1 + 24))[:room]:
                 _text(d, (x1 + 24, ny_), line, font(14), pal.muted)
                 ny_ += 18
-        y += 108
+        y += 92
+
+    if p.get("chart"):
+        top_y = y + 24
+        used = min(566 - top_y, 78 * len(chart_bars(p)) + 26)
+        chart(im, d, pal, p, tb, ink, (PAD, top_y, W - PAD, top_y + used))
+        by = top_y + used + 18
+        if tb >= 1:
+            for line in p.get("bullets", []):
+                if by + 30 > 570:
+                    break
+                _text(d, (PAD + 4, by), "-", font(18, True), ink)
+                _text(d, (PAD + 24, by), line, font(18), pal.ink)
+                by += 30
+        return
 
     nums = p.get("numbers", [])
     if not nums:
@@ -566,7 +738,11 @@ def result(im, d, pal, p, t, ink):
             by += 30
 
 
-STYLES = {"paged": paged, "blocktable": blocktable, "share": share,
+def chart_page(im, d, pal, p, t, ink):
+    chart(im, d, pal, p, t, ink, (PAD, BODY_TOP + 10, W - PAD, 560))
+
+
+STYLES = {"paged": paged, "chart": chart_page, "blocktable": blocktable, "share": share,
           "radix": radix, "schedule": schedule, "fsm": fsm,
           "tiling": tiling, "memory": memory, "pieces": pieces,
           "result": result}
@@ -593,7 +769,16 @@ def frame(spec, panel, pal, t=1.0):
           font(14), pal.muted)
     d.line((PAD, 136, W - PAD, 136), fill=pal.line)
 
-    STYLES[p["style"]](im, d, pal, p, t, ink)
+    if p.get("chart", {}).get("side"):
+        col = 330
+        p = {**p, "_right": W - PAD - col}
+        STYLES[p["style"]](im, d, pal, p, t, ink)
+        d.line((W - PAD - col + 40, BODY_TOP - 10, W - PAD - col + 40, 560),
+               fill=pal.line)
+        chart(im, d, pal, p, t, ink,
+              (W - PAD - col + 80, BODY_TOP + 10, W - PAD, 540))
+    else:
+        STYLES[p["style"]](im, d, pal, p, t, ink)
 
     d.line((PAD, 596, W - PAD, 596), fill=pal.line)
     yy = 612

@@ -8,19 +8,26 @@
     {
       "style": "tiling",
       "title": "The N x N matrix that never exists",
-      "sub": "softmax is computed as tiles stream through on-chip memory, so the attention matrix is never written out and never read back",
-      "note": "the softmax is rescaled as it goes, so a tile can be finished before the next one is read",
-      "cells": 8,
-      "left": "S = QK^T, materialised",
-      "left_note": "N x N, and every byte of it crosses the bus twice",
-      "right": "one tile at a time",
-      "right_note": "the same output, exactly - the matrix is never written",
-      "sram": "SRAM",
+      "sub": "K and V blocks on the outside, Q blocks on the inside, and a tile of the attention matrix that is formed on-chip and thrown away",
+      "note": "the softmax is rescaled as it goes, so a tile can be finished and discarded before the next one is read",
+      "blocks": 8,
+      "dblocks": 3,
+      "q": "Q",
+      "k": "K^T",
+      "v": "V",
+      "o": "O",
+      "outer": "outer loop:\nK, V blocks",
+      "inner": "inner loop",
+      "s": "S = Q K^T, N x N - formed a tile at a time, never written to HBM",
+      "sram": "on-chip, SRAM",
       "carried": [
-        "running max",
-        "running sum",
-        "output so far"
-      ]
+        "Q_i, K_j, V_j",
+        "S_ij = Q_i K_j^T",
+        "running max m_i",
+        "running sum l_i",
+        "O_i, rescaled and accumulated"
+      ],
+      "discard": "S_ij is discarded here - it is the only place the N x N matrix ever exists"
     },
     {
       "style": "memory",
@@ -67,23 +74,36 @@
           "note": "25-40% for FlashAttention, 50-73% for FlashAttention-2, both as published"
         }
       ],
-      "numbers": [
-        {
-          "value": "3x",
-          "caption": "GPT-2 training, end to end",
-          "cite": "FlashAttention, NeurIPS 2022"
-        },
-        {
-          "value": "15%",
-          "caption": "BERT-large, over the MLPerf 1.1 training speed record",
-          "cite": "FlashAttention, NeurIPS 2022"
-        },
-        {
-          "value": "2x",
-          "caption": "FlashAttention-2 over FlashAttention",
-          "cite": "FlashAttention-2, 2023"
-        }
-      ]
+      "chart": {
+        "axis": "end-to-end, relative to the baseline each was measured against",
+        "baseline": 1,
+        "bars": [
+          {
+            "label": "the baseline each was measured against",
+            "value": 1,
+            "kind": "base",
+            "text": "1x"
+          },
+          {
+            "label": "GPT-2 training (FlashAttention)",
+            "value": 3,
+            "kind": "ours",
+            "text": "3x"
+          },
+          {
+            "label": "BERT-large, over the MLPerf 1.1 record (FlashAttention)",
+            "value": 1.15,
+            "kind": "mid",
+            "text": "+15%"
+          },
+          {
+            "label": "FlashAttention-2 over FlashAttention",
+            "value": 2,
+            "kind": "ours",
+            "text": "2x"
+          }
+        ]
+      }
     }
   ]
 }
