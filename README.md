@@ -129,7 +129,11 @@ same tokens*, and speed is the second thing you notice:
 </p>
 
 An engine filmed from its own token stream — eight requests in flight, one
-wall clock. One arm, no comparison: this is what the engine did.
+wall clock. One arm, no comparison: this is what the engine did. The strip
+underneath plots tok/s rather than tokens delivered, because the cumulative
+curve is the integral of the rate and integration hides exactly what a reader
+is looking at: the sawtooth is a scheduler step landing eight tokens at once
+and then the window decaying until the next one.
 
 <p align="center">
   <img src="docs/gif/run_demo_paper.gif" width="100%" alt="the same recording in the paper palette">
@@ -144,7 +148,8 @@ wall clock. One arm, no comparison: this is what the engine did.
 </p>
 
 ```bash
-zoetrope live  examples/runs/stream --palette paper --chart curve --out a.webm
+zoetrope live  examples/runs/stream       --palette paper --chart curve --out a.webm
+zoetrope live  examples/runs/stream_batch --palette ember --chart rate  --out b.webm
 zoetrope looks examples/runs/stream --sheet looks.png
 ```
 

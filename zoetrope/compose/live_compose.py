@@ -73,18 +73,28 @@ class Arm:
 
     #: One token is 5-15 ms, so a per-token rate is unreadable noise.
     WINDOW = 0.6
+    #: and no rate at all until the window is at least this long: a batched
+    #: engine delivers a step's worth at one instant, and 8 tokens over a
+    #: millisecond of window is not a throughput, it is a division artefact
+    FLOOR = 0.1
 
     def rate(self, t):
+        """Tokens that arrived in the trailing window, over the window.
+
+        Not tokens over the span between the first and last of them: a
+        batched engine hands back eight at the same instant, and dividing by
+        the gap between them reports tens of thousands of tokens a second.
+        The denominator is time, always.
+        """
         if t >= self.done:
             if self.final_rate:
                 return float(self.final_rate)
             return (self.total - 1) / max(self.ts[-1] - self.ts[0], 1e-6)
-        n = self.n(t)
-        if n < 2:
-            return None
-        lo = min(bisect.bisect_left(self.ts, t - self.WINDOW), n - 2)
-        span = self.ts[n - 1] - self.ts[lo]
-        return (n - 1 - lo) / span if span > 1e-6 else None
+        w = min(self.WINDOW, t - self.ts[0])
+        if w < self.FLOOR:
+            return None            # the window is shorter than one step
+        lo = bisect.bisect_left(self.ts, t - w)
+        return (self.n(t) - lo) / w
 
     def text(self, s, t):
         return "".join(x for u, x in self.by_stream[s] if u <= t)
@@ -220,7 +230,54 @@ def _bars(d, arms, box, t, pal, race):
                fill=ink)
 
 
-CHARTS = {"curve": _curve, "bars": _bars, "none": None}
+def _rate(d, arms, box, t, pal, race):
+    """Tok/s against time — the thing the readout shows, drawn.
+
+    The cumulative curve is the integral of this, and integration hides
+    exactly what a reader is looking at: a rate wandering between 101 and
+    160 is a slope change no eye picks out of a straight-looking line. So
+    when the question is *how steady was it*, plot the rate itself, from
+    the same trailing window the pane's own number is computed over.
+    """
+    x0, y0, x1, y1 = box
+    # only samples taken over a *full* window: a partial window is a rate
+    # measured over less time than it claims, and one of those at the start
+    # sets a y-scale that flattens everything real underneath it
+    def full(a):
+        return [u for u in a.ts if u - a.ts[0] >= a.WINDOW]
+
+    tops = [max([a.rate(u) or 0 for u in full(a)] or [0]) for a in arms]
+    top = max(tops) * 1.12 or 1.0
+    d.line((x0, y1, x1, y1), fill=pal.line)
+    for k in (0.5, 1.0):
+        y = y1 - (y1 - y0) * k
+        d.line((x0, y, x1, y), fill=pal.grid)
+        lab = f"{top * k:.0f}"
+        d.text((x1 - d.textlength(lab, font=font(13)), y - 16), lab,
+               font=font(13), fill=pal.muted)
+    d.text((x0, y0 - 20),
+           "tok/s over a 0.6 s trailing window, from the first full window",
+           font=font(13), fill=pal.muted)
+
+    for a in arms:
+        ink = pal.role(a.key)
+        pts = []
+        for u in full(a):
+            if u > t:
+                break
+            r = a.rate(u)
+            if r:
+                pts.append((x0 + (x1 - x0) * u / race,
+                            y1 - (y1 - y0) * min(r, top) / top))
+        if len(pts) > 1:
+            d.line(pts, fill=ink, width=2, joint="curve")
+            hx, hy = pts[-1]
+            d.ellipse((hx - 5, hy - 5, hx + 5, hy + 5), fill=ink)
+    px = x0 + (x1 - x0) * min(t, race) / race
+    d.line((px, y0 - 6, px, y1 + 4), fill=pal.line)
+
+
+CHARTS = {"curve": _curve, "bars": _bars, "rate": _rate, "none": None}
 
 
 def frame(arms, t, pal, *, title, sub, chart="curve", race=1.0, stretch=None):
