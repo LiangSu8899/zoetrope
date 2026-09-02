@@ -9,7 +9,7 @@ there.
 Keeping it that narrow is what makes the films cheap to change: the drawing can
 be reworked and every film redrawn without running a model again.
 
-    from demokit import hook
+    from zoetrope import hook
 
     rec = hook.Recorder("stream", label="the host, as shipped", color="stock")
     with hook.on_tokens(rec, tok):

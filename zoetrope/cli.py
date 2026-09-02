@@ -1,11 +1,11 @@
-"""`demokit` — draw recorded runs, and check that a run is well formed.
+"""`zoetrope` — draw recorded runs, and check that a run is well formed.
 
 Recording happens inside whatever process runs the model, through
-`demokit.hook`. This CLI covers the two things that happen afterwards.
+`zoetrope.hook`. This CLI covers the two things that happen afterwards.
 
-    demokit check runs/myfilm/attach          # is this run directory valid?
-    demokit draw  runs/myfilm --out film.webm # one chapter, arms in order
-    demokit draw  --spec spec.json --out film.webm
+    zoetrope check runs/myfilm/attach          # is this run directory valid?
+    zoetrope draw  runs/myfilm --out film.webm # one chapter, arms in order
+    zoetrope draw  --spec spec.json --out film.webm
 """
 
 from __future__ import annotations
@@ -158,7 +158,7 @@ def _skills(a) -> int:
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(prog="demokit")
+    ap = argparse.ArgumentParser(prog="zoetrope")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     c = sub.add_parser("check", help="validate one or more run directories")
@@ -225,7 +225,7 @@ def main(argv=None) -> int:
         return _skills(a)
 
     if a.cmd == "explain":
-        from demokit.compose import explain_compose as E
+        from zoetrope.compose import explain_compose as E
         argv2 = [a.spec, "--panel", str(a.panel), "--palette", a.palette,
                  "--fps", str(a.fps)]
         for flag in ("frame", "out", "menu", "sheet", "film"):
@@ -235,7 +235,7 @@ def main(argv=None) -> int:
         return 0
 
     if a.cmd == "live":
-        from demokit.compose import live_compose as V
+        from zoetrope.compose import live_compose as V
         argv2 = [a.runs, "--palette", a.palette, "--chart", a.chart,
                  "--fps", str(a.fps), "--at", str(a.at)]
         for flag in ("arms", "title", "sub", "frame", "out"):
@@ -247,14 +247,14 @@ def main(argv=None) -> int:
         return 0
 
     if a.cmd == "looks":
-        from demokit.compose import styles_compose as S
+        from zoetrope.compose import styles_compose as S
         argv2 = ["--run", a.runs, "--style", a.style, "--palette", a.palette,
                  "--seconds", str(a.seconds), "--fps", str(a.fps),
                  "--at", str(a.at)]
         for flag in ("title", "sub", "out", "frame", "sheet"):
             if getattr(a, flag, None):
                 argv2 += [f"--{flag}", getattr(a, flag)]
-        sys.argv = ["demokit looks"] + argv2
+        sys.argv = ["zoetrope looks"] + argv2
         S.main()
         return 0
 
@@ -284,7 +284,7 @@ def main(argv=None) -> int:
                         cmd += [f"--{flag}", getattr(a, flag)]
                 return subprocess.run(cmd).returncode
 
-    from demokit.compose import race_compose as R
+    from zoetrope.compose import race_compose as R
     if a.spec:
         blob = json.loads(pathlib.Path(a.spec).read_text())
         chapters = [R.load_chapter(c) for c in blob["chapters"]]

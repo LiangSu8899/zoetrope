@@ -3,7 +3,7 @@
 A recorder writes down *when* each thing happened. A compositor replays those
 timestamps and draws every frame. Nothing is screen-captured.
 
-    from demokit import hook
+    from zoetrope import hook
 
     rec = hook.Recorder("stream", label="+ FlashRT structures",
                         sub="auto_swaps + capture", color="ours")

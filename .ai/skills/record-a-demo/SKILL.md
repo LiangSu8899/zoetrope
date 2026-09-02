@@ -9,7 +9,7 @@ You record **when** each thing happened; a compositor replays those timestamps
 and draws every frame. Nothing is screen-captured. That split is what lets the
 drawing change later without running the model again.
 
-Install: `pip install -e /path/to/demo-kit` (or put it on `PYTHONPATH`).
+Install: `pip install -e /path/to/zoetrope` (or put it on `PYTHONPATH`).
 
 ## What this kit is for
 
@@ -44,7 +44,7 @@ machine that drew it.
 So, in order:
 
 1. **Look for existing runs.** If `events.json` exists for the arms you want,
-   go straight to `demokit draw`. Nothing needs a GPU.
+   go straight to `zoetrope draw`. Nothing needs a GPU.
 2. **Missing one arm?** Record only that arm. The others stand.
 3. **Only then** record from scratch.
 
@@ -52,8 +52,8 @@ So, in order:
 see the schema, to check your environment draws at all, and as a template:
 
 ```bash
-demokit check examples/runs/*/*                          # 9/9 ready to draw
-demokit draw  examples/runs/video --out /tmp/check.webm  # should just work
+zoetrope check examples/runs/*/*                          # 9/9 ready to draw
+zoetrope draw  examples/runs/video --out /tmp/check.webm  # should just work
 ```
 
 `examples/specs/` holds the multi-chapter specs behind the published films —
@@ -65,14 +65,14 @@ One arm per process. Never two — they would share allocator state and clocks.
 
 ```
 run each arm  →  runs/<film>/<arm>/events.json   (+ frames.npy if it has pixels)
-                 demokit check runs/<film>/*
-                 demokit draw  runs/<film> --out film.webm
+                 zoetrope check runs/<film>/*
+                 zoetrope draw  runs/<film> --out film.webm
 ```
 
 ## Recording an arm
 
 ```python
-from demokit import hook
+from zoetrope import hook
 
 rec = hook.Recorder(
     "video",                       # stream | video | stream_batch | loop | arch
@@ -144,21 +144,21 @@ answer in the panes and the rate under them. `--palette` picks the ink
 picks what the strip under the panes does (`curve` `bars` `none`):
 
 ```bash
-demokit live runs/mine --palette paper --chart curve --out mine.webm
+zoetrope live runs/mine --palette paper --chart curve --out mine.webm
 ```
 
 Offer a couple of looks rather than one. It costs seconds, and which drawing
 carries the idea is a real decision:
 
 ```bash
-demokit looks runs/mine --sheet looks.png    # 4 visual languages x 6 palettes
+zoetrope looks runs/mine --sheet looks.png    # 4 visual languages x 6 palettes
 ```
 
 Video, robot and batch runs, and any multi-chapter film, go through `draw`:
 
 ```bash
-demokit check runs/wan22/eager runs/wan22/attach     # says what would fail, and why
-demokit draw  runs/wan22 --arms eager,attach --out wan22.webm \
+zoetrope check runs/wan22/eager runs/wan22/attach     # says what would fail, and why
+zoetrope draw  runs/wan22 --arms eager,attach --out wan22.webm \
     --title "Wan2.2 TI2V-5B" \
     --subtitle "480x480 · 33 frames · 20 steps · one prompt, one seed · RTX 5090" \
     --note "what a reader should notice"
@@ -173,12 +173,12 @@ Several chapters in one file (e.g. four concurrency levels) go through a spec:
 ]}
 ```
 ```bash
-demokit draw --spec spec.json --out concurrency.webm
+zoetrope draw --spec spec.json --out concurrency.webm
 ```
 
 ## If something looks wrong
 
-- `demokit check` first. It names the missing `meta` key or the unsorted
+- `zoetrope check` first. It names the missing `meta` key or the unsorted
   timestamps rather than letting the compositor fail obscurely.
 - A pane stuck at `--` means no event arrived yet; that is correct during
   prefill.

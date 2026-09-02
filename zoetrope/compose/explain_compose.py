@@ -16,7 +16,7 @@ follows, pointed at a different source:
   scenario — three requests, a tree of prompts — it is labelled as an
   example, so it is never read as data.
 
-The panels live in `demokit/explainers/*.json`, so pointing this at another
+The panels live in `zoetrope/explainers/*.json`, so pointing this at another
 framework is a spec, not a patch. Six painters, and each is a template for
 a shape that recurs:
 
@@ -29,8 +29,8 @@ a shape that recurs:
     schedule     the same queue in two orders, and what the cache thinks
     fsm          steps that had to be taken, versus steps already decided
 
-    demokit explain vllm_paged --menu menu.png
-    demokit explain sglang_radix --panel 0 --palette blueprint --frame a.png
+    zoetrope explain vllm_paged --menu menu.png
+    zoetrope explain sglang_radix --panel 0 --palette blueprint --frame a.png
 """
 
 from __future__ import annotations

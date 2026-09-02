@@ -1,4 +1,4 @@
-# demokit
+# zoetrope
 
 **Ask an agent for a video that explains a system — a model you just optimized,
 a paper you just read, a framework you have to teach — and get one back where
@@ -29,7 +29,7 @@ work the agent then does.
 | *"Record my model against `torch.compile` and draw it."* | One process per arm, both timed the same way, both baselines named, headline reported as a median. |
 | *"Explain why my version is faster, in one idea."* | The one-idea film: the same work cut into a different number of trips to memory. Everything else cut. |
 | *"Explain PagedAttention to someone who has never read the paper."* | A three-page explainer drawn from the paper's own mechanism, each page carrying its citation and the figure it earns. |
-| *"Explain this repo's core idea the way you explained vLLM."* | A new spec in `demokit/explainers/`, same painters, redrawn in seconds. |
+| *"Explain this repo's core idea the way you explained vLLM."* | A new spec in `zoetrope/explainers/`, same painters, redrawn in seconds. |
 | *"Draw it in every colour system and let me pick."* | One contact sheet, 4 styles × 6 palettes, from the same recording. |
 | *"Slower, and hold the ending."* | A pacing change. No model re-run — redrawing costs seconds. |
 
@@ -59,8 +59,8 @@ This is the part that makes the output worth showing to other people.
 
 ```bash
 pip install -e .
-demokit skills add          # teach your agent: ~/.claude/skills, ~/.agents/skills
-demokit skills add --agents-md ~/.codex/AGENTS.md    # Codex reads this instead
+zoetrope skills add          # teach your agent: ~/.claude/skills, ~/.agents/skills
+zoetrope skills add --agents-md ~/.codex/AGENTS.md    # Codex reads this instead
 ```
 
 Two skills go in. `record-a-demo` covers making the film that shows an
@@ -81,9 +81,9 @@ Two arms writing the same answer on one clock. Everybody reads it without
 being told anything, and `--chart` puts the shape of it on the page as well.
 
 ```bash
-demokit live examples/runs/stream       --palette paper    --chart curve --out a.webm
-demokit live examples/runs/stream_batch --palette phosphor --chart bars  --out b.webm
-demokit live examples/runs/stream       --palette mono     --chart none  --out c.webm
+zoetrope live examples/runs/stream       --palette paper    --chart curve --out a.webm
+zoetrope live examples/runs/stream_batch --palette phosphor --chart bars  --out b.webm
+zoetrope live examples/runs/stream       --palette mono     --chart none  --out c.webm
 ```
 
 <p align="center">
@@ -99,9 +99,9 @@ flight and its pane is one scrolling line each.
 Four ship, and pointing this at a fifth framework is a JSON spec, not a patch.
 
 ```bash
-demokit explain vllm_paged     --menu menu.png              # every panel
-demokit explain flashattention --palette phosphor --film fa.webm
-demokit explain sglang_radix   --panel 0 --sheet six.png    # in six palettes
+zoetrope explain vllm_paged     --menu menu.png              # every panel
+zoetrope explain flashattention --palette phosphor --film fa.webm
+zoetrope explain sglang_radix   --panel 0 --sheet six.png    # in six palettes
 ```
 
 | spec | the idea it draws | source |
@@ -147,7 +147,7 @@ item, connectors leave and arrive along one axis and curve between, and films
 cross-fade rather than cut.
 
 ```bash
-demokit looks examples/runs/stream --sheet looks.png     # 4 styles x 6 palettes
+zoetrope looks examples/runs/stream --sheet looks.png     # 4 styles x 6 palettes
 ```
 
 ![four styles against six palettes](docs/looks.png)
@@ -155,7 +155,7 @@ demokit looks examples/runs/stream --sheet looks.png     # 4 styles x 6 palettes
 ## Recording your own
 
 ```python
-from demokit import hook
+from zoetrope import hook
 
 rec = hook.Recorder("stream", label="+ my change", sub="what it does",
                     color="ours")
@@ -165,8 +165,8 @@ rec.write("runs/mine/attach")
 ```
 
 ```bash
-demokit check runs/mine/attach     # names what would fail before you draw
-demokit live  runs/mine --out mine.webm
+zoetrope check runs/mine/attach     # names what would fail before you draw
+zoetrope live  runs/mine --out mine.webm
 ```
 
 Other hooks record what the run *did*: `hook.on_kernels` (every CUDA kernel,
@@ -200,7 +200,7 @@ These came from getting them wrong first.
 ## Layout
 
 ```
-demokit/
+zoetrope/
   hook.py                   the recorders: tokens, kernels, module tree, diagram
   record.py                 one arm per process; --host picks an adapter
   hosts/                    8 host adapters (transformers, diffusers, robot policies)

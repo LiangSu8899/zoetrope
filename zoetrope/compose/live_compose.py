@@ -10,8 +10,8 @@ point at.
 Everything is drawn from the recording, on the shared canvas, in whichever
 colour system is asked for:
 
-    demokit live examples/runs/stream --palette paper --out a.webm
-    demokit live examples/runs/stream_batch --chart bars --palette phosphor \
+    zoetrope live examples/runs/stream --palette paper --out a.webm
+    zoetrope live examples/runs/stream_batch --chart bars --palette phosphor \
         --out b.webm
 
 Two run shapes, one painter. A `stream` arm is one request and its pane is

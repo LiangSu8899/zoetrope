@@ -118,8 +118,8 @@ drawn, and picking one is part of the work rather than a detail after it:
 Try more than one. It costs seconds:
 
 ```bash
-demokit looks RUNDIR --sheet looks.png                # 4 styles x 6 palettes
-demokit looks RUNDIR --style dots --palette paper --out a.webm
+zoetrope looks RUNDIR --sheet looks.png                # 4 styles x 6 palettes
+zoetrope looks RUNDIR --style dots --palette paper --out a.webm
 ```
 
 Then open the sheet and choose, the same way you would choose between two
@@ -143,7 +143,7 @@ real cost even when every number on the page is right.
 
 Some things worth explaining were never yours to measure: how a system
 allocates, decides, or caches. `explain_compose.py` draws those from an
-authored spec in `demokit/explainers/`, and the discipline transfers exactly:
+authored spec in `zoetrope/explainers/`, and the discipline transfers exactly:
 
 - the spec's `source` line prints on every panel, so a reader always knows
   the numbers are the paper's and not yours;

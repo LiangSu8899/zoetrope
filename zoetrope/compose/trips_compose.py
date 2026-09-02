@@ -11,7 +11,7 @@ carries more of it, which is what fusing kernels means. The speed follows.
 Colour is measured too -- how hard the chip was working during that stretch,
 from Nsight Compute, weighted by each kernel's own duration.
 
-    python -m demokit.compose.trips_compose --runs runs/pi05_trips \
+    python -m zoetrope.compose.trips_compose --runs runs/pi05_trips \
         --arms torch,fp8 --gate compiled --out why.webm
 """
 
@@ -22,7 +22,7 @@ import subprocess
 
 from PIL import Image, ImageDraw
 
-from demokit.compose.race_compose import (BG, INK, LINE, MUTED, COLORS,
+from zoetrope.compose.race_compose import (BG, INK, LINE, MUTED, COLORS,
                                           STOCK, _ffmpeg, font, wrap)
 
 W, H = 1280, 720

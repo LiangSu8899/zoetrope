@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "demokit"
+name = "zoetrope"
 version = "0.1.0"
 description = "Record when an inference host did each thing, then draw it as a film"
 readme = "README.md"
@@ -24,12 +24,12 @@ dependencies = ["numpy", "pillow", "imageio-ffmpeg"]
 robot = ["torch"]
 
 [project.scripts]
-demokit = "demokit.cli:main"
+zoetrope = "zoetrope.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["demokit*"]
+include = ["zoetrope*"]
 
 # the authored layouts and explainer specs are data the painters load at
 # runtime, so they have to travel with the wheel
 [tool.setuptools.package-data]
-demokit = ["diagrams/*.json", "explainers/*.json"]
+zoetrope = ["diagrams/*.json", "explainers/*.json"]

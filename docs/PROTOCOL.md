@@ -181,7 +181,7 @@ step.
 
 This half is already a plugin system. `simloop.rollout(host, ...)` owns the
 LIBERO loop, the timing and the event writing; a host adapter owns nothing but
-the model. Eight of them exist in `demokit/hosts/`, 120–337 lines each.
+the model. Eight of them exist in `zoetrope/hosts/`, 120–337 lines each.
 
 A host adapter is a plain object with these methods — no base class, no
 registration:
@@ -202,7 +202,7 @@ host, write one adapter and add one branch to `build_host()`.
 
 ## 4. Recorder protocol — everything else
 
-**There isn't one yet.** `demokit/pipelines/` holds four independent scripts,
+**There isn't one yet.** `zoetrope/pipelines/` holds four independent scripts,
 153–595 lines each, that repeat the same shape by hand:
 
 1. load the host

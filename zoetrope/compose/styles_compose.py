@@ -17,11 +17,11 @@ carries that idea is a real decision: `curve` argues about rate, `dots`
 argues about identity, `bars` argues about finishing, `ribbon` argues
 about density.  Render two, look at both, keep one.
 
-    python -m demokit.compose.styles_compose --run examples/runs/stream \
+    python -m zoetrope.compose.styles_compose --run examples/runs/stream \
         --style curve --palette paper --out curve.webm
 
     # every look at once, as one PNG, to pick from
-    python -m demokit.compose.styles_compose --run examples/runs/stream \
+    python -m zoetrope.compose.styles_compose --run examples/runs/stream \
         --sheet looks.png
 """
 
