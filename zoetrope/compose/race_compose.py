@@ -1009,7 +1009,7 @@ def _layout(n_panes, pane, footer, extra=0):
     return W, H, pane, lines
 
 
-def paint(chapter, t, W, H, pane, foot_lines, extra=0):
+def paint(chapter, t, W, H, pane, foot_lines, extra=0, speed=1.0):
     """One frame of one chapter, on the canvas the whole film shares."""
     gap, pad, head = 26, 34, 168
     arms = chapter["arms"]
@@ -1051,6 +1051,12 @@ def paint(chapter, t, W, H, pane, foot_lines, extra=0):
         d.rectangle([x, bar_y, x + width, bar_y + 5], fill=a.color)
 
     d.text((W - pad - 96, 30), f"{t:5.1f} s", INK, font=f_lab)
+    # the clock is model time; if the film is not running at model rate the
+    # page has to say so, or the clock is a number nobody can trust
+    if abs(speed - 1.0) > 1e-3:
+        note = f"played at {speed:g}x"
+        d.text((W - pad - 96 - 14 - probe.textlength(note, font=f_small), 36),
+               note, MUTED, font=f_small)
     for j, ln in enumerate(foot_lines):
         d.text((pad, H - 14 - 17 * (len(foot_lines) - j)), ln, MUTED,
                font=f_small)
@@ -1082,7 +1088,8 @@ def render(chapters, out_path, fps=30, pane=400, speed=1.0):
         span = (c["seconds"] if c.get("seconds") is not None
                 else max(a.done_t for a in c["arms"]) + c.get("tail", 2.0))
         for i in range(int(span / speed * fps)):
-            paint(c, i / fps * speed, W, H, wide, lines, room).save(
+            paint(c, i / fps * speed, W, H, wide, lines, room,
+                  speed=speed).save(
                 frames_dir / f"{k:05d}.jpg", quality=88)
             k += 1
 

@@ -46,12 +46,17 @@ is tempted to leave out.
   <img src="docs/gif/vlm.gif" width="100%" alt="Qwen3-VL-8B described a scene, three arms">
 </p>
 
+Both films above are played at half rate, and say so in their own headers —
+the fast arm finishes in 0.6 s of model time, which at model rate is a blink.
+The clock always reads model time; a film that quietly ran fast or slow
+without saying so would be a number nobody can trust.
+
 Both are multi-chapter specs that ship in `examples/specs/`, so they redraw
 with no GPU:
 
 ```bash
-zoetrope draw --spec examples/specs/q35_spec.json --out llm.webm
-zoetrope draw --spec examples/specs/vl_spec.json  --out vlm.webm
+zoetrope draw --spec examples/specs/q35_spec.json --speed 0.5 --out llm.webm
+zoetrope draw --spec examples/specs/vl_spec.json  --speed 0.5 --out vlm.webm
 ```
 
 ### Explaining a paper
