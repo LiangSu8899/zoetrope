@@ -9,6 +9,28 @@ A demo film shows one arm finishing first. Everyone understands it, because
 there is nothing to parse. This is the follow-up, and it is much harder:
 saying **why**, and having that be as easy to read.
 
+## What this kit is for
+
+Someone points you at a system — a model they just optimized, a paper they
+just read, a framework they have to teach — and wants a video that explains
+it. The job is a film where **every frame comes from a measurement or a
+citation**. That is the whole value: text-to-video makes something plausible,
+this makes something checkable.
+
+Three rules decide everything else.
+
+1. **One idea per film.** Everything else is cut. The corollary is
+   uncomfortable and holds anyway: *more accurate is often harder to read,
+   and readable wins.* Measure everything; draw one thing.
+2. **Nothing is invented.** A pane with no measurement behind it prints
+   `not measured`. A headline is a median, never a best-of-N. A number that
+   did **not** move gets reported too — hiding it is selling rather than
+   explaining, and the audience for these films can tell.
+3. **Draw before you run.** `examples/runs/` holds real recordings for every
+   painter. A first cut needs no model and no device, redrawing costs
+   seconds, and ten drafts is normal. Then render one frame to a PNG, open
+   it, and cut something.
+
 ## The rule that decides everything
 
 **One idea. Everything else is cut.**

@@ -11,6 +11,28 @@ drawing change later without running the model again.
 
 Install: `pip install -e /path/to/demo-kit` (or put it on `PYTHONPATH`).
 
+## What this kit is for
+
+Someone points you at a system — a model they just optimized, a paper they
+just read, a framework they have to teach — and wants a video that explains
+it. The job is a film where **every frame comes from a measurement or a
+citation**. That is the whole value: text-to-video makes something plausible,
+this makes something checkable.
+
+Three rules decide everything else.
+
+1. **One idea per film.** Everything else is cut. The corollary is
+   uncomfortable and holds anyway: *more accurate is often harder to read,
+   and readable wins.* Measure everything; draw one thing.
+2. **Nothing is invented.** A pane with no measurement behind it prints
+   `not measured`. A headline is a median, never a best-of-N. A number that
+   did **not** move gets reported too — hiding it is selling rather than
+   explaining, and the audience for these films can tell.
+3. **Draw before you run.** `examples/runs/` holds real recordings for every
+   painter. A first cut needs no model and no device, redrawing costs
+   seconds, and ten drafts is normal. Then render one frame to a PNG, open
+   it, and cut something.
+
 ## Before you run anything: is the data already there?
 
 Running a model is expensive; drawing is not. **Recording and drawing are
@@ -115,6 +137,24 @@ A film is only worth drawing if the arms are honestly comparable:
   reason, not dropped.
 
 ## Drawing
+
+A stream run — a language model answering — draws with `live`, which puts the
+answer in the panes and the rate under them. `--palette` picks the ink
+(`midnight` `paper` `phosphor` `blueprint` `ember` `mono`) and `--chart`
+picks what the strip under the panes does (`curve` `bars` `none`):
+
+```bash
+demokit live runs/mine --palette paper --chart curve --out mine.webm
+```
+
+Offer a couple of looks rather than one. It costs seconds, and which drawing
+carries the idea is a real decision:
+
+```bash
+demokit looks runs/mine --sheet looks.png    # 4 visual languages x 6 palettes
+```
+
+Video, robot and batch runs, and any multi-chapter film, go through `draw`:
 
 ```bash
 demokit check runs/wan22/eager runs/wan22/attach     # says what would fail, and why
