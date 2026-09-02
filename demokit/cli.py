@@ -186,6 +186,17 @@ def main(argv=None) -> int:
     e.add_argument("--sheet", help="one panel in every colour system")
     e.add_argument("--film", help="every panel in order, one film")
 
+    V = sub.add_parser("live", help="the run demo: the answer arriving, with "
+                                   "the rate drawn beside it")
+    V.add_argument("runs")
+    V.add_argument("--arms"); V.add_argument("--palette", default="midnight")
+    V.add_argument("--chart", default="curve")
+    V.add_argument("--title"); V.add_argument("--sub")
+    V.add_argument("--seconds", type=float); V.add_argument("--fps", type=int,
+                                                            default=30)
+    V.add_argument("--at", type=float, default=0.6)
+    V.add_argument("--frame"); V.add_argument("--out")
+
     L = sub.add_parser("looks", help="draw one stream recording in another "
                                      "visual language, or every one at once")
     L.add_argument("runs", help="a directory of arms")
@@ -221,6 +232,18 @@ def main(argv=None) -> int:
             if getattr(a, flag, None):
                 argv2 += [f"--{flag}", getattr(a, flag)]
         E.main(argv2)
+        return 0
+
+    if a.cmd == "live":
+        from demokit.compose import live_compose as V
+        argv2 = [a.runs, "--palette", a.palette, "--chart", a.chart,
+                 "--fps", str(a.fps), "--at", str(a.at)]
+        for flag in ("arms", "title", "sub", "frame", "out"):
+            if getattr(a, flag, None):
+                argv2 += [f"--{flag}", getattr(a, flag)]
+        if a.seconds:
+            argv2 += ["--seconds", str(a.seconds)]
+        V.main(argv2)
         return 0
 
     if a.cmd == "looks":

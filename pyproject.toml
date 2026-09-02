@@ -20,3 +20,8 @@ demokit = "demokit.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["demokit*"]
+
+# the authored layouts and explainer specs are data the painters load at
+# runtime, so they have to travel with the wheel
+[tool.setuptools.package-data]
+demokit = ["diagrams/*.json", "explainers/*.json"]

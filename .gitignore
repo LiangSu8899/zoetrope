@@ -6,3 +6,4 @@ dist/
 .venv/
 _race_frames/
 *.webm
+.pytest_cache/

@@ -21,6 +21,7 @@ demokit/
   compose/race_compose.py   stream / video / stream_batch / arch / runtime / diagram
   compose/sim_compose.py    robot panes
   compose/trips_compose.py  the one-idea film: the same work, cut into trips
+  compose/live_compose.py   the run demo: the answer arriving, and its rate
   compose/styles_compose.py one recording, four visual languages
   compose/explain_compose.py a published mechanism, drawn from a spec
   compose/palettes.py       six colour systems, addressed by role
@@ -93,6 +94,30 @@ Four versions of this film were built and rejected before this one — each
 more accurate than the last, and four of them unreadable. That record is the
 useful part, and it is in
 [`.ai/skills/explain-a-speedup/SKILL.md`](.ai/skills/explain-a-speedup/SKILL.md).
+
+## The run demo
+
+The oldest film here is also the one everybody reads without being told
+anything: two arms writing the same answer on one wall clock, and one of them
+finishes first. `live` keeps that body and puts the shape of it on the page as
+well — a strip under the panes where tokens delivered are plotted against
+time, so the thing you feel in the text has a line you can point at.
+
+```bash
+demokit live examples/runs/stream       --palette paper    --chart curve --out a.webm
+demokit live examples/runs/stream_batch --palette phosphor --chart bars  --out b.webm
+demokit live examples/runs/stream       --palette mono     --chart none  --out c.webm
+```
+
+One painter covers both run shapes. A `stream` arm is one request and its pane
+is the answer; a `stream_batch` arm is a serving engine with several requests
+in flight and its pane is one line per request, scrolling. The rate strip does
+not care which — it counts tokens that have arrived — and `--chart` chooses
+whether that strip is a curve, a bar race, or nothing at all.
+
+A run shorter than two seconds is stretched to something watchable, and the
+page then says `slowed 18x` on its face. A clock a viewer cannot trust is
+worse than no clock.
 
 ## Four ways to draw the same recording
 
