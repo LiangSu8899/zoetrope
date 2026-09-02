@@ -132,8 +132,9 @@ An engine filmed from its own token stream — eight requests in flight, one
 wall clock. One arm, no comparison: this is what the engine did. The strip
 underneath plots tok/s rather than tokens delivered, because the cumulative
 curve is the integral of the rate and integration hides exactly what a reader
-is looking at: the sawtooth is a scheduler step landing eight tokens at once
-and then the window decaying until the next one.
+is looking at. It holds near 107, dips when a scheduler step runs long, and
+steps down near the end as requests finish and there are fewer streams to
+serve.
 
 <p align="center">
   <img src="docs/gif/run_demo_paper.gif" width="100%" alt="the same recording in the paper palette">

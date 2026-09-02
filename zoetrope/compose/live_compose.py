@@ -234,20 +234,30 @@ def _rate(d, arms, box, t, pal, race):
     """Tok/s against time — the thing the readout shows, drawn.
 
     The cumulative curve is the integral of this, and integration hides
-    exactly what a reader is looking at: a rate wandering between 101 and
-    160 is a slope change no eye picks out of a straight-looking line. So
-    when the question is *how steady was it*, plot the rate itself, from
-    the same trailing window the pane's own number is computed over.
+    exactly what a reader is looking at: a rate that moves is a slope change
+    no eye picks out of a straight-looking line.
+
+    Sampled on a clock, never at the token stamps.  Tokens arrive in bursts
+    — eight streams each emitting one within a millisecond or two — so
+    sampling at their arrival times takes eight readings inside one burst
+    while the far end of the window walks through the burst from 0.6 s ago,
+    losing one token per reading.  That draws a sawtooth with an amplitude
+    of one whole burst, and the sawtooth is the sampler, not the engine.
     """
     x0, y0, x1, y1 = box
-    # only samples taken over a *full* window: a partial window is a rate
-    # measured over less time than it claims, and one of those at the start
-    # sets a y-scale that flattens everything real underneath it
-    def full(a):
-        return [u for u in a.ts if u - a.ts[0] >= a.WINDOW]
+    step = max(race / 320, 1e-3)
 
-    tops = [max([a.rate(u) or 0 for u in full(a)] or [0]) for a in arms]
-    top = max(tops) * 1.12 or 1.0
+    def series(a, upto):
+        """(time, rate) on a uniform clock, once the window is full."""
+        out, u = [], a.ts[0] + a.WINDOW
+        while u <= upto:
+            r = a.rate(u)
+            if r:
+                out.append((u, r))
+            u += step
+        return out
+
+    top = max([r for a in arms for _, r in series(a, a.done)] or [1]) * 1.15
     d.line((x0, y1, x1, y1), fill=pal.line)
     for k in (0.5, 1.0):
         y = y1 - (y1 - y0) * k
@@ -255,24 +265,31 @@ def _rate(d, arms, box, t, pal, race):
         lab = f"{top * k:.0f}"
         d.text((x1 - d.textlength(lab, font=font(13)), y - 16), lab,
                font=font(13), fill=pal.muted)
-    d.text((x0, y0 - 20),
-           "tok/s over a 0.6 s trailing window, from the first full window",
+    d.text((x0, y0 - 20), "tok/s, over a 0.6 s trailing window",
            font=font(13), fill=pal.muted)
 
     for a in arms:
         ink = pal.role(a.key)
-        pts = []
-        for u in full(a):
-            if u > t:
-                break
-            r = a.rate(u)
-            if r:
-                pts.append((x0 + (x1 - x0) * u / race,
-                            y1 - (y1 - y0) * min(r, top) / top))
-        if len(pts) > 1:
-            d.line(pts, fill=ink, width=2, joint="curve")
-            hx, hy = pts[-1]
-            d.ellipse((hx - 5, hy - 5, hx + 5, hy + 5), fill=ink)
+        pts = [(x0 + (x1 - x0) * u / race,
+                y1 - (y1 - y0) * min(r, top) / top)
+               for u, r in series(a, min(t, a.done))]
+        if len(pts) < 2:
+            continue
+        d.line(pts, fill=ink, width=2, joint="curve")
+        hx, hy = pts[-1]
+        d.ellipse((hx - 5, hy - 5, hx + 5, hy + 5), fill=ink)
+        # the head carries its own value: a line with no number beside it
+        # makes the reader guess against a gridline
+        val = f"{a.rate(min(t, a.done)) or 0:.0f}"
+        f = font(19, True)
+        w = d.textlength(val, font=f)
+        # once the head nears the right edge the label goes on its other
+        # side, where it cannot sit on the axis numbers
+        if hx < x1 - w - 76:
+            lx, ly = hx + 12, hy - 11
+        else:                       # clear of the axis numbers on the right
+            lx, ly = hx - w - 10, hy - 32
+        d.text((lx, ly), val, font=f, fill=ink)
     px = x0 + (x1 - x0) * min(t, race) / race
     d.line((px, y0 - 6, px, y1 + 4), fill=pal.line)
 
